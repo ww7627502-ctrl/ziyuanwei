@@ -123,58 +123,70 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     ctx.drawImage(off, ix, iy, iw, ih);
 }
 
+// ============== 工具函数 ==============
+
+// 🌟 新增：全局内存缓存对象，杜绝重复网络请求
+const globalImageCache = {};
+const globalSvgTextCache = {};
+
 async function loadImage(src) {
+    // 1. 如果内存里已经有这张图了，直接秒回
+    if (globalImageCache[src]) return globalImageCache[src]; 
+
     if (src.startsWith('data:') || src.startsWith('blob:')) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = src;
+        return new Promise((r, j) => { 
+            const img = new Image(); 
+            img.onload = () => { globalImageCache[src] = img; r(img); }; // 存入缓存
+            img.onerror = j; 
+            img.src = src; 
         });
     }
     try {
-        const res = await fetch(src);
+        const res = await fetch(src); 
         const blob = await res.blob();
-        return new Promise((resolve, reject) => {
-            const f = new FileReader();
-            f.onloadend = () => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-                img.src = f.result;
-            };
-            f.onerror = reject;
-            f.readAsDataURL(blob);
+        return new Promise((r, j) => { 
+            const f = new FileReader(); 
+            f.onloadend = () => { 
+                const img = new Image(); 
+                img.onload = () => { globalImageCache[src] = img; r(img); }; // 存入缓存
+                img.onerror = j; 
+                img.src = f.result; 
+            }; 
+            f.onerror = j; 
+            f.readAsDataURL(blob); 
         });
-    } catch (e) {
-        console.error('图片加载失败:', src, e);
-    }
+    } catch (e) { console.error('图片加载失败:', src, e); }
 }
 
 async function loadColoredArrow(url, color) {
-    const res = await fetch(url);
-    const txt = await res.text();
-    const coloredSvg = txt.replace(/stroke="[^"]*"/g, `stroke="${color}"`);
-    return await loadImage('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(coloredSvg))));
+    let txt = globalSvgTextCache[url];
+    if (!txt) {
+        // 如果没有缓存，才去网络请求
+        const res = await fetch(url); 
+        txt = await res.text();
+        globalSvgTextCache[url] = txt; // 存入缓存
+    }
+    return await loadImage('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(txt.replace(/stroke="[^"]*"/g, `stroke="${color}"`)))));
 }
 
 async function loadColoredSvgFill(url, color) {
     try {
-        const res = await fetch(url);
-        let txt = await res.text();
-        if (!txt.includes('fill=')) {
-            txt = txt.replace(/<svg/i, `<svg fill="${color}" `);
-        } else {
-            txt = txt.replace(/fill="([^"]*)"/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`)
-                     .replace(/fill='([^']*)'/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`);
+        let txt = globalSvgTextCache[url];
+        if (!txt) {
+            // 如果没有缓存，才去网络请求
+            const res = await fetch(url); 
+            txt = await res.text();
+            globalSvgTextCache[url] = txt; // 存入原始文本缓存
         }
+        
+        if (!txt.includes('fill=')) txt = txt.replace(/<svg/i, `<svg fill="${color}" `);
+        else txt = txt.replace(/fill="([^"]*)"/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`).replace(/fill='([^']*)'/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`);
+        
         const u = URL.createObjectURL(new Blob([txt], { type: 'image/svg+xml;charset=utf-8' }));
-        const img = await loadImage(u);
-        URL.revokeObjectURL(u);
+        const img = await loadImage(u); 
+        URL.revokeObjectURL(u); 
         return img;
-    } catch (e) {
-        return null;
-    }
+    } catch (e) { return null; }
 }
 
 function drawRoundRect(ctx, x, y, w, h, r) {
