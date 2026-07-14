@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner 智能预览工作台</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="app-header">
+        <div class="header-title">Banner 智能预览工作台</div>
+        <div class="header-actions">
+            <button class="btn secondary-btn" id="exportBannerBtn">导出首页切图</button>
+            <button class="btn secondary-btn" id="exportFullBannerBtn">导出Banner切图</button>
+            <button class="btn primary-btn" id="exportBtn">导出全部预览图</button>
+        </div>
+    </header>
+
+    <!-- 主体左右分栏 -->
+    <div class="main-layout">
+        
+        <!-- 左侧工具栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">页面切换</div>
+                <div class="tabs-container">
+                    <button class="tab-btn active" id="tabHomeBtn">首页预览</button>
+                    <button class="tab-btn" id="tabMyPageBtn">我的页面</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">基础设置</div>
+                <div class="upload-box">
+                    <label for="imageUpload" class="upload-label">点击上传配图</label>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- 首页专属设置 -->
+            <div id="homeControls" class="control-group active">
+                <div class="sidebar-section">
+                    <div class="section-title">主题颜色</div>
+                    <div class="color-selector">
+                        <label><input type="radio" name="homeColor" value="blue" checked> 科技蓝</label>
+                        <label><input type="radio" name="homeColor" value="green"> 生态绿</label>
+                        <label><input type="radio" name="homeColor" value="orange"> 活力橙</label>
+                        <label><input type="radio" name="homeColor" value="red"> 热情红</label>
+                        <label><input type="radio" name="homeColor" value="purple"> 魅惑紫</label>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="section-title">文案修改</div>
+                    <div class="input-group">
+                        <span>第一行:</span>
+                        <input type="text" id="textLine1" value="教练问是不是">
+                    </div>
+                    <div class="input-group">
+                        <span>第二行:</span>
+                        <input type="text" id="textLine2" value="兑激素了">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 我的页面专属设置 -->
+            <div id="myPageControls" class="control-group">
+                <div class="sidebar-section">
+                    <div class="section-title">主题颜色</div>
+                    <div class="color-selector">
+                        <label><input type="radio" name="myPageColor" value="blue" checked> 科技蓝</label>
+                        <label><input type="radio" name="myPageColor" value="green"> 生态绿</label>
+                        <label><input type="radio" name="myPageColor" value="orange"> 活力橙</label>
+                        <label><input type="radio" name="myPageColor" value="purple"> 魅惑紫</label>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="section-title">文案修改</div>
+                    <div class="input-group">
+                        <span>按钮:</span>
+                        <input type="text" id="textCapsule" value="三个字">
+                    </div>
+                    <div class="input-group">
+                        <span>主标题:</span>
+                        <input type="text" id="myPageTitle" value="主标题九个字">
+                    </div>
+                    <div class="input-group">
+                        <span>高亮词:</span>
+                        <input type="text" id="myPageHighlight" value="九个字">
+                    </div>
+                    <div class="input-group">
+                        <span>副标题:</span>
+                        <input type="text" id="myPageSubtitle" value="副标题八个字">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧预览区 -->
+        <main class="preview-area">
+            <!-- 首页视图 -->
+            <div id="homeView" class="view-section active">
+                <div class="preview-grid">
+                    <!-- 左侧大尺寸列 -->
+                    <div class="main-column">
+                        <div class="preview-card">
+                            <div class="card-title">首页-预览</div>
+                            <canvas id="lightCanvas" class="zoomable-canvas phone-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 右侧小尺寸列 -->
+                    <div class="side-column">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">当前导入的配图 (原图)</div>
+                            <canvas id="rawImageCanvas" class="zoomable-canvas raw-img-canvas"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">首页-日间 Banner切图</div>
+                            <canvas id="lightBannerCanvas" class="zoomable-canvas banner-canvas"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">首页-夜间 Banner切图</div>
+                            <canvas id="darkBannerCanvas" class="zoomable-canvas banner-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 我的页面视图 -->
+            <div id="myPageView" class="view-section">
+                <div class="preview-grid">
+                    <!-- 左侧大尺寸列 -->
+                    <div class="main-column">
+                        <div class="preview-card">
+                            <div class="card-title">我的-预览</div>
+                            <canvas id="myPageFullCanvas" class="zoomable-canvas phone-canvas"></canvas>
+                        </div>
+                    </div>
+                    
+                                        <!-- 右侧小尺寸列 -->
+                    <div class="side-column">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">当前导入的配图 (原图)</div>
+                            <canvas id="myPageRawImageCanvas" class="zoomable-canvas raw-img-canvas"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">我的页面 - 日间 Banner 切图</div>
+                            <canvas id="myPageCanvas" class="zoomable-canvas banner-canvas"></canvas>
+                        </div>
+                        <!-- 这里是新增的夜间模式 Canvas -->
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">我的页面 - 夜间 Banner 切图</div>
+                            <canvas id="myPageDarkCanvas" class="zoomable-canvas banner-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 放大查看的弹窗 -->
+    <div id="zoomModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-hint">点击任意空白处关闭</div>
+        <img class="modal-content" id="zoomedImg">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
