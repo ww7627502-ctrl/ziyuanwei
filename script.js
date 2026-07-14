@@ -1,3 +1,4 @@
+// ==================== 全局配置 ====================
 const config = {
     baseUI: 'assets/home-light.png',
     baseUIDark: 'assets/home-dark.png',
@@ -24,7 +25,7 @@ const config = {
 const myPageColors = { blue: '#F0FBFF', green: '#F0FFF4', orange: '#FFFAF0', purple: '#F6F0FF' };
 const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B00', purple: '#4E1685' };
 
-// DOM 元素获取
+// ==================== DOM 元素获取 ====================
 const tabHomeBtn = document.getElementById('tabHomeBtn');
 const tabMyPageBtn = document.getElementById('tabMyPageBtn');
 const homeView = document.getElementById('homeView');
@@ -34,7 +35,6 @@ const myPageControls = document.getElementById('myPageControls');
 
 const lightCanvas = document.getElementById('lightCanvas');
 const lightCtx = lightCanvas?.getContext('2d');
-
 const lightBannerCanvas = document.getElementById('lightBannerCanvas');
 const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas');
@@ -62,14 +62,16 @@ let userImgObj = null;
 let homeColor = 'blue';
 let myPageColor = 'blue';
 
-// ============== 工具函数 ==============
+// ==================== 性能与画质优化引擎 ====================
+const globalImageCache = {};
+const globalSvgTextCache = {};
+
 function setupHighQualityContext(ctx) {
     if(!ctx) return;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high'; 
 }
 
-// 🌟 核心优化：图像卷积锐化引擎 (单独对配图使用，不污染文字)
 function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     const iw = Math.floor(w);
     const ih = Math.floor(h);
@@ -116,27 +118,20 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
         }
         oCtx.putImageData(imageData, 0, 0);
     } catch (e) {
-        // 若因跨域等问题无法读取像素，自动降级为无锐化的原生高清绘制
         console.warn('锐化失败,降级原画质:', e);
     }
     
     ctx.drawImage(off, ix, iy, iw, ih);
 }
 
-// ============== 工具函数 ==============
-
-// 🌟 新增：全局内存缓存对象，杜绝重复网络请求
-const globalImageCache = {};
-const globalSvgTextCache = {};
-
+// ==================== 资源加载 (内存缓存版) ====================
 async function loadImage(src) {
-    // 1. 如果内存里已经有这张图了，直接秒回
     if (globalImageCache[src]) return globalImageCache[src]; 
 
     if (src.startsWith('data:') || src.startsWith('blob:')) {
         return new Promise((r, j) => { 
             const img = new Image(); 
-            img.onload = () => { globalImageCache[src] = img; r(img); }; // 存入缓存
+            img.onload = () => { globalImageCache[src] = img; r(img); }; 
             img.onerror = j; 
             img.src = src; 
         });
@@ -148,7 +143,7 @@ async function loadImage(src) {
             const f = new FileReader(); 
             f.onloadend = () => { 
                 const img = new Image(); 
-                img.onload = () => { globalImageCache[src] = img; r(img); }; // 存入缓存
+                img.onload = () => { globalImageCache[src] = img; r(img); }; 
                 img.onerror = j; 
                 img.src = f.result; 
             }; 
@@ -161,10 +156,9 @@ async function loadImage(src) {
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url];
     if (!txt) {
-        // 如果没有缓存，才去网络请求
         const res = await fetch(url); 
         txt = await res.text();
-        globalSvgTextCache[url] = txt; // 存入缓存
+        globalSvgTextCache[url] = txt; 
     }
     return await loadImage('data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(txt.replace(/stroke="[^"]*"/g, `stroke="${color}"`)))));
 }
@@ -173,10 +167,9 @@ async function loadColoredSvgFill(url, color) {
     try {
         let txt = globalSvgTextCache[url];
         if (!txt) {
-            // 如果没有缓存，才去网络请求
             const res = await fetch(url); 
             txt = await res.text();
-            globalSvgTextCache[url] = txt; // 存入原始文本缓存
+            globalSvgTextCache[url] = txt; 
         }
         
         if (!txt.includes('fill=')) txt = txt.replace(/<svg/i, `<svg fill="${color}" `);
@@ -189,6 +182,7 @@ async function loadColoredSvgFill(url, color) {
     } catch (e) { return null; }
 }
 
+// ==================== 通用绘图逻辑 ====================
 function drawRoundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -253,7 +247,7 @@ function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highli
     }
 }
 
-// ============== 1. 首页渲染逻辑 ==============
+// ==================== 1. 首页渲染逻辑 ====================
 async function renderHomeCanvas() {
     if (!lightCanvas) return;
     const heroImg = await loadImage(config.heroImage);
@@ -317,7 +311,6 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     const drawX = config.heroX + (config.heroWidth - kvDrawW) / 2;
     const drawY = config.heroY + (config.heroHeight - kvDrawH) / 2;
     
-    // 🌟 对核心照片进行锐化绘制
     drawSharpenedImage(ctx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3);
     ctx.restore();
     
@@ -333,7 +326,61 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     ctx.drawImage(arrowImg, arrowX, arrowY);
 }
 
-// ============== 2. 我的页面渲染逻辑 ==============
+async function createFullBannerCanvas(isDark) {
+    const bannerUrl = isDark ? config.colorsDark[homeColor] : config.colors[homeColor];
+    const textColor1 = isDark ? config.nightTextColor1 : '#030B1A';
+    const arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
+    
+    const bannerBgImg = await loadImage(bannerUrl);
+    const heroImg = await loadImage(config.heroImage);
+    const kvImg = userImgObj || heroImg;
+    const arrowImg = await loadColoredArrow(config.arrowSvg, arrowColor);
+    
+    const left = Math.min(config.heroX, config.bannerX);
+    const top = Math.min(config.heroY, config.bannerY);
+    const right = Math.max(config.bannerX + bannerBgImg.width, 306 + 250);
+    const bottom = Math.max(config.bannerY + bannerBgImg.height, 217 + 36);
+    
+    const fullCanvas = document.createElement('canvas');
+    const fullCtx = fullCanvas.getContext('2d');
+    fullCanvas.width = right - left;
+    fullCanvas.height = bottom - top;
+    setupHighQualityContext(fullCtx);
+    
+    const offsetX = Math.floor(-left);
+    const offsetY = Math.floor(-top);
+    fullCtx.drawImage(bannerBgImg, Math.floor(config.bannerX + offsetX), Math.floor(config.bannerY + offsetY));
+    
+    fullCtx.save();
+    fullCtx.beginPath();
+    fullCtx.rect(Math.floor(config.heroX + offsetX), Math.floor(config.heroY + offsetY), Math.floor(config.heroWidth), Math.floor(config.heroHeight));
+    fullCtx.clip();
+    const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height);
+    const kvDrawW = kvImg.width * kvScale;
+    const kvDrawH = kvImg.height * kvScale;
+    
+    const drawX = config.heroX + offsetX + (config.heroWidth - kvDrawW) / 2;
+    const drawY = config.heroY + offsetY + (config.heroHeight - kvDrawH) / 2;
+    
+    drawSharpenedImage(fullCtx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3);
+    fullCtx.restore();
+    
+    fullCtx.textAlign = 'left';
+    fullCtx.textBaseline = 'top';
+    fullCtx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif';
+    fullCtx.fillStyle = textColor1;
+    fullCtx.fillText(textLine1Input.value, Math.floor(306 + offsetX), Math.floor(166 + offsetY));
+    fullCtx.fillStyle = arrowColor;
+    fullCtx.fillText(textLine2Input.value, Math.floor(306 + offsetX), Math.floor(217 + offsetY));
+    
+    const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(textLine2Input.value).width + config.arrowPadding);
+    const arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2);
+    fullCtx.drawImage(arrowImg, arrowX, arrowY);
+    
+    return fullCanvas;
+}
+
+// ==================== 2. 我的页面渲染逻辑 ====================
 async function renderMyPage() {
     await renderMyPageBanner();
     await renderMyPageFullCanvas();
@@ -348,7 +395,9 @@ async function renderMyPageBanner() {
         
         const targetColor = isDark ? '#141414' : myPageColors[myPageColor];
         const elementColor = myPageElementColors[myPageColor]; 
-        const capsuleBlue = '#0090FF';
+        
+        // 🌟 夜间模式固定为科技蓝，日间模式动态跟随主题颜色
+        const currentCapsuleColor = isDark ? '#0090FF' : elementColor;
         
         const banner2Img = await loadColoredSvgFill(config.banner2Svg, targetColor);
 
@@ -374,19 +423,18 @@ async function renderMyPageBanner() {
             const drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2;
             const drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2;
             
-            // 🌟 对核心照片进行锐化绘制
             drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3);
             ctx.restore();
             
             ctx.save();
             ctx.globalAlpha = 0.15;
-            ctx.fillStyle = capsuleBlue; 
+            ctx.fillStyle = currentCapsuleColor; 
             drawRoundRect(ctx, 857, 62, 212, 100, 50);
             ctx.fill();
             ctx.restore();
             
             ctx.save();
-            ctx.fillStyle = capsuleBlue; 
+            ctx.fillStyle = currentCapsuleColor; 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.font = 'normal 37px "FZLanTingHei"';
@@ -457,62 +505,7 @@ async function renderMyPageFullCanvas() {
     }
 }
 
-async function createFullBannerCanvas(isDark) {
-    const bannerUrl = isDark ? config.colorsDark[homeColor] : config.colors[homeColor];
-    const textColor1 = isDark ? config.nightTextColor1 : '#030B1A';
-    const arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
-    
-    const bannerBgImg = await loadImage(bannerUrl);
-    const heroImg = await loadImage(config.heroImage);
-    const kvImg = userImgObj || heroImg;
-    const arrowImg = await loadColoredArrow(config.arrowSvg, arrowColor);
-    
-    const left = Math.min(config.heroX, config.bannerX);
-    const top = Math.min(config.heroY, config.bannerY);
-    const right = Math.max(config.bannerX + bannerBgImg.width, 306 + 250);
-    const bottom = Math.max(config.bannerY + bannerBgImg.height, 217 + 36);
-    
-    const fullCanvas = document.createElement('canvas');
-    const fullCtx = fullCanvas.getContext('2d');
-    fullCanvas.width = right - left;
-    fullCanvas.height = bottom - top;
-    setupHighQualityContext(fullCtx);
-    
-    const offsetX = Math.floor(-left);
-    const offsetY = Math.floor(-top);
-    fullCtx.drawImage(bannerBgImg, Math.floor(config.bannerX + offsetX), Math.floor(config.bannerY + offsetY));
-    
-    fullCtx.save();
-    fullCtx.beginPath();
-    fullCtx.rect(Math.floor(config.heroX + offsetX), Math.floor(config.heroY + offsetY), Math.floor(config.heroWidth), Math.floor(config.heroHeight));
-    fullCtx.clip();
-    const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height);
-    const kvDrawW = kvImg.width * kvScale;
-    const kvDrawH = kvImg.height * kvScale;
-    
-    const drawX = config.heroX + offsetX + (config.heroWidth - kvDrawW) / 2;
-    const drawY = config.heroY + offsetY + (config.heroHeight - kvDrawH) / 2;
-    
-    // 🌟 对核心照片进行锐化绘制
-    drawSharpenedImage(fullCtx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3);
-    fullCtx.restore();
-    
-    fullCtx.textAlign = 'left';
-    fullCtx.textBaseline = 'top';
-    fullCtx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif';
-    fullCtx.fillStyle = textColor1;
-    fullCtx.fillText(textLine1Input.value, Math.floor(306 + offsetX), Math.floor(166 + offsetY));
-    fullCtx.fillStyle = arrowColor;
-    fullCtx.fillText(textLine2Input.value, Math.floor(306 + offsetX), Math.floor(217 + offsetY));
-    
-    const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(textLine2Input.value).width + config.arrowPadding);
-    const arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2);
-    fullCtx.drawImage(arrowImg, arrowX, arrowY);
-    
-    return fullCanvas;
-}
-
-// ==================== Tab 联动切换逻辑 ====================
+// ==================== 交互控制与事件绑定 ====================
 if(tabHomeBtn && tabMyPageBtn) {
     tabHomeBtn.addEventListener('click', () => {
         tabHomeBtn.classList.add('active');
@@ -533,7 +526,6 @@ if(tabHomeBtn && tabMyPageBtn) {
     });
 }
 
-// ==================== 放大镜详情交互 ====================
 function openZoomModal(canvas) {
     zoomedImg.src = canvas.toDataURL('image/png', 1.0);
     zoomModal.style.display = 'block';
@@ -548,7 +540,6 @@ document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
 zoomModal.addEventListener('click', closeZoomModal);
 document.querySelector('.close-modal').addEventListener('click', closeZoomModal);
 
-// ==================== 事件监听 ====================
 homeColorRadios.forEach(r => {
     r.addEventListener('change', async e => {
         homeColor = e.target.value;
@@ -585,6 +576,7 @@ myPageHighlight?.addEventListener('input', renderMyPage);
 function canvasToBlob(c) {
     return new Promise(r => c.toBlob(b => r(b), 'image/png'));
 }
+
 document.getElementById('exportBtn')?.addEventListener('click', async () => {
     if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败');
     const zip = new JSZip();
@@ -615,7 +607,6 @@ document.getElementById('exportBannerBtn')?.addEventListener('click', async () =
     const drawX = (420 - drawW) / 2;
     const drawY = (282 - drawH) / 2;
     
-    // 🌟 对单独导出的 KV 切图进行锐化绘制
     drawSharpenedImage(kvCtx, kvImg, drawX, drawY, drawW, drawH, 0.3);
     
     const link = document.createElement('a');
