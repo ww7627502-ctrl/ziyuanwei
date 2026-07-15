@@ -1,3 +1,12 @@
+// 🌟 重新加回来的字数限制配置！想改几个字直接在这里改
+const TEXT_LIMITS = {
+    homeLine1: 6,       // 首页第一行最多6个字
+    homeLine2: 4,       // 首页第二行最多4个字
+    capsule: 3,         // 我的页面胶囊最多3个字
+    myPageTitle: 9,    // 我的页面大标题最多9个字
+    myPageSubtitle: 8  // 我的页面副标题最多8个字
+};
+
 const config = { 
     baseUI: 'assets/home-light.png', 
     baseUIDark: 'assets/home-dark.png', 
@@ -115,12 +124,10 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     ctx.drawImage(off, ix, iy, iw, ih);
 }
 
-// 🌟 终极降维打击：通过 Fetch 强制将一切图片和 SVG 转换为浏览器的底层 Base64 数据！100% 免疫污染警告！
+// 彻底解决污染的本地资源加载引擎
 async function loadImage(src) {
     if (!src) return null; 
     if (globalImageCache[src]) return globalImageCache[src];
-
-    // 如果本身已经是 base64，直接加载
     if (src.startsWith('data:')) {
         return new Promise(resolve => {
             const img = new Image(); 
@@ -129,8 +136,6 @@ async function loadImage(src) {
             img.src = src; 
         });
     }
-
-    // 将外部资源强制抓取并压缩为 base64 数据流
     try {
         const response = await fetch(src);
         const blob = await response.blob();
@@ -140,12 +145,11 @@ async function loadImage(src) {
                 const img = new Image();
                 img.onload = () => { globalImageCache[src] = img; resolve(img); };
                 img.onerror = () => resolve(new Image());
-                img.src = reader.result; // 生成无敌的 data: URL
+                img.src = reader.result; 
             };
             reader.readAsDataURL(blob);
         });
     } catch (e) {
-        // 如果 fetch 失败（例如 file 协议），作为最终兜底，带上跨域头强制加载
         return new Promise((resolve) => {
             const img = new Image(); 
             img.crossOrigin = 'Anonymous';
@@ -161,7 +165,6 @@ async function loadImage(src) {
     }
 }
 
-// 🌟 SVG 变色引擎同步升级，补全标准标签，使用最安全的 base64 编码方式
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url];
     if (!txt) { 
@@ -222,8 +225,15 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     canvas.width = baseUIImg.width || 1260; canvas.height = baseUIImg.height || 2652; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (baseUIImg.width) ctx.drawImage(baseUIImg, 0, 0, canvas.width, canvas.height); if (bannerBgImg && bannerBgImg.width) ctx.drawImage(bannerBgImg, Math.floor(config.bannerX), Math.floor(config.bannerY), bannerBgImg.width, bannerBgImg.height);
     if (kvImg && kvImg.width) { ctx.save(); ctx.beginPath(); ctx.rect(Math.floor(config.heroX), Math.floor(config.heroY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); ctx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(ctx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); ctx.restore(); }
-    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; ctx.fillStyle = textColor1; ctx.fillText(textLine1Input?.value || '', Math.floor(306), Math.floor(166)); ctx.fillStyle = arrowColor; ctx.fillText(textLine2Input?.value || '', Math.floor(306), Math.floor(217));
-    if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + ctx.measureText(textLine2Input?.value || '').width + config.arrowPadding), arrowY = Math.floor(217 + 18 - arrowImg.height / 2 + 2); ctx.drawImage(arrowImg, arrowX, arrowY); }
+    
+    // 🌟 画图阶段：强制截取字数
+    const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1);
+    const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
+    
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; 
+    ctx.fillStyle = textColor1; ctx.fillText(line1Txt, Math.floor(306), Math.floor(166)); 
+    ctx.fillStyle = arrowColor; ctx.fillText(line2Txt, Math.floor(306), Math.floor(217));
+    if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + ctx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + 18 - arrowImg.height / 2 + 2); ctx.drawImage(arrowImg, arrowX, arrowY); }
 }
 
 async function createFullBannerCanvas(isDark) {
@@ -233,8 +243,15 @@ async function createFullBannerCanvas(isDark) {
     const fullCanvas = document.createElement('canvas'), fullCtx = fullCanvas.getContext('2d'); fullCanvas.width = right - left; fullCanvas.height = bottom - top; setupHighQualityContext(fullCtx);
     const offsetX = Math.floor(-left), offsetY = Math.floor(-top); if (bannerBgImg && bannerBgImg.width) fullCtx.drawImage(bannerBgImg, Math.floor(config.bannerX + offsetX), Math.floor(config.bannerY + offsetY));
     if (kvImg && kvImg.width) { fullCtx.save(); fullCtx.beginPath(); fullCtx.rect(Math.floor(config.heroX + offsetX), Math.floor(config.heroY + offsetY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); fullCtx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + offsetX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + offsetY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(fullCtx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); fullCtx.restore(); }
-    fullCtx.textAlign = 'left'; fullCtx.textBaseline = 'top'; fullCtx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; fullCtx.fillStyle = textColor1; fullCtx.fillText(textLine1Input?.value || '', Math.floor(306 + offsetX), Math.floor(166 + offsetY)); fullCtx.fillStyle = arrowColor; fullCtx.fillText(textLine2Input?.value || '', Math.floor(306 + offsetX), Math.floor(217 + offsetY));
-    if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(textLine2Input?.value || '').width + config.arrowPadding), arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2); fullCtx.drawImage(arrowImg, arrowX, arrowY); }
+    
+    // 🌟 画图阶段：强制截取字数
+    const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1);
+    const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
+
+    fullCtx.textAlign = 'left'; fullCtx.textBaseline = 'top'; fullCtx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; 
+    fullCtx.fillStyle = textColor1; fullCtx.fillText(line1Txt, Math.floor(306 + offsetX), Math.floor(166 + offsetY)); 
+    fullCtx.fillStyle = arrowColor; fullCtx.fillText(line2Txt, Math.floor(306 + offsetX), Math.floor(217 + offsetY));
+    if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2); fullCtx.drawImage(arrowImg, arrowX, arrowY); }
     return fullCanvas;
 }
 
@@ -246,10 +263,17 @@ async function renderMyPageBanner() {
         if (banner2Img && banner2Img.width) {
             canvas.width = banner2Img.width; canvas.height = banner2Img.height; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(banner2Img, 0, 0);
             if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
+            
+            // 🌟 画图阶段：强制截取字数
+            const capsuleTxt = (textCapsuleInput?.value || '').slice(0, TEXT_LIMITS.capsule);
+            const titleTxt = (myPageTitle?.value || '').slice(0, TEXT_LIMITS.myPageTitle);
+            const highlightTxt = myPageHighlight?.value || ''; 
+            const subtitleTxt = (myPageSubtitle?.value || '').slice(0, TEXT_LIMITS.myPageSubtitle);
+
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
-            ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'normal 37px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(textCapsuleInput?.value || '', 963, 111); ctx.restore();
-            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 43px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, myPageTitle?.value || '', myPageHighlight?.value || '', 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
-            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 38px "FZLanTingHei-R", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(myPageSubtitle?.value || '', Math.floor(388), Math.floor(128)); ctx.restore();
+            ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'normal 37px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
+            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 43px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
+            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 38px "FZLanTingHei-R", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(128)); ctx.restore();
         }
     };
     await drawMyPageMode(myPageCanvas, myPageCtx, false); await drawMyPageMode(myPageDarkCanvas, myPageDarkCtx, true);
@@ -346,7 +370,18 @@ document.getElementById('exportFullBannerBtn')?.addEventListener('click', async 
     } catch (e) { alert("【系统拦截报错】\n\n原因: " + e.message + "\n\n建议: 按键盘 F12 打开开发者工具，勾选 Network(网络) 下的 'Disable cache' (停用缓存) 后按 F5 刷新页面再试。"); }
 });
 
+// 🌟 初始化时强制给输入框加上物理字数限制，连输入都输不进去
+function initInputLimits() {
+    if (textLine1Input) textLine1Input.maxLength = TEXT_LIMITS.homeLine1;
+    if (textLine2Input) textLine2Input.maxLength = TEXT_LIMITS.homeLine2;
+    if (textCapsuleInput) textCapsuleInput.maxLength = TEXT_LIMITS.capsule;
+    if (myPageTitle) myPageTitle.maxLength = TEXT_LIMITS.myPageTitle;
+    if (myPageHighlight) myPageHighlight.maxLength = TEXT_LIMITS.myPageTitle; // 高亮通常不应超过大标题
+    if (myPageSubtitle) myPageSubtitle.maxLength = TEXT_LIMITS.myPageSubtitle;
+}
+
 window.onload = async () => {
+    initInputLimits(); // 🌟 启动字数物理拦截！
     if ('fonts' in document) { try { await document.fonts.load('normal 44px "FZLanTingHei"'); await document.fonts.load('normal 38px "FZLanTingHei-R"'); await document.fonts.load('normal 44px "FZLanTingHei-H"'); } catch (e) { } }
     await initBUIcons(); await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
     const defaultBtn = document.querySelector('.bu-btn[data-bu="wangpan"]'); if (defaultBtn) defaultBtn.click();
