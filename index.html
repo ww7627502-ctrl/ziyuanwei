@@ -2,48 +2,76 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>百度配置中心</title>
+    <title>配置中心</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
+    <!-- 精确把黑色变为 #C8E1FF 且白色不变的矩阵滤镜 -->
+    <svg width="0" height="0" style="position:absolute; width:0; height:0;">
+        <filter id="lightBlueTint">
+            <feColorMatrix type="matrix" values="
+                0.2157 0 0 0 0.7843
+                0 0.1177 0 0 0.8823
+                0 0 0 0 1.0
+                0 0 0 1 0" />
+        </filter>
+    </svg>
+
     <header class="app-header">
         <div class="header-title">配置中心</div>
         <div class="header-actions">
-            <button id="exportBannerBtn" class="btn secondary-btn">单独导出首页 KV 切图</button>
-            <button id="exportFullBannerBtn" class="btn secondary-btn">导出全套 Banner (开发切图)</button>
-            <button id="exportBtn" class="btn primary-btn">导出当前预览集</button>
+            <button class="btn secondary-btn" id="exportBannerBtn">单独导出首页 KV 切图</button>
+            <button class="btn secondary-btn" id="exportFullBannerBtn">导出全套 Banner (开发切图)</button>
+            <button class="btn primary-btn" id="exportBtn">导出当前预览集</button>
         </div>
     </header>
 
     <div class="main-layout">
-        <div class="sidebar">
+        <!-- ================= 左侧控制栏 ================= -->
+        <aside class="sidebar">
             <div class="sidebar-section">
                 <div class="section-title">所属业务线</div>
-                <div class="bu-selector" id="buSelector">
-                    <button class="bu-btn active" data-bu="wangpan" title="百度网盘"><img src="assets/1baiduwangpan.svg" alt="百度网盘"></button>
-                    <button class="bu-btn" data-bu="yike" title="一刻相册"><img src="assets/2yikexiangce.svg" alt="一刻相册"></button>
-                    <button class="bu-btn" data-bu="chuhai" title="出海方向"><img src="assets/3chuhaifangxiang.svg" alt="出海方向"></button>
+                <div class="bu-selector">
+                    <button class="bu-btn active" data-bu="wangpan">
+                        <img src="assets/1baiduwangpan.svg" alt="网盘">
+                    </button>
+                    <button class="bu-btn" data-bu="yike">
+                        <img src="assets/2yikexiangce.svg" alt="一刻">
+                    </button>
+                    <button class="bu-btn" data-bu="chuhai">
+                        <img src="assets/3chuhaifangxiang.svg" alt="出海">
+                    </button>
                 </div>
             </div>
 
+            <div id="emptyWorkspace" class="hidden">
+                <p style="color: #999; font-size: 14px; text-align: center; margin-top: 40px;">当前业务线暂无配置项</p>
+            </div>
+
             <div id="wangpanWorkspace">
-                <hr class="divider">
                 <div class="sidebar-section">
                     <div class="section-title">页面切换 (资源位)</div>
                     <select id="resourceDropdown" class="custom-select">
                         <option value="home">首页预览</option>
-                        <option value="myPage">我的页面</option>
-                        <option value="feed">首页 Feed</option>
+                        <option value="myPage">我的页面预览</option>
+                        <option value="feed">Feed 流预览</option>
                     </select>
                 </div>
 
+                <div class="sidebar-section">
+                    <div class="section-title">基础全局配图 (首页&我的)</div>
+                    <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
+                        <!-- 这里默认展示例子图 -->
+                        <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png" alt="当前配图">
+                        <span class="upload-text">点击或将图片拖拽到此处替换</span>
+                        <input type="file" id="imageUpload" style="display:none;" accept="image/*">
+                    </label>
+                </div>
+
+                <hr class="divider">
+
                 <div id="homeControls" class="control-group active">
-                    <div class="sidebar-section">
-                        <div class="section-title">基础全局配图 (首页&我的)</div>
-                        <label class="upload-label"><input type="file" id="imageUpload" accept="image/*" style="display:none">点击上传全局配图</label>
-                    </div>
                     <div class="sidebar-section">
                         <div class="section-title">主题颜色</div>
                         <div class="color-selector">
@@ -56,14 +84,20 @@
                     </div>
                     <div class="sidebar-section">
                         <div class="section-title">文案修改</div>
-                        <div class="input-group"><span>第一行:</span><input type="text" id="textLine1" value="教练问是不是"></div>
-                        <div class="input-group"><span>第二行:</span><input type="text" id="textLine2" value="兑激素了"></div>
+                        <div class="input-group">
+                            <span>第一行 (最多6字):</span>
+                            <input type="text" id="textLine1" value="教练是不是" maxlength="6">
+                        </div>
+                        <div class="input-group">
+                            <span>第二行 (最多4字):</span>
+                            <input type="text" id="textLine2" value="兑激素了" maxlength="4">
+                        </div>
                     </div>
                 </div>
 
                 <div id="myPageControls" class="control-group">
                     <div class="sidebar-section">
-                        <div class="section-title">主题颜色</div>
+                        <div class="section-title">我的页面-主题颜色</div>
                         <div class="color-selector">
                             <label><input type="radio" name="myPageColor" value="blue" checked> 科技蓝 (默认)</label>
                             <label><input type="radio" name="myPageColor" value="green"> 生态绿</label>
@@ -71,89 +105,122 @@
                             <label><input type="radio" name="myPageColor" value="purple"> 魅惑紫</label>
                         </div>
                     </div>
-                    
-                    <!-- 🌟 完全按图一恢复你的原版文案，并直接用 maxlength 做硬性限制 -->
                     <div class="sidebar-section">
-                        <div class="section-title">胶囊文案</div>
+                        <div class="section-title">文案修改</div>
                         <div class="input-group">
-                            <input type="text" id="textCapsule" value="三个字" maxlength="4">
+                            <span>胶囊文字:</span>
+                            <input type="text" id="textCapsule" value="三个字" maxlength="3">
                         </div>
-                    </div>
-                    <div class="sidebar-section">
-                        <div class="section-title">主标题文案</div>
                         <div class="input-group">
-                            <input type="text" id="myPageTitle" value="主标题九个字" placeholder="限制 9 个字" maxlength="9">
+                            <span>大标题:</span>
+                            <input type="text" id="myPageTitle" value="标题九个字" maxlength="9">
                         </div>
-                    </div>
-                    <div class="sidebar-section">
-                        <div class="section-title">高亮词汇</div>
                         <div class="input-group">
-                            <input type="text" id="myPageHighlight" value="九个" placeholder="必须包含在主标题中">
+                            <span>高亮文字 (需包含在大标题内):</span>
+                            <input type="text" id="myPageHighlight" value="九个字" maxlength="9">
                         </div>
-                    </div>
-                    <div class="sidebar-section">
-                        <div class="section-title">副标题文案</div>
                         <div class="input-group">
-                            <input type="text" id="myPageSubtitle" value="副标题八个字" placeholder="限制 8 个字" maxlength="8">
+                            <span>副标题:</span>
+                            <input type="text" id="myPageSubtitle" value="副标题八个字" maxlength="8">
                         </div>
                     </div>
                 </div>
 
                 <div id="feedControls" class="control-group">
                     <div class="sidebar-section">
-                        <div class="section-title">Feed 专属配图</div>
-                        <label class="upload-label"><input type="file" id="feedImageUpload" accept="image/*" style="display:none">点击上传 Feed 图片</label>
-                        <p style="font-size:12px; color:#888; margin-top:4px;">* 仅影响首页 Feed 预览</p>
+                        <div class="section-title">Feed 流配图上传</div>
+                        <div class="upload-drop-zone">
+                            <label class="upload-label" for="feedImageUpload">
+                                点击上传 Feed 配图
+                                <input type="file" id="feedImageUpload" style="display:none;" accept="image/*">
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
+        </aside>
 
-            <div id="emptyWorkspace" style="display:none; text-align:center; padding: 60px 0; color: #999;">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3; margin-bottom:12px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                <p>该业务线暂无配置项</p><p style="font-size: 12px; margin-top: 8px;">敬请期待...</p>
-            </div>
-        </div>
-
-        <div class="preview-area">
+        <!-- ================= 右侧大预览区 ================= -->
+        <main class="preview-area">
+            <!-- 首页视图 -->
             <div id="homeView" class="view-section active">
                 <div class="preview-grid">
+                    <!-- 左侧：手机预览 -->
                     <div class="side-column">
-                        <div class="preview-card transparent-card"><div class="card-title">独立 Banner 切图预览 (完整版)</div><canvas id="lightBannerCanvas" class="banner-canvas zoomable-canvas"></canvas></div>
-                        <div class="preview-card transparent-card"><div class="card-title">夜间模式 Banner 预览</div><canvas id="darkBannerCanvas" class="banner-canvas zoomable-canvas"></canvas></div>
-                        <div class="preview-card transparent-card" style="margin-top: 20px;"><div class="card-title">当前上传的 KV 原图 (自动锐化处理)</div><canvas id="rawImageCanvas" class="raw-img-canvas zoomable-canvas"></canvas></div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title" style="text-align: center;">带壳预览 (日间模式)</div>
+                            <canvas id="lightCanvas" class="phone-canvas zoomable-canvas"></canvas>
+                        </div>
                     </div>
+
+                    <!-- 右侧：Banner + 提示 -->
                     <div class="main-column">
-                        <div class="preview-card"><div class="card-title" style="text-align: center;">带壳预览 (日间模式)</div><canvas id="lightCanvas" class="phone-canvas zoomable-canvas"></canvas></div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">独立 Banner 切图预览 (完整版)</div>
+                            <canvas id="lightBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
+                        </div>
+                        
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">夜间模式 Banner 预览</div>
+                            <canvas id="darkBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
+                        </div>
+
+                        <!-- 提示文字 -->
+                        <div class="preview-card transparent-card">
+                            <h3 class="card-title">注意事项</h3>
+                            <div class="notes-content">
+                                <p>1. 建议上传高质量的 KV 原图，系统会自动进行锐化和适配裁剪。</p>
+                                <p>2. 支持直接将电脑中的图片拖拽到左侧虚线框内进行极速替换。</p>
+                                <p>3. 导出前请确认右侧文字是否超出限制被截断。</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- 我的页面视图 -->
             <div id="myPageView" class="view-section">
                 <div class="preview-grid">
                     <div class="side-column">
-                        <div class="preview-card transparent-card"><div class="card-title">日间模式 Banner 预览</div><canvas id="myPageCanvas" class="banner-canvas zoomable-canvas"></canvas></div>
-                        <div class="preview-card transparent-card"><div class="card-title">夜间模式 Banner 预览</div><canvas id="myPageDarkCanvas" class="banner-canvas zoomable-canvas"></canvas></div>
-                        <div class="preview-card transparent-card" style="margin-top: 20px;"><div class="card-title">当前上传的配图原图</div><canvas id="myPageRawImageCanvas" class="raw-img-canvas zoomable-canvas"></canvas></div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title" style="text-align: center;">带壳预览</div>
+                            <canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas"></canvas>
+                        </div>
                     </div>
                     <div class="main-column">
-                        <div class="preview-card"><div class="card-title" style="text-align: center;">我的页面 - 完整带壳预览</div><canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas"></canvas></div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">日间模式 Banner</div>
+                            <canvas id="myPageCanvas" class="banner-canvas zoomable-canvas"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title">夜间模式 Banner</div>
+                            <canvas id="myPageDarkCanvas" class="banner-canvas zoomable-canvas"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Feed视图 -->
             <div id="feedView" class="view-section">
                 <div class="preview-grid">
-                    <div class="main-column" style="flex: 1; align-items: center;">
-                        <div class="preview-card"><div class="card-title" style="text-align: center;">首页 Feed (10出1) - 完整带壳预览</div><canvas id="feedCanvas" class="phone-canvas zoomable-canvas"></canvas></div>
+                    <div class="side-column">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title" style="text-align: center;">带壳预览</div>
+                            <canvas id="feedCanvas" class="phone-canvas zoomable-canvas"></canvas>
+                        </div>
                     </div>
+                    <div class="main-column"></div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <div id="zoomModal" class="modal">
-        <div class="modal-hint">点击任意区域关闭</div><span class="close-modal">&times;</span><img class="modal-content" id="zoomedImg">
+        <span class="close-modal">&times;</span>
+        <div class="modal-hint">点击任意处关闭</div>
+        <img class="modal-content" id="zoomedImg">
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

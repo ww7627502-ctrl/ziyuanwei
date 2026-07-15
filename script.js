@@ -1,12 +1,10 @@
-// 🌟 重新加回来的字数限制配置！想改几个字直接在这里改
 const TEXT_LIMITS = {
-    homeLine1: 6,       // 首页第一行最多6个字
-    homeLine2: 4,       // 首页第二行最多4个字
-    capsule: 3,         // 我的页面胶囊最多3个字
-    myPageTitle: 9,    // 我的页面大标题最多9个字
-    myPageSubtitle: 8  // 我的页面副标题最多8个字
+    homeLine1: 6,       
+    homeLine2: 4,       
+    capsule: 3,         
+    myPageTitle: 9,    
+    myPageSubtitle: 8  
 };
-
 const config = { 
     baseUI: 'assets/home-light.png', 
     baseUIDark: 'assets/home-dark.png', 
@@ -53,7 +51,6 @@ const config = {
 };
 const myPageColors = { blue: '#F0FBFF', green: '#F0FFF4', orange: '#FFFAF0', purple: '#F6F0FF' };
 const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B00', purple: '#4E1685' };
-
 const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
 const resourceDropdown = document.getElementById('resourceDropdown');
@@ -63,24 +60,20 @@ const feedView = document.getElementById('feedView');
 const homeControls = document.getElementById('homeControls');
 const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
-
 const lightCanvas = document.getElementById('lightCanvas');
 const lightCtx = lightCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas');
 const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas');
 const darkBannerCtx = darkBannerCanvas?.getContext('2d');
-
 const myPageFullCanvas = document.getElementById('myPageFullCanvas');
 const myPageFullCtx = myPageFullCanvas?.getContext('2d');
 const myPageCanvas = document.getElementById('myPageCanvas');
 const myPageCtx = myPageCanvas?.getContext('2d');
 const myPageDarkCanvas = document.getElementById('myPageDarkCanvas');
 const myPageDarkCtx = myPageDarkCanvas?.getContext('2d');
-
 const feedCanvas = document.getElementById('feedCanvas');
 const feedCtx = feedCanvas?.getContext('2d');
-
 const textLine1Input = document.getElementById('textLine1');
 const textLine2Input = document.getElementById('textLine2');
 const textCapsuleInput = document.getElementById('textCapsule');
@@ -92,12 +85,10 @@ const myPageColorRadios = document.getElementsByName('myPageColor');
 const zoomModal = document.getElementById('zoomModal');
 const zoomedImg = document.getElementById('zoomedImg');
 const feedImageUpload = document.getElementById('feedImageUpload');
-
 let userImgObj = null;
 let feedImgObj = null;
 let homeColor = 'blue';
 let myPageColor = 'blue';
-
 const globalImageCache = {};
 const globalSvgTextCache = {};
 
@@ -106,7 +97,6 @@ function setupHighQualityContext(ctx) {
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high'; 
 }
-
 function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     const iw = Math.floor(w), ih = Math.floor(h), ix = Math.floor(x), iy = Math.floor(y);
     if (!img || !img.width || iw < 3 || ih < 3) { if (img) ctx.drawImage(img, ix, iy, iw, ih); return; }
@@ -124,7 +114,6 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     ctx.drawImage(off, ix, iy, iw, ih);
 }
 
-// 彻底解决污染的本地资源加载引擎
 async function loadImage(src) {
     if (!src) return null; 
     if (globalImageCache[src]) return globalImageCache[src];
@@ -164,7 +153,6 @@ async function loadImage(src) {
         });
     }
 }
-
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url];
     if (!txt) { 
@@ -180,7 +168,6 @@ async function loadColoredArrow(url, color) {
     const dataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(modified)));
     return await loadImage(dataUri);
 }
-
 async function loadColoredSvgFill(url, color) {
     try {
         let txt = globalSvgTextCache[url];
@@ -201,24 +188,18 @@ async function loadColoredSvgFill(url, color) {
         return await loadImage(dataUri);
     } catch (e) { return null; }
 }
-
 function drawRoundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r); ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r); ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath(); }
-
 function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highlightColor) {
     const fixedX = Math.floor(x), fixedY = Math.floor(y);
     if (!highlightText || !fullText.includes(highlightText)) { ctx.fillStyle = baseColor; ctx.fillText(fullText, fixedX, fixedY); return; }
     const parts = fullText.split(highlightText); let currentX = fixedX;
     for (let i = 0; i < parts.length; i++) { ctx.fillStyle = baseColor; ctx.fillText(parts[i], currentX, fixedY); currentX += Math.floor(ctx.measureText(parts[i]).width); if (i < parts.length - 1) { ctx.fillStyle = highlightColor; ctx.fillText(highlightText, currentX, fixedY); currentX += Math.floor(ctx.measureText(highlightText).width); } }
 }
-
 async function renderHomeCanvas() {
     if (!lightCanvas) return; const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg; await drawMode(false, lightCanvas, lightCtx, kvImg);
     if (lightBannerCanvas && lightBannerCtx) { const lbCanvas = await createFullBannerCanvas(false); lightBannerCanvas.width = lbCanvas.width; lightBannerCanvas.height = lbCanvas.height; setupHighQualityContext(lightBannerCtx); lightBannerCtx.clearRect(0, 0, lightBannerCanvas.width, lightBannerCanvas.height); lightBannerCtx.drawImage(lbCanvas, 0, 0); }
     if (darkBannerCanvas && darkBannerCtx) { const dbCanvas = await createFullBannerCanvas(true); darkBannerCanvas.width = dbCanvas.width; darkBannerCanvas.height = dbCanvas.height; setupHighQualityContext(darkBannerCtx); darkBannerCtx.clearRect(0, 0, darkBannerCanvas.width, darkBannerCanvas.height); darkBannerCtx.drawImage(dbCanvas, 0, 0); }
-    const rawCanvas = document.getElementById('rawImageCanvas');
-    if (rawCanvas && kvImg && kvImg.width) { const rawCtx = rawCanvas.getContext('2d'), scale = Math.min(1, 400 / kvImg.height); rawCanvas.width = Math.floor(kvImg.width * scale); rawCanvas.height = Math.floor(kvImg.height * scale); setupHighQualityContext(rawCtx); drawSharpenedImage(rawCtx, kvImg, 0, 0, rawCanvas.width, rawCanvas.height, 0.3); }
 }
-
 async function drawMode(isDark, canvas, ctx, kvImg) {
     const bgUrl = isDark ? config.baseUIDark : config.baseUI, bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
     const baseUIImg = await loadImage(bgUrl), bannerBgImg = bannerUrl ? await loadImage(bannerUrl) : null, arrowImg = await loadColoredArrow(config.arrowSvg, arrowColor);
@@ -226,16 +207,13 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     if (baseUIImg.width) ctx.drawImage(baseUIImg, 0, 0, canvas.width, canvas.height); if (bannerBgImg && bannerBgImg.width) ctx.drawImage(bannerBgImg, Math.floor(config.bannerX), Math.floor(config.bannerY), bannerBgImg.width, bannerBgImg.height);
     if (kvImg && kvImg.width) { ctx.save(); ctx.beginPath(); ctx.rect(Math.floor(config.heroX), Math.floor(config.heroY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); ctx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(ctx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); ctx.restore(); }
     
-    // 🌟 画图阶段：强制截取字数
     const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1);
     const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
-    
     ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; 
     ctx.fillStyle = textColor1; ctx.fillText(line1Txt, Math.floor(306), Math.floor(166)); 
     ctx.fillStyle = arrowColor; ctx.fillText(line2Txt, Math.floor(306), Math.floor(217));
     if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + ctx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + 18 - arrowImg.height / 2 + 2); ctx.drawImage(arrowImg, arrowX, arrowY); }
 }
-
 async function createFullBannerCanvas(isDark) {
     const bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
     const bannerBgImg = bannerUrl ? await loadImage(bannerUrl) : null, heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg, arrowImg = await loadColoredArrow(config.arrowSvg, arrowColor);
@@ -244,17 +222,14 @@ async function createFullBannerCanvas(isDark) {
     const offsetX = Math.floor(-left), offsetY = Math.floor(-top); if (bannerBgImg && bannerBgImg.width) fullCtx.drawImage(bannerBgImg, Math.floor(config.bannerX + offsetX), Math.floor(config.bannerY + offsetY));
     if (kvImg && kvImg.width) { fullCtx.save(); fullCtx.beginPath(); fullCtx.rect(Math.floor(config.heroX + offsetX), Math.floor(config.heroY + offsetY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); fullCtx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + offsetX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + offsetY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(fullCtx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); fullCtx.restore(); }
     
-    // 🌟 画图阶段：强制截取字数
     const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1);
     const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
-
     fullCtx.textAlign = 'left'; fullCtx.textBaseline = 'top'; fullCtx.font = 'bold 36px "PingFangSC-Medium", "PingFang SC", sans-serif'; 
     fullCtx.fillStyle = textColor1; fullCtx.fillText(line1Txt, Math.floor(306 + offsetX), Math.floor(166 + offsetY)); 
     fullCtx.fillStyle = arrowColor; fullCtx.fillText(line2Txt, Math.floor(306 + offsetX), Math.floor(217 + offsetY));
     if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2); fullCtx.drawImage(arrowImg, arrowX, arrowY); }
     return fullCanvas;
 }
-
 async function renderMyPage() { await renderMyPageBanner(); await renderMyPageFullCanvas(); }
 async function renderMyPageBanner() {
     const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg;
@@ -264,12 +239,11 @@ async function renderMyPageBanner() {
             canvas.width = banner2Img.width; canvas.height = banner2Img.height; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(banner2Img, 0, 0);
             if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
             
-            // 🌟 画图阶段：强制截取字数
             const capsuleTxt = (textCapsuleInput?.value || '').slice(0, TEXT_LIMITS.capsule);
             const titleTxt = (myPageTitle?.value || '').slice(0, TEXT_LIMITS.myPageTitle);
             const highlightTxt = myPageHighlight?.value || ''; 
             const subtitleTxt = (myPageSubtitle?.value || '').slice(0, TEXT_LIMITS.myPageSubtitle);
-
+            
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
             ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'normal 37px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
             ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 43px "FZLanTingHei"'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
@@ -277,14 +251,11 @@ async function renderMyPageBanner() {
         }
     };
     await drawMyPageMode(myPageCanvas, myPageCtx, false); await drawMyPageMode(myPageDarkCanvas, myPageDarkCtx, true);
-    const myPageRawCanvas = document.getElementById('myPageRawImageCanvas'); if (myPageRawCanvas && kvImg && kvImg.width) { const rawCtx = myPageRawCanvas.getContext('2d'), scale = Math.min(1, 400 / kvImg.height); myPageRawCanvas.width = Math.floor(kvImg.width * scale); myPageRawCanvas.height = Math.floor(kvImg.height * scale); setupHighQualityContext(rawCtx); drawSharpenedImage(rawCtx, kvImg, 0, 0, myPageRawCanvas.width, myPageRawCanvas.height, 0.3); }
 }
-
 async function renderMyPageFullCanvas() {
     if (!myPageFullCanvas || !myPageFullCtx) return;
     try { const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); } } catch (e) { }
 }
-
 async function renderFeedCanvas() {
     if (!feedCanvas || !feedCtx) return;
     try {
@@ -293,22 +264,23 @@ async function renderFeedCanvas() {
     } catch (e) { }
 }
 
-async function initBUIcons() {
-    const buBtns = document.querySelectorAll('.bu-btn');
-    for (let btn of buBtns) {
-        const img = btn.querySelector('img'); if (!img) continue; const src = img.getAttribute('src'); if (!src.endsWith('.svg')) continue;
-        try { const res = await fetch(src); if (!res.ok) continue; const svgText = await res.text(), activeData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText), inactiveData = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText.replace(/#(000000|000|1a1a1a|1A1A1A|141414|111111|222222|333333)/gi, '#C8E1FF').replace(/fill="black"/gi, 'fill="#C8E1FF"')); img.dataset.activeSrc = activeData; img.dataset.inactiveSrc = inactiveData; if (btn.classList.contains('active')) img.src = activeData; else img.src = inactiveData; } catch (e) { }
-    }
-}
-
 const buBtns = document.querySelectorAll('.bu-btn');
 buBtns.forEach(btn => {
     btn.addEventListener('click', async (e) => {
-        buBtns.forEach(b => { b.classList.remove('active'); const img = b.querySelector('img'); if (img && img.dataset.inactiveSrc) img.src = img.dataset.inactiveSrc; });
-        const currentBtn = e.currentTarget; currentBtn.classList.add('active'); const activeImg = currentBtn.querySelector('img'); if (activeImg && activeImg.dataset.activeSrc) activeImg.src = activeImg.dataset.activeSrc;
+        buBtns.forEach(b => { b.classList.remove('active'); });
+        const currentBtn = e.currentTarget; currentBtn.classList.add('active'); 
         const targetBU = currentBtn.dataset.bu;
-        if (targetBU === 'wangpan') { document.documentElement.style.setProperty('--primary-color', '#258AFF'); if (wangpanWorkspace) wangpanWorkspace.style.display = 'block'; if (emptyWorkspace) emptyWorkspace.style.display = 'none'; if (resourceDropdown) resourceDropdown.dispatchEvent(new Event('change')); }
-        else { document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); if (wangpanWorkspace) wangpanWorkspace.style.display = 'none'; if (emptyWorkspace) emptyWorkspace.style.display = 'block'; [homeView, myPageView, feedView].forEach(view => view?.classList.remove('active')); }
+        if (targetBU === 'wangpan') { 
+            document.documentElement.style.setProperty('--primary-color', '#258AFF'); 
+            if (wangpanWorkspace) wangpanWorkspace.classList.remove('hidden'); 
+            if (emptyWorkspace) emptyWorkspace.classList.add('hidden'); 
+            if (resourceDropdown) resourceDropdown.dispatchEvent(new Event('change')); 
+        } else { 
+            document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); 
+            if (wangpanWorkspace) wangpanWorkspace.classList.add('hidden'); 
+            if (emptyWorkspace) emptyWorkspace.classList.remove('hidden'); 
+            [homeView, myPageView, feedView].forEach(view => view?.classList.remove('active')); 
+        }
     });
 });
 
@@ -324,10 +296,8 @@ zoomModal?.addEventListener('click', closeZoomModal); document.querySelector('.c
 
 homeColorRadios.forEach(r => r.addEventListener('change', async e => { homeColor = e.target.value; await renderHomeCanvas(); }));
 textLine1Input?.addEventListener('input', renderHomeCanvas); textLine2Input?.addEventListener('input', renderHomeCanvas);
-document.getElementById('imageUpload')?.addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = async ev => { userImgObj = await loadImage(ev.target.result); await renderHomeCanvas(); await renderMyPage(); }; r.readAsDataURL(f); });
 feedImageUpload?.addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = async ev => { feedImgObj = await loadImage(ev.target.result); await renderFeedCanvas(); }; r.readAsDataURL(f); });
 myPageColorRadios.forEach(r => r.addEventListener('change', async e => { myPageColor = e.target.value; await renderMyPage(); }));
-
 textCapsuleInput?.addEventListener('input', renderMyPage); 
 myPageTitle?.addEventListener('input', renderMyPage); 
 myPageSubtitle?.addEventListener('input', renderMyPage); 
@@ -370,19 +340,56 @@ document.getElementById('exportFullBannerBtn')?.addEventListener('click', async 
     } catch (e) { alert("【系统拦截报错】\n\n原因: " + e.message + "\n\n建议: 按键盘 F12 打开开发者工具，勾选 Network(网络) 下的 'Disable cache' (停用缓存) 后按 F5 刷新页面再试。"); }
 });
 
-// 🌟 初始化时强制给输入框加上物理字数限制，连输入都输不进去
-function initInputLimits() {
-    if (textLine1Input) textLine1Input.maxLength = TEXT_LIMITS.homeLine1;
-    if (textLine2Input) textLine2Input.maxLength = TEXT_LIMITS.homeLine2;
-    if (textCapsuleInput) textCapsuleInput.maxLength = TEXT_LIMITS.capsule;
-    if (myPageTitle) myPageTitle.maxLength = TEXT_LIMITS.myPageTitle;
-    if (myPageHighlight) myPageHighlight.maxLength = TEXT_LIMITS.myPageTitle; // 高亮通常不应超过大标题
-    if (myPageSubtitle) myPageSubtitle.maxLength = TEXT_LIMITS.myPageSubtitle;
+window.onload = async () => {
+    if ('fonts' in document) { 
+        try { 
+            await document.fonts.load('normal 44px "FZLanTingHei"'); 
+            await document.fonts.load('normal 38px "FZLanTingHei-R"'); 
+            await document.fonts.load('normal 44px "FZLanTingHei-H"'); 
+        } catch (e) { } 
+    }
+    await renderHomeCanvas(); 
+    await renderMyPage(); 
+    await renderFeedCanvas();
+    const defaultBtn = document.querySelector('.bu-btn[data-bu="wangpan"]'); 
+    if (defaultBtn) defaultBtn.click();
+};
+
+const dropZone = document.getElementById('uploadDropZone');
+const fileInput = document.getElementById('imageUpload');
+const previewImg = document.getElementById('uploadPreviewImg');
+
+function handleFileUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async ev => { 
+        const src = ev.target.result;
+        userImgObj = await loadImage(src); 
+        if (previewImg) previewImg.src = src;
+        await renderHomeCanvas(); 
+        await renderMyPage(); 
+    }; 
+    reader.readAsDataURL(file);
 }
 
-window.onload = async () => {
-    initInputLimits(); // 🌟 启动字数物理拦截！
-    if ('fonts' in document) { try { await document.fonts.load('normal 44px "FZLanTingHei"'); await document.fonts.load('normal 38px "FZLanTingHei-R"'); await document.fonts.load('normal 44px "FZLanTingHei-H"'); } catch (e) { } }
-    await initBUIcons(); await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
-    const defaultBtn = document.querySelector('.bu-btn[data-bu="wangpan"]'); if (defaultBtn) defaultBtn.click();
-};
+if (fileInput) {
+    fileInput.addEventListener('change', e => handleFileUpload(e.target.files[0]));
+}
+
+if (dropZone) {
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileUpload(e.dataTransfer.files[0]);
+        }
+    });
+}
