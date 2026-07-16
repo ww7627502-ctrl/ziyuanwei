@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>配置中心</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
+
 <body>
-    <!-- 精确把黑色变为 #C8E1FF 且白色不变的矩阵滤镜 -->
     <svg width="0" height="0" style="position:absolute; width:0; height:0;">
         <filter id="lightBlueTint">
             <feColorMatrix type="matrix" values="
@@ -21,27 +22,20 @@
     <header class="app-header">
         <div class="header-title">配置中心</div>
         <div class="header-actions">
-            <button class="btn secondary-btn" id="exportBannerBtn">单独导出首页 KV 切图</button>
-            <button class="btn secondary-btn" id="exportFullBannerBtn">导出全套 Banner (开发切图)</button>
-            <button class="btn primary-btn" id="exportBtn">导出当前预览集</button>
+            <button class="btn primary-btn" id="openExportModalBtn">选择并导出资源...</button>
         </div>
     </header>
 
     <div class="main-layout">
-        <!-- ================= 左侧控制栏 ================= -->
         <aside class="sidebar">
+
             <div class="sidebar-section">
-                <div class="section-title">所属业务线</div>
+                <div class="section-title"><span class="step-label">1</span>所属业务线</div>
                 <div class="bu-selector">
-                    <button class="bu-btn active" data-bu="wangpan">
-                        <img src="assets/1baiduwangpan.svg" alt="网盘">
-                    </button>
-                    <button class="bu-btn" data-bu="yike">
-                        <img src="assets/2yikexiangce.svg" alt="一刻">
-                    </button>
-                    <button class="bu-btn" data-bu="chuhai">
-                        <img src="assets/3chuhaifangxiang.svg" alt="出海">
-                    </button>
+                    <button class="bu-btn active" data-bu="wangpan"><img src="assets/1baiduwangpan.svg"
+                            alt="网盘"></button>
+                    <button class="bu-btn" data-bu="yike"><img src="assets/2yikexiangce.svg" alt="一刻"></button>
+                    <button class="bu-btn" data-bu="chuhai"><img src="assets/3chuhaifangxiang.svg" alt="出海"></button>
                 </div>
             </div>
 
@@ -51,134 +45,185 @@
 
             <div id="wangpanWorkspace">
                 <div class="sidebar-section">
-                    <div class="section-title">页面切换 (资源位)</div>
-                    <select id="resourceDropdown" class="custom-select">
-                        <option value="home">首页预览</option>
-                        <option value="myPage">我的页面预览</option>
-                        <option value="feed">Feed 流预览</option>
-                    </select>
+                    <div class="section-title"><span class="step-label">2</span>所属端 (Terminal)</div>
+                    <div class="terminal-tabs">
+                        <button class="terminal-btn active" data-terminal="NA">NA端</button>
+                        <button class="terminal-btn" data-terminal="PC">PC端</button>
+                        <button class="terminal-btn" data-terminal="Web">Web端</button>
+                        <button class="terminal-btn" data-terminal="Wap">Wap端</button>
+                        <button class="terminal-btn" data-terminal="Mac">Mac端</button>
+                        <button class="terminal-btn" data-terminal="ipd">ipd端</button>
+                    </div>
                 </div>
 
                 <div class="sidebar-section">
-                    <div class="section-title">基础全局配图 (首页&我的)</div>
-                    <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
-                        <!-- 这里默认展示例子图 -->
-                        <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png" alt="当前配图">
-                        <span class="upload-text">点击或将图片拖拽到此处替换</span>
-                        <input type="file" id="imageUpload" style="display:none;" accept="image/*">
-                    </label>
+                    <div class="section-title"><span class="step-label">3</span>页面配置 (资源位)</div>
+                    <select id="resourceDropdown" class="custom-select">
+                    </select>
                 </div>
 
                 <hr class="divider">
 
-                <div id="homeControls" class="control-group active">
-                    <div class="sidebar-section">
-                        <div class="section-title">主题颜色</div>
-                        <div class="color-selector">
-                            <label><input type="radio" name="homeColor" value="blue" checked> 科技蓝 (默认)</label>
-                            <label><input type="radio" name="homeColor" value="green"> 生态绿</label>
-                            <label><input type="radio" name="homeColor" value="orange"> 活力橙</label>
-                            <label><input type="radio" name="homeColor" value="red"> 热情红</label>
-                            <label><input type="radio" name="homeColor" value="purple"> 魅惑紫</label>
-                        </div>
+                <div id="dynamicControlsArea">
+                    <div id="baseGlobalPicArea" class="sidebar-section">
+                        <div class="section-title">基础配图替换 (首页&我的)</div>
+                        <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
+                            <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png"
+                                alt="当前配图">
+                            <span class="upload-text">点击或将图片拖拽到此处替换</span>
+                            <input type="file" id="imageUpload" style="display:none;" accept="image/*">
+                        </label>
                     </div>
-                    <div class="sidebar-section">
-                        <div class="section-title">文案修改</div>
-                        <div class="input-group">
-                            <span>第一行 (最多6字):</span>
-                            <input type="text" id="textLine1" value="教练是不是" maxlength="6">
-                        </div>
-                        <div class="input-group">
-                            <span>第二行 (最多4字):</span>
-                            <input type="text" id="textLine2" value="兑激素了" maxlength="4">
-                        </div>
-                    </div>
-                </div>
 
-                <div id="myPageControls" class="control-group">
-                    <div class="sidebar-section">
-                        <div class="section-title">我的页面-主题颜色</div>
-                        <div class="color-selector">
-                            <label><input type="radio" name="myPageColor" value="blue" checked> 科技蓝 (默认)</label>
-                            <label><input type="radio" name="myPageColor" value="green"> 生态绿</label>
-                            <label><input type="radio" name="myPageColor" value="orange"> 活力橙</label>
-                            <label><input type="radio" name="myPageColor" value="purple"> 魅惑紫</label>
+                    <div id="homeControls" class="control-group">
+                        <div class="sidebar-section">
+                            <div class="section-title">主题颜色</div>
+                            <div class="color-selector">
+                                <label><input type="radio" name="homeColor" value="blue" checked> 科技蓝 (默认)</label>
+                                <label><input type="radio" name="homeColor" value="green"> 生态绿</label>
+                                <label><input type="radio" name="homeColor" value="orange"> 活力橙</label>
+                                <label><input type="radio" name="homeColor" value="red"> 热情红</label>
+                                <label><input type="radio" name="homeColor" value="purple"> 魅惑紫</label>
+                            </div>
+                        </div>
+                        <div class="sidebar-section">
+                            <div class="section-title">文案修改</div>
+                            <div class="input-group">
+                                <span>第一行 (最多6字):</span>
+                                <input type="text" id="textLine1" value="教练问是不是" maxlength="6">
+                            </div>
+                            <div class="input-group">
+                                <span>第二行 (最多4字):</span>
+                                <input type="text" id="textLine2" value="兑激素了" maxlength="4">
+                            </div>
                         </div>
                     </div>
-                    <div class="sidebar-section">
-                        <div class="section-title">文案修改</div>
-                        <div class="input-group">
-                            <span>胶囊文字:</span>
-                            <input type="text" id="textCapsule" value="三个字" maxlength="3">
-                        </div>
-                        <div class="input-group">
-                            <span>大标题:</span>
-                            <input type="text" id="myPageTitle" value="标题九个字" maxlength="9">
-                        </div>
-                        <div class="input-group">
-                            <span>高亮文字 (需包含在大标题内):</span>
-                            <input type="text" id="myPageHighlight" value="九个字" maxlength="9">
-                        </div>
-                        <div class="input-group">
-                            <span>副标题:</span>
-                            <input type="text" id="myPageSubtitle" value="副标题八个字" maxlength="8">
-                        </div>
-                    </div>
-                </div>
 
-                <div id="feedControls" class="control-group">
-                    <div class="sidebar-section">
-                        <div class="section-title">Feed 流配图上传</div>
-                        <div class="upload-drop-zone">
-                            <label class="upload-label" for="feedImageUpload">
-                                点击上传 Feed 配图
-                                <input type="file" id="feedImageUpload" style="display:none;" accept="image/*">
-                            </label>
+                    <div id="myPageControls" class="control-group">
+                        <div class="sidebar-section">
+                            <div class="section-title">我的页面-主题颜色</div>
+                            <div class="color-selector">
+                                <label><input type="radio" name="myPageColor" value="blue" checked> 科技蓝 (默认)</label>
+                                <label><input type="radio" name="myPageColor" value="green"> 生态绿</label>
+                                <label><input type="radio" name="myPageColor" value="orange"> 活力橙</label>
+                                <label><input type="radio" name="myPageColor" value="purple"> 魅惑紫</label>
+                            </div>
                         </div>
+                        <div class="sidebar-section">
+                            <div class="section-title">文案修改</div>
+                            <div class="input-group">
+                                <span>胶囊文字:</span>
+                                <input type="text" id="textCapsule" value="三个字" maxlength="3">
+                            </div>
+                            <div class="input-group">
+                                <span>大标题(最多9字):</span>
+                                <input type="text" id="myPageTitle" value="主标题九个字" maxlength="9">
+                            </div>
+                            <div class="input-group">
+                                <span>高亮文字 (需包含在大标题内):</span>
+                                <input type="text" id="myPageHighlight" value="九个" maxlength="9">
+                            </div>
+                            <div class="input-group">
+                                <span>副标题(最多8字):</span>
+                                <input type="text" id="myPageSubtitle" value="副标题八个字" maxlength="8">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="feedControls" class="control-group">
+                        <div class="sidebar-section">
+                            <div class="section-title">Feed 流配图上传</div>
+                            <div class="upload-drop-zone">
+                                <label class="upload-label" for="feedImageUpload">
+                                    点击上传 Feed 配图
+                                    <input type="file" id="feedImageUpload" style="display:none;" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="developingPrompt" class="developing-prompt hidden">
+                        <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
+                        <div>该配置面板正在开发中，敬请期待...</div>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- ================= 右侧大预览区 ================= -->
         <main class="preview-area">
-            <!-- 首页视图 -->
+
+            <!-- 默认空状态 -->
+            <div id="viewDevelopingPrompt" class="view-section"
+                style="height: 100%; text-align: center; padding-top: 15vh; color: #888;">
+                <img src="assets/hero-banner.png"
+                    style="width: 200px; opacity: 0.2; filter: grayscale(1); margin-bottom: 20px; display: inline-block;">
+                <h2 style="font-weight: normal; font-size: 20px;">当前页面的视觉预览正在接入中...</h2>
+            </div>
+
+            <!-- ==================== 1. 13.14首页顶部沉浸banner (原开屏) ==================== -->
             <div id="homeView" class="view-section active">
                 <div class="preview-grid">
-                    <!-- 左侧：手机预览 -->
                     <div class="side-column">
                         <div class="preview-card transparent-card">
                             <div class="card-title" style="text-align: center;">带壳预览 (日间模式)</div>
                             <canvas id="lightCanvas" class="phone-canvas zoomable-canvas"></canvas>
                         </div>
                     </div>
-
-                    <!-- 右侧：Banner + 提示 -->
                     <div class="main-column">
                         <div class="preview-card transparent-card">
                             <div class="card-title">独立 Banner 切图预览 (完整版)</div>
                             <canvas id="lightBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
                         </div>
-                        
                         <div class="preview-card transparent-card">
                             <div class="card-title">夜间模式 Banner 预览</div>
                             <canvas id="darkBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
                         </div>
 
-                        <!-- 提示文字 -->
+                        <!-- 🌟 新增：13.14首页顶部沉浸banner 基础规范 -->
                         <div class="preview-card transparent-card">
-                            <h3 class="card-title">注意事项</h3>
-                            <div class="notes-content">
-                                <p>1. 建议上传高质量的 KV 原图，系统会自动进行锐化和适配裁剪。</p>
-                                <p>2. 支持直接将电脑中的图片拖拽到左侧虚线框内进行极速替换。</p>
-                                <p>3. 导出前请确认右侧文字是否超出限制被截断。</p>
+                            <div class="spec-title-wrapper">
+                                <div class="spec-title-icon"></div>基础规范
+                            </div>
+                            <div class="spec-table">
+                                <div class="spec-row">
+                                    <div class="spec-label">图标尺寸：</div>
+                                    <div class="spec-val">1170*540 px &nbsp;&nbsp; 420*282 px</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">主标题：</div>
+                                    <div class="spec-val">主标题版权字体，字号：60号-90号内；</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">副标题：</div>
+                                    <div class="spec-val">副标题版权字体，字号：30号-45号内；</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">上线位置：</div>
+                                    <div class="spec-val">13.14版本首页top banner</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">格式：</div>
+                                    <div class="spec-val">jpeg</div>
+                                </div>
+                                <div class="spec-row note-row">
+                                    <div class="note-badge">注意1:</div>
+                                    <div class="note-text">仅第一帧会出现下拉banner，切需要在商业化走申请流程</div>
+                                </div>
+
+                                <div class="focus-box">
+                                    <div class="spec-row note-row">
+                                        <div class="note-badge">注意2:</div>
+                                        <div class="note-text">若申请首页弹窗资源，需同步放弃首页大 banner 资源</div>
+                                    </div>
+                                    <div class="focus-title">重点关注</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 我的页面视图 -->
+            <!-- ==================== 2. 我的页面 banner ==================== -->
             <div id="myPageView" class="view-section">
                 <div class="preview-grid">
                     <div class="side-column">
@@ -196,11 +241,54 @@
                             <div class="card-title">夜间模式 Banner</div>
                             <canvas id="myPageDarkCanvas" class="banner-canvas zoomable-canvas"></canvas>
                         </div>
+                        <div class="preview-card transparent-card">
+                            <div class="spec-title-wrapper">
+                                <div class="spec-title-icon"></div>基础规范
+                            </div>
+                            <div class="spec-table">
+                                <div class="spec-row">
+                                    <div class="spec-label"><i class="color-box-blue"></i> 输出尺寸：</div>
+                                    <div class="spec-val">1182*225px</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label"><i class="color-box-pink"></i> 安全区：</div>
+                                    <div class="spec-val">宽度必须314px，高度最高178px（主视觉尽量为单个物体或图形）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">主标题：</div>
+                                    <div class="spec-val">方正兰亭中黑、44px、不超过9个字符（不可改）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">副标题：</div>
+                                    <div class="spec-val">方正兰亭黑、38px、不超过10个字符（不可改）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">按钮字：</div>
+                                    <div class="spec-val">方正兰亭中黑、38px、不超过3个字符（不可改）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">上线位置：</div>
+                                    <div class="spec-val">百度网盘我的首页banner/免费模式banner</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">格式：</div>
+                                    <div class="spec-val">jpeg格式文件&lt;300k</div>
+                                </div>
+                                <div class="spec-row note-row" style="margin-top: 8px;">
+                                    <div class="note-badge">注意1:</div>
+                                    <div class="note-text">日间模式可在模板配色中选择，夜间模式颜色不可更改</div>
+                                </div>
+                                <div class="spec-row note-row">
+                                    <div class="note-badge">注意2:</div>
+                                    <div class="note-text">交付时必需输出日间和夜间两个物料</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Feed视图 -->
+            <!-- ==================== 3. 首页 feed 10出1 ==================== -->
             <div id="feedView" class="view-section">
                 <div class="preview-grid">
                     <div class="side-column">
@@ -209,7 +297,48 @@
                             <canvas id="feedCanvas" class="phone-canvas zoomable-canvas"></canvas>
                         </div>
                     </div>
-                    <div class="main-column"></div>
+                    <div class="main-column">
+                        <!-- 🌟 新增：首页 feed 基础规范 -->
+                        <div class="preview-card transparent-card">
+                            <div class="spec-title-wrapper">
+                                <div class="spec-title-icon"></div>基础规范
+                            </div>
+                            <div class="spec-table">
+                                <div class="spec-row">
+                                    <div class="spec-label"><i class="color-box-blue"></i> 输出尺寸：</div>
+                                    <div class="spec-val">561*750 px</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label"><i class="color-box-pink"></i> 安全区：</div>
+                                    <div class="spec-val">360*360 px</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">主标题：</div>
+                                    <div class="spec-val">方正兰亭特黑 53号（不可改）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">副标题：</div>
+                                    <div class="spec-val">方正兰亭黑 42号（不可改）</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">上线位置：</div>
+                                    <div class="spec-val">百度网盘首页feed</div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="spec-label">格式：</div>
+                                    <div class="spec-val">jpeg格式（体积&lt;500k）</div>
+                                </div>
+                                <div class="spec-row note-row" style="margin-top: 8px;">
+                                    <div class="note-badge">注意1:</div>
+                                    <div class="note-text">标题：字体、字号、不可更改，但颜色可随背景色更改</div>
+                                </div>
+                                <div class="spec-row note-row">
+                                    <div class="note-badge">注意2:</div>
+                                    <div class="note-text">按钮颜色、字体、字号全部不可改</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -221,6 +350,43 @@
         <img class="modal-content" id="zoomedImg">
     </div>
 
+    <div id="exportModal" class="modal">
+        <div class="export-modal-panel">
+            <div class="export-modal-header">选择需要导出的资源</div>
+            <div class="export-modal-body">
+                <div class="export-group">
+                    <div class="export-group-title">交付切图 (Banner & KV)</div>
+                    <label><input type="checkbox" id="chkHomeKV" checked> <span
+                            style="color:#E63F00; font-weight:800;">【SS级】</span>首页 - 独立 KV (420x282)</label>
+                    <label><input type="checkbox" id="chkHomeBannerLight" checked> <span
+                            style="color:#E63F00; font-weight:800;">【SS级】</span>首页 - 完整 Banner (日间)</label>
+                    <label><input type="checkbox" id="chkHomeBannerDark" checked> <span
+                            style="color:#E63F00; font-weight:800;">【SS级】</span>首页 - 完整 Banner (夜间)</label>
+                    <label><input type="checkbox" id="chkMyPageBannerLight" checked> <span
+                            style="color:#F59A23; font-weight:800;">【S级】</span>我的页面 - 完整 Banner (日间)</label>
+                    <label><input type="checkbox" id="chkMyPageBannerDark" checked> <span
+                            style="color:#F59A23; font-weight:800;">【S级】</span>我的页面 - 完整 Banner (夜间)</label>
+                </div>
+
+                <div class="export-group">
+                    <div class="export-group-title">带壳预览图 (视觉展示)</div>
+                    <label><input type="checkbox" id="chkHomePhone" checked> <span
+                            style="color:#E63F00; font-weight:800;">【SS级】</span>首页 - 手机带壳预览</label>
+                    <label><input type="checkbox" id="chkFeedPhone" checked> <span
+                            style="color:#E63F00; font-weight:800;">【SS级】</span>Feed流 - 手机带壳预览</label>
+                    <label><input type="checkbox" id="chkMyPagePhone" checked> <span
+                            style="color:#F59A23; font-weight:800;">【S级】</span>我的页面 - 手机带壳预览</label>
+                </div>
+
+            </div>
+            <div class="export-modal-footer">
+                <button class="btn secondary-btn" id="cancelExportBtn">取消</button>
+                <button class="btn primary-btn" id="confirmExportBtn">确认打包下载</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
