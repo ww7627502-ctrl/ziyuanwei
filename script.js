@@ -1,15 +1,12 @@
 // ==================== 1. 基于截图还原的目录结构数据 ====================
 const PAGE_DIRECTORY = {
     'NA': [
-        // 🌟 修正：解绑开屏，将其恢复为待接入状态
         { value: 'dev_0', text: 'A1.1.1 NA - 开屏' },
         { value: 'dev_1', text: 'A1.1.1.1 NA - 品牌开屏模板' },
         { value: 'dev_2', text: 'A1.1.2 NA - 首页弹窗' },
-        // 🌟 修正：将原先做好的首页逻辑(na_home)正确绑定给“13.14首页顶部沉浸banner”
         { value: 'na_home', text: '【SS级】A1.1.3 NA - 13.14首页顶部沉浸banner' },
         { value: 'na_feed', text: '【SS级】A1.1.4 NA - 首页feed 10出1' },
         { value: 'na_mypage', text: '【S级】A1.1.5 NA - 我的页面banner' },
-
         { value: 'dev_4', text: 'A1.1.6 NA - 首页角标+飘条' },
         { value: 'dev_5', text: 'A1.1.7 NA - 我的弹窗' },
         { value: 'dev_6', text: 'A1.1.9 NA - 会员频道下拉2楼' },
@@ -55,13 +52,22 @@ const PAGE_DIRECTORY = {
     ]
 };
 
-// 预定义原有的逻辑常量
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 3, myPageTitle: 9, myPageSubtitle: 8 };
-const config = { baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png', myPageBg: 'assets/my-page.jpg', myPageX: -6, myPageY: 1621, banner2Svg: 'assets/banner2.svg', bannerX: 90, bannerY: 120, feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336, colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' }, colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' }, colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' }, nightTextColor1: '#FFFFFF', nightTextColor2: '#B7B7B7', arrowSvg: 'assets/freccia.svg', arrowPadding: 8, heroImage: 'assets/hero-banner.png', heroX: 48, heroY: 121, heroWidth: 232.34, heroHeight: 154.89 };
+const config = {
+    baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
+    myPageBg: 'assets/my-page.jpg', myPageX: -6, myPageY: 1621,
+    banner2Svg: 'assets/banner2.svg', bannerX: 90, bannerY: 120,
+    feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
+    feedExampleImage: 'assets/feed-image.png',
+    colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
+    colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
+    colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' },
+    nightTextColor1: '#FFFFFF', nightTextColor2: '#B7B7B7', arrowSvg: 'assets/freccia.svg', arrowPadding: 8,
+    heroImage: 'assets/hero-banner.png', heroX: 48, heroY: 121, heroWidth: 232.34, heroHeight: 154.89
+};
 const myPageColors = { blue: '#F0FBFF', green: '#F0FFF4', orange: '#FFFAF0', purple: '#F6F0FF' };
 const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B00', purple: '#4E1685' };
 
-// DOM 元素绑定
 const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
 const resourceDropdown = document.getElementById('resourceDropdown');
@@ -77,22 +83,45 @@ const homeView = document.getElementById('homeView');
 const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 
-// Canvas 上下文
 const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lightCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas'); const darkBannerCtx = darkBannerCanvas?.getContext('2d');
 const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPageFullCtx = myPageFullCanvas?.getContext('2d');
 const myPageCanvas = document.getElementById('myPageCanvas'); const myPageCtx = myPageCanvas?.getContext('2d');
 const myPageDarkCanvas = document.getElementById('myPageDarkCanvas'); const myPageDarkCtx = myPageDarkCanvas?.getContext('2d');
+
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
+const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feedBannerCtx = feedBannerCanvas?.getContext('2d');
 
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
 const homeColorRadios = document.getElementsByName('homeColor'); const myPageColorRadios = document.getElementsByName('myPageColor');
-const zoomModal = document.getElementById('zoomModal'); const zoomedImg = document.getElementById('zoomedImg');
-const feedImageUpload = document.getElementById('feedImageUpload');
 
-let userImgObj = null; let feedImgObj = null; let homeColor = 'blue'; let myPageColor = 'blue';
+// Feed 背景相关的 DOM 节点 (包含角度滑动条)
+const feedBgModeRadios = document.getElementsByName('feedBgMode');
+const feedBgModeImage = document.getElementById('feedBgModeImage');
+const feedBgModeGradient = document.getElementById('feedBgModeGradient');
+const feedBgModeSolid = document.getElementById('feedBgModeSolid');
+const feedGradColor1 = document.getElementById('feedGradColor1');
+const feedGradColor2 = document.getElementById('feedGradColor2');
+const feedGradAngle = document.getElementById('feedGradAngle');
+const feedGradAngleVal = document.getElementById('feedGradAngleVal');
+const feedSolidColor = document.getElementById('feedSolidColor');
+
+// 🌟 新增：字色与按钮文字节点
+const feedTitleInput = document.getElementById('feedTitle');
+const feedTitleColor = document.getElementById('feedTitleColor');
+const feedSubtitleInput = document.getElementById('feedSubtitle');
+const feedSubtitleColor = document.getElementById('feedSubtitleColor');
+const feedBtnTextInput = document.getElementById('feedBtnText');
+
+const zoomModal = document.getElementById('zoomModal'); const zoomedImg = document.getElementById('zoomedImg');
+
+let userImgObj = null;
+let feedBgBannerObj = null;
+let currentFeedBgMode = 'image';
+
+let homeColor = 'blue'; let myPageColor = 'blue';
 const globalImageCache = {}; const globalSvgTextCache = {};
 
 function setupHighQualityContext(ctx) { if (!ctx) return; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
@@ -186,7 +215,7 @@ async function renderMyPageBanner() {
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
             ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '900 38px "FZLanTingHeiS-R", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
             ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = '900 44px "FZLanTingHeiS-R", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
-            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = ' 38px "FZLTHK.TTF", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(128)); ctx.restore();
+            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = ' 38px "FZLTHK", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(128)); ctx.restore();
         }
     };
     await drawMyPageMode(myPageCanvas, myPageCtx, false); await drawMyPageMode(myPageDarkCanvas, myPageDarkCtx, true);
@@ -197,41 +226,152 @@ async function renderMyPageFullCanvas() {
     try { const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); } } catch (e) { }
 }
 
-async function renderFeedCanvas() {
-    if (!feedCanvas || !feedCtx) return;
-    try {
-        const bgImg = await loadImage(config.feedBg), defaultBannerImg = await loadImage(config.feedBanner); if (!bgImg || !bgImg.width || !defaultBannerImg || !defaultBannerImg.width) return; feedCanvas.width = bgImg.width; feedCanvas.height = bgImg.height; setupHighQualityContext(feedCtx); feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height); feedCtx.drawImage(bgImg, 0, 0);
-        const currentBanner = feedImgObj || defaultBannerImg; if (currentBanner && currentBanner.width) { const targetW = defaultBannerImg.width, targetH = defaultBannerImg.height; feedCtx.save(); drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, targetW, targetH, 36); feedCtx.clip(); const scale = Math.max(targetW / currentBanner.width, targetH / currentBanner.height), drawW = currentBanner.width * scale, drawH = currentBanner.height * scale, drawX = config.feedBannerX + (targetW - drawW) / 2, drawY = config.feedBannerY + (targetH - drawH) / 2; drawSharpenedImage(feedCtx, currentBanner, drawX, drawY, drawW, drawH, 0.3); feedCtx.restore(); }
-    } catch (e) { }
+async function createFeedBannerCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 561;
+    canvas.height = 750;
+    const ctx = canvas.getContext('2d');
+    setupHighQualityContext(ctx);
+
+    // 1. 动态底板逻辑
+    if (currentFeedBgMode === 'image') {
+        const defaultBg = await loadImage(config.feedBanner);
+        const bgBannerImg = feedBgBannerObj || defaultBg;
+        if (bgBannerImg && bgBannerImg.width) {
+            ctx.drawImage(bgBannerImg, 0, 0, canvas.width, canvas.height);
+        } else {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+    } else if (currentFeedBgMode === 'gradient') {
+        let angle = parseFloat(feedGradAngle.value);
+        let rad = (angle - 90) * Math.PI / 180;
+        let w = canvas.width, h = canvas.height;
+        let halfW = w / 2, halfH = h / 2;
+        let length = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+
+        let x0 = halfW - Math.cos(rad) * length / 2;
+        let y0 = halfH - Math.sin(rad) * length / 2;
+        let x1 = halfW + Math.cos(rad) * length / 2;
+        let y1 = halfH + Math.sin(rad) * length / 2;
+
+        const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+        grad.addColorStop(0, feedGradColor1.value);
+        grad.addColorStop(1, feedGradColor2.value);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (currentFeedBgMode === 'solid') {
+        ctx.fillStyle = feedSolidColor.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // 2. 配图逻辑
+    const defaultImg = await loadImage(config.feedExampleImage);
+    const imgToDraw = userImgObj || defaultImg;
+    if (imgToDraw && imgToDraw.width) {
+        ctx.save();
+        const imgW = 412, imgH = 360;
+        const imgX = 74.5;
+        const imgY = 185;
+
+        ctx.beginPath();
+        ctx.rect(imgX, imgY, imgW, imgH);
+        ctx.clip();
+
+        const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
+        const drawW = imgToDraw.width * scale;
+        const drawH = imgToDraw.height * scale;
+
+        const drawX = imgX + (imgW - drawW) / 2;
+        const drawY = imgY + (imgH - drawH) / 2;
+
+        drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
+        ctx.restore();
+    }
+
+    // 3. 文字与按钮 (🌟 应用动态颜色与文字)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const centerX = 280.5;
+
+    // 主标题
+    const titleTxt = (feedTitleInput?.value || '主标题7个字').slice(0, 7);
+    ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif';
+    ctx.fillStyle = feedTitleColor?.value || '#000000'; // 动态颜色
+    ctx.fillText(titleTxt, centerX, 69);
+
+    // 副标题
+    const subtitleTxt = (feedSubtitleInput?.value || '副标题字数最多10个字').slice(0, 10);
+    ctx.font = 'normal 36px "FZLTHK", sans-serif';
+    ctx.fillStyle = feedSubtitleColor?.value || '#000000'; // 动态颜色
+    ctx.fillText(subtitleTxt, centerX, 124);
+
+    // 按钮背景 (固定黑色，规范要求)
+    ctx.fillStyle = '#000000';
+    drawRoundRect(ctx, 45, 557, 471, 108, 54);
+    ctx.fill();
+
+    // 按钮文字 (动态文字，固定白色)
+    const btnTxt = (feedBtnTextInput?.value || '立即参加').slice(0, 4);
+    ctx.font = 'normal 36px "FZLanTingHeiS-DB", sans-serif';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(btnTxt, centerX, 611);
+
+    return canvas;
 }
 
-// ==================== 2. 核心级联逻辑：更新下拉框选项 ====================
+async function renderFeedCanvas() {
+    const fbCanvas = await createFeedBannerCanvas();
+
+    if (feedBannerCanvas && feedBannerCtx) {
+        feedBannerCanvas.width = fbCanvas.width;
+        feedBannerCanvas.height = fbCanvas.height;
+        setupHighQualityContext(feedBannerCtx);
+        feedBannerCtx.clearRect(0, 0, feedBannerCanvas.width, feedBannerCanvas.height);
+        feedBannerCtx.drawImage(fbCanvas, 0, 0);
+    }
+
+    if (!feedCanvas || !feedCtx) return;
+    try {
+        const bgImg = await loadImage(config.feedBg);
+        if (!bgImg || !bgImg.width) return;
+        feedCanvas.width = bgImg.width;
+        feedCanvas.height = bgImg.height;
+        setupHighQualityContext(feedCtx);
+        feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height);
+        feedCtx.drawImage(bgImg, 0, 0);
+
+        if (fbCanvas && fbCanvas.width) {
+            feedCtx.save();
+            drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, fbCanvas.width, fbCanvas.height, 36);
+            feedCtx.clip();
+            feedCtx.drawImage(fbCanvas, config.feedBannerX, config.feedBannerY);
+            feedCtx.restore();
+        }
+    } catch (e) { console.error(e); }
+}
+
 function updateResourceDropdown(terminalId) {
     resourceDropdown.innerHTML = '';
     const pages = PAGE_DIRECTORY[terminalId] || [];
 
-    // 如果是 NA 端，由于开屏被改成了待开发，我们要默认选中 "na_home" (即13.14首页banner)
     let hasSelected = false;
-
     pages.forEach(page => {
         const option = document.createElement('option');
         option.value = page.value;
         option.textContent = page.text;
-
-        // 自动选中第一个已开发的功能
         if (terminalId === 'NA' && page.value === 'na_home') {
             option.selected = true;
             hasSelected = true;
         }
-
         resourceDropdown.appendChild(option);
     });
-
-    // 主动触发一次 change，更新下方的面板
     resourceDropdown.dispatchEvent(new Event('change'));
 }
 
-// 第一级：业务线切换
 const buBtns = document.querySelectorAll('.bu-btn');
 buBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -243,8 +383,6 @@ buBtns.forEach(btn => {
             document.documentElement.style.setProperty('--primary-color', '#258AFF');
             wangpanWorkspace.classList.remove('hidden');
             emptyWorkspace.classList.add('hidden');
-
-            // 如果切回网盘，触发当前选中的端，重新加载下拉框和面板
             const activeTerminal = document.querySelector('.terminal-btn.active').dataset.terminal;
             updateResourceDropdown(activeTerminal);
         } else {
@@ -256,52 +394,44 @@ buBtns.forEach(btn => {
     });
 });
 
-// 第二级：端切换
 const terminalBtns = document.querySelectorAll('.terminal-btn');
 terminalBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         terminalBtns.forEach(b => b.classList.remove('active'));
         const currentBtn = e.currentTarget;
         currentBtn.classList.add('active');
-
         const targetTerminal = currentBtn.dataset.terminal;
-        // 核心：根据选择的端，重绘第三级的页面下拉框
         updateResourceDropdown(targetTerminal);
     });
 });
 
-// 第三级：具体资源位页面下拉框 Change 逻辑
 resourceDropdown.addEventListener('change', (e) => {
     const selected = e.target.value;
-
-    // 隐藏所有左侧特定操作区
     [homeControls, myPageControls, feedControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    // 隐藏所有右侧画板区
     [homeView, myPageView, feedView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
-
     developingPrompt.classList.add('hidden');
-    baseGlobalPicArea.style.display = 'none'; // 默认隐藏基础配图，按需开启
 
-    // 精确匹配我们已开发的页面逻辑
-    if (selected === 'na_home') {
+    if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed') {
         baseGlobalPicArea.style.display = 'block';
+    } else {
+        baseGlobalPicArea.style.display = 'none';
+    }
+
+    if (selected === 'na_home') {
         homeControls.classList.add('active');
         homeView.classList.add('active');
     } else if (selected === 'na_mypage') {
-        baseGlobalPicArea.style.display = 'block';
         myPageControls.classList.add('active');
         myPageView.classList.add('active');
     } else if (selected === 'na_feed') {
         feedControls.classList.add('active');
         feedView.classList.add('active');
     } else {
-        // 如果是列表中新增的暂未接入的页面项
         developingPrompt.classList.remove('hidden');
         viewDevelopingPrompt.classList.add('active');
     }
 });
 
-// 图片上传和弹窗等基础逻辑
 function openZoomModal(canvas) { zoomedImg.src = canvas.toDataURL('image/png', 1.0); zoomModal.style.display = 'block'; }
 function closeZoomModal() { zoomModal.style.display = 'none'; zoomedImg.src = ''; }
 document.querySelectorAll('.zoomable-canvas').forEach(canvas => canvas.addEventListener('click', () => openZoomModal(canvas)));
@@ -309,16 +439,81 @@ zoomModal?.addEventListener('click', closeZoomModal); document.querySelector('.c
 
 homeColorRadios.forEach(r => r.addEventListener('change', async e => { homeColor = e.target.value; await renderHomeCanvas(); }));
 textLine1Input?.addEventListener('input', renderHomeCanvas); textLine2Input?.addEventListener('input', renderHomeCanvas);
-feedImageUpload?.addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = async ev => { feedImgObj = await loadImage(ev.target.result); await renderFeedCanvas(); }; r.readAsDataURL(f); });
 myPageColorRadios.forEach(r => r.addEventListener('change', async e => { myPageColor = e.target.value; await renderMyPage(); }));
 textCapsuleInput?.addEventListener('input', renderMyPage); myPageTitle?.addEventListener('input', renderMyPage); myPageSubtitle?.addEventListener('input', renderMyPage); myPageHighlight?.addEventListener('input', renderMyPage);
+
+feedBgModeRadios.forEach(r => r.addEventListener('change', async e => {
+    currentFeedBgMode = e.target.value;
+    feedBgModeImage.classList.add('hidden');
+    feedBgModeGradient.classList.add('hidden');
+    feedBgModeSolid.classList.add('hidden');
+
+    if (currentFeedBgMode === 'image') feedBgModeImage.classList.remove('hidden');
+    else if (currentFeedBgMode === 'gradient') feedBgModeGradient.classList.remove('hidden');
+    else if (currentFeedBgMode === 'solid') feedBgModeSolid.classList.remove('hidden');
+
+    await renderFeedCanvas();
+}));
+
+feedGradColor1?.addEventListener('input', renderFeedCanvas);
+feedGradColor2?.addEventListener('input', renderFeedCanvas);
+feedSolidColor?.addEventListener('input', renderFeedCanvas);
+feedGradAngle?.addEventListener('input', (e) => {
+    feedGradAngleVal.innerText = e.target.value + '°';
+    renderFeedCanvas();
+});
+
+// 🌟 监听文字与字色的修改
+feedTitleInput?.addEventListener('input', renderFeedCanvas);
+feedTitleColor?.addEventListener('input', renderFeedCanvas);
+feedSubtitleInput?.addEventListener('input', renderFeedCanvas);
+feedSubtitleColor?.addEventListener('input', renderFeedCanvas);
+feedBtnTextInput?.addEventListener('input', renderFeedCanvas);
 
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
 const dropZone = document.getElementById('uploadDropZone'); const fileInput = document.getElementById('imageUpload'); const previewImg = document.getElementById('uploadPreviewImg');
-function handleFileUpload(file) { if (!file || !file.type.startsWith('image/')) return; const reader = new FileReader(); reader.onload = async ev => { const src = ev.target.result; userImgObj = await loadImage(src); if (previewImg) previewImg.src = src; await renderHomeCanvas(); await renderMyPage(); }; reader.readAsDataURL(file); }
+function handleFileUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+        const src = ev.target.result;
+        userImgObj = await loadImage(src);
+        if (previewImg) previewImg.src = src;
+        await renderHomeCanvas();
+        await renderMyPage();
+        await renderFeedCanvas();
+    };
+    reader.readAsDataURL(file);
+}
 if (fileInput) { fileInput.addEventListener('change', e => handleFileUpload(e.target.files[0])); }
 if (dropZone) { dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); }); dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); }); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFileUpload(e.dataTransfer.files[0]); } }); }
+
+const feedBgDropZone = document.getElementById('feedBgUploadDropZone');
+const feedBgFileInput = document.getElementById('feedBgImageUpload');
+const feedBgPreviewImg = document.getElementById('feedBgUploadPreviewImg');
+
+function handleFeedBgFileUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+        const src = ev.target.result;
+        feedBgBannerObj = await loadImage(src);
+        if (feedBgPreviewImg) feedBgPreviewImg.src = src;
+        await renderFeedCanvas();
+    };
+    reader.readAsDataURL(file);
+}
+if (feedBgFileInput) { feedBgFileInput.addEventListener('change', e => handleFeedBgFileUpload(e.target.files[0])); }
+if (feedBgDropZone) {
+    feedBgDropZone.addEventListener('dragover', (e) => { e.preventDefault(); feedBgDropZone.classList.add('drag-over'); });
+    feedBgDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); feedBgDropZone.classList.remove('drag-over'); });
+    feedBgDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        feedBgDropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFeedBgFileUpload(e.dataTransfer.files[0]); }
+    });
+}
 
 function initExportModal() {
     const exportModal = document.getElementById('exportModal'); const openExportModalBtn = document.getElementById('openExportModalBtn'); const cancelExportBtn = document.getElementById('cancelExportBtn'); const confirmExportBtn = document.getElementById('confirmExportBtn');
@@ -332,10 +527,14 @@ function initExportModal() {
             if (document.getElementById('chkHomeBannerLight')?.checked) { zip.file(`1314顶部Banner-完整版-日间-${homeColor}.png`, await canvasToBlob(await createFullBannerCanvas(false))); selectedCount++; }
             if (document.getElementById('chkHomeBannerDark')?.checked) { zip.file(`1314顶部Banner-完整版-夜间-${homeColor}.png`, await canvasToBlob(await createFullBannerCanvas(true))); selectedCount++; }
             if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { zip.file(`1314顶部Banner-带壳预览-日间-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
+
             if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { zip.file(`我的页面-完整Banner-日间-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { zip.file(`我的页面-完整Banner-夜间-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { zip.file(`我的页面-带壳预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
+
+            if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { zip.file(`Feed-独立卡片.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; }
             if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { zip.file(`Feed-带壳预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; }
+
             if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
             const zipBlob = await zip.generateAsync({ type: 'blob' }); const link = document.createElement('a'); link.download = `按需导出切图集合.zip`; link.href = URL.createObjectURL(zipBlob); link.click(); exportModal.style.display = 'none';
         } catch (e) { alert("【导出报错】\n\n原因: " + e.message); } finally { confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; }
@@ -343,9 +542,15 @@ function initExportModal() {
 }
 
 window.onload = async () => {
-    if ('fonts' in document) { try { await document.fonts.load('normal 38px "FZLTHK.TTF"'); await document.fonts.load('normal 44px "FZLanTingHeiS-R"'); } catch (e) { } }
+    if ('fonts' in document) {
+        try {
+            await document.fonts.load('normal 38px "FZLTHK"');
+            await document.fonts.load('normal 44px "FZLanTingHeiS-R"');
+            await document.fonts.load('normal 42px "FZLanTingHeiS-H"');
+            await document.fonts.load('normal 36px "FZLanTingHeiS-DB"');
+        } catch (e) { }
+    }
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
-    // 默认触发第一级和第二级，建立级联联系
     updateResourceDropdown('NA');
     initExportModal();
 };
