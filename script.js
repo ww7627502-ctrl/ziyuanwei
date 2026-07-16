@@ -59,7 +59,6 @@ const config = {
     topHomePageUI: 'assets/top-of-the-home-page.png',
     homeMainBanner: 'assets/home-page-main-banner.png',
     
-    // 🌟 新增大版Banner的默认标题图
     topBannerTitleImg: 'assets/top-banner-w.png',
 
     myPageBg: 'assets/my-page.jpg', myPageX: -6, myPageY: 1621,
@@ -107,6 +106,18 @@ const textLine1Input = document.getElementById('textLine1'); const textLine2Inpu
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
 const homeColorRadios = document.getElementsByName('homeColor'); const myPageColorRadios = document.getElementsByName('myPageColor');
 
+// 大版 Banner 背景控制相关
+const topBgModeRadios = document.getElementsByName('topBgMode');
+const topBgModeImage = document.getElementById('topBgModeImage');
+const topBgModeGradient = document.getElementById('topBgModeGradient');
+const topBgModeSolid = document.getElementById('topBgModeSolid');
+const topGradColor1 = document.getElementById('topGradColor1');
+const topGradColor2 = document.getElementById('topGradColor2');
+const topGradAngle = document.getElementById('topGradAngle');
+const topGradAngleVal = document.getElementById('topGradAngleVal');
+const topSolidColor = document.getElementById('topSolidColor');
+
+// Feed 背景控制相关
 const feedBgModeRadios = document.getElementsByName('feedBgMode');
 const feedBgModeImage = document.getElementById('feedBgModeImage');
 const feedBgModeGradient = document.getElementById('feedBgModeGradient');
@@ -128,7 +139,9 @@ const zoomModal = document.getElementById('zoomModal'); const zoomedImg = docume
 let userImgObj = null; 
 let feedBgBannerObj = null; 
 
-// 🌟 新增：用户上传的大版Banner标题图对象
+let currentTopBgMode = 'image';
+let topBgBannerObj = null;
+
 let userTopBannerTitleObj = null; 
 
 let currentFeedBgMode = 'image'; 
@@ -186,21 +199,45 @@ function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highli
     for (let i = 0; i < parts.length; i++) { ctx.fillStyle = baseColor; ctx.fillText(parts[i], currentX, fixedY); currentX += Math.floor(ctx.measureText(parts[i]).width); if (i < parts.length - 1) { ctx.fillStyle = highlightColor; ctx.fillText(highlightText, currentX, fixedY); currentX += Math.floor(ctx.measureText(highlightText).width); } }
 }
 
-// 🌟 创建完整的大版主 Banner (底图 + 插入的左侧配图 + 右侧标题图)
+// 🌟 创建完整的大版主 Banner (底板可以是图/渐变/纯色)
 async function createTopBannerCanvas(kvImg) {
     const defaultBanner = await loadImage(config.homeMainBanner);
     if (!defaultBanner || !defaultBanner.width) return null;
 
     const c = document.createElement('canvas');
+    // 以默认底图的宽高为基准
     c.width = defaultBanner.width;
     c.height = defaultBanner.height;
     const ctx = c.getContext('2d');
     setupHighQualityContext(ctx);
 
-    // 1. 画基础大底图
-    ctx.drawImage(defaultBanner, 0, 0);
+    // 1. 根据底板模式绘制背景
+    if (currentTopBgMode === 'image') {
+        const bgImg = topBgBannerObj || defaultBanner;
+        ctx.drawImage(bgImg, 0, 0, c.width, c.height);
+    } else if (currentTopBgMode === 'gradient') {
+        let angle = parseFloat(topGradAngle.value);
+        let rad = (angle - 90) * Math.PI / 180;
+        let w = c.width, h = c.height;
+        let halfW = w / 2, halfH = h / 2;
+        let length = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+        
+        let x0 = halfW - Math.cos(rad) * length / 2;
+        let y0 = halfH - Math.sin(rad) * length / 2;
+        let x1 = halfW + Math.cos(rad) * length / 2;
+        let y1 = halfH + Math.sin(rad) * length / 2;
 
-    // 2. 在指定坐标 (48, 156) 插入 420x282 的 KV 配图 (如果全局上传了图片就用，否则用默认 hero)
+        const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+        grad.addColorStop(0, topGradColor1.value);
+        grad.addColorStop(1, topGradColor2.value);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+    } else if (currentTopBgMode === 'solid') {
+        ctx.fillStyle = topSolidColor.value;
+        ctx.fillRect(0, 0, c.width, c.height);
+    }
+
+    // 2. 在指定坐标 (48, 156) 插入 420x282 的 KV 配图
     if (kvImg && kvImg.width) {
         const targetX = 48, targetY = 156, targetW = 420, targetH = 282;
         ctx.save();
@@ -219,7 +256,7 @@ async function createTopBannerCanvas(kvImg) {
         ctx.restore();
     }
 
-    // 🌟 3. 在指定坐标 (468, 168) 插入 660x252 的标题图
+    // 3. 在指定坐标 (468, 168) 插入 660x252 的标题图
     const titleImg = userTopBannerTitleObj || await loadImage(config.topBannerTitleImg);
     if (titleImg && titleImg.width) {
         const titleX = 468, titleY = 168, titleW = 660, titleH = 252;
@@ -228,7 +265,6 @@ async function createTopBannerCanvas(kvImg) {
         ctx.rect(titleX, titleY, titleW, titleH);
         ctx.clip();
         
-        // 标题同样采用最大不裁切（contain）等比缩放
         const titleScale = Math.min(titleW / titleImg.width, titleH / titleImg.height);
         const tDrawW = titleImg.width * titleScale;
         const tDrawH = titleImg.height * titleScale;
@@ -236,7 +272,6 @@ async function createTopBannerCanvas(kvImg) {
         const tDrawX = titleX + (titleW - tDrawW) / 2;
         const tDrawY = titleY + (titleH - tDrawH) / 2;
         
-        // 文字图片过度锐化容易有锯齿，这里直接用原生 drawImage
         ctx.drawImage(titleImg, tDrawX, tDrawY, tDrawW, tDrawH);
         ctx.restore();
     }
@@ -269,13 +304,11 @@ async function drawTopHomePage(canvas, ctx, kvImg) {
     setupHighQualityContext(ctx);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. 画合成好的 Banner (等比缩放至 UI 宽度)
     const scale = canvas.width / bCanvas.width;
     const drawW = canvas.width;
     const drawH = bCanvas.height * scale;
     ctx.drawImage(bCanvas, 0, 0, drawW, drawH);
 
-    // 2. 盖上带透明镂空的手机 UI 蒙版
     ctx.drawImage(uiImg, 0, 0, canvas.width, canvas.height);
 }
 
@@ -562,6 +595,31 @@ textLine1Input?.addEventListener('input', renderHomeCanvas); textLine2Input?.add
 myPageColorRadios.forEach(r => r.addEventListener('change', async e => { myPageColor = e.target.value; await renderMyPage(); }));
 textCapsuleInput?.addEventListener('input', renderMyPage); myPageTitle?.addEventListener('input', renderMyPage); myPageSubtitle?.addEventListener('input', renderMyPage); myPageHighlight?.addEventListener('input', renderMyPage);
 
+
+// 大版 Banner 背景事件
+topBgModeRadios.forEach(r => r.addEventListener('change', async e => {
+    currentTopBgMode = e.target.value;
+    topBgModeImage.classList.add('hidden');
+    topBgModeGradient.classList.add('hidden');
+    topBgModeSolid.classList.add('hidden');
+
+    if (currentTopBgMode === 'image') topBgModeImage.classList.remove('hidden');
+    else if (currentTopBgMode === 'gradient') topBgModeGradient.classList.remove('hidden');
+    else if (currentTopBgMode === 'solid') topBgModeSolid.classList.remove('hidden');
+
+    await renderHomeCanvas();
+}));
+
+topGradColor1?.addEventListener('input', renderHomeCanvas);
+topGradColor2?.addEventListener('input', renderHomeCanvas);
+topSolidColor?.addEventListener('input', renderHomeCanvas);
+topGradAngle?.addEventListener('input', (e) => {
+    topGradAngleVal.innerText = e.target.value + '°'; 
+    renderHomeCanvas();
+});
+
+
+// Feed 背景事件
 feedBgModeRadios.forEach(r => r.addEventListener('change', async e => {
     currentFeedBgMode = e.target.value;
     feedBgModeImage.classList.add('hidden');
@@ -589,6 +647,7 @@ feedSubtitleInput?.addEventListener('input', renderFeedCanvas);
 feedSubtitleColor?.addEventListener('input', renderFeedCanvas);
 feedBtnTextInput?.addEventListener('input', renderFeedCanvas);
 
+
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
 const dropZone = document.getElementById('uploadDropZone'); const fileInput = document.getElementById('imageUpload'); const previewImg = document.getElementById('uploadPreviewImg');
@@ -607,6 +666,33 @@ function handleFileUpload(file) {
 }
 if (fileInput) { fileInput.addEventListener('change', e => handleFileUpload(e.target.files[0])); }
 if (dropZone) { dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); }); dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); }); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFileUpload(e.dataTransfer.files[0]); } }); }
+
+const topBgDropZone = document.getElementById('topBgUploadDropZone');
+const topBgFileInput = document.getElementById('topBgImageUpload');
+const topBgPreviewImg = document.getElementById('topBgUploadPreviewImg');
+
+function handleTopBgFileUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+        const src = ev.target.result;
+        topBgBannerObj = await loadImage(src);
+        if (topBgPreviewImg) topBgPreviewImg.src = src;
+        await renderHomeCanvas();
+    };
+    reader.readAsDataURL(file);
+}
+if (topBgFileInput) { topBgFileInput.addEventListener('change', e => handleTopBgFileUpload(e.target.files[0])); }
+if (topBgDropZone) {
+    topBgDropZone.addEventListener('dragover', (e) => { e.preventDefault(); topBgDropZone.classList.add('drag-over'); });
+    topBgDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); topBgDropZone.classList.remove('drag-over'); });
+    topBgDropZone.addEventListener('drop', (e) => { 
+        e.preventDefault(); 
+        topBgDropZone.classList.remove('drag-over'); 
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleTopBgFileUpload(e.dataTransfer.files[0]); } 
+    });
+}
+
 
 const feedBgDropZone = document.getElementById('feedBgUploadDropZone');
 const feedBgFileInput = document.getElementById('feedBgImageUpload');
@@ -634,7 +720,6 @@ if (feedBgDropZone) {
     });
 }
 
-// 🌟 新增：处理大版Banner标题图的上传
 const tbDropZone = document.getElementById('topBannerTitleDropZone');
 const tbFileInput = document.getElementById('topBannerTitleUpload');
 const tbPreviewImg = document.getElementById('topBannerTitlePreviewImg');
