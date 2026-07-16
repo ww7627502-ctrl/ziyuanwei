@@ -55,6 +55,13 @@ const PAGE_DIRECTORY = {
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 3, myPageTitle: 9, myPageSubtitle: 8 };
 const config = {
     baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
+    
+    topHomePageUI: 'assets/top-of-the-home-page.png',
+    homeMainBanner: 'assets/home-page-main-banner.png',
+    
+    // 🌟 新增大版Banner的默认标题图
+    topBannerTitleImg: 'assets/top-banner-w.png',
+
     myPageBg: 'assets/my-page.jpg', myPageX: -6, myPageY: 1621,
     banner2Svg: 'assets/banner2.svg', bannerX: 90, bannerY: 120,
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
@@ -83,6 +90,9 @@ const homeView = document.getElementById('homeView');
 const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 
+const topHomePageCanvas = document.getElementById('topHomePageCanvas'); const topHomePageCtx = topHomePageCanvas?.getContext('2d');
+const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
+
 const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lightCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas'); const darkBannerCtx = darkBannerCanvas?.getContext('2d');
@@ -97,7 +107,6 @@ const textLine1Input = document.getElementById('textLine1'); const textLine2Inpu
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
 const homeColorRadios = document.getElementsByName('homeColor'); const myPageColorRadios = document.getElementsByName('myPageColor');
 
-// Feed 背景相关的 DOM 节点 (包含角度滑动条)
 const feedBgModeRadios = document.getElementsByName('feedBgMode');
 const feedBgModeImage = document.getElementById('feedBgModeImage');
 const feedBgModeGradient = document.getElementById('feedBgModeGradient');
@@ -108,7 +117,6 @@ const feedGradAngle = document.getElementById('feedGradAngle');
 const feedGradAngleVal = document.getElementById('feedGradAngleVal');
 const feedSolidColor = document.getElementById('feedSolidColor');
 
-// 🌟 新增：字色与按钮文字节点
 const feedTitleInput = document.getElementById('feedTitle');
 const feedTitleColor = document.getElementById('feedTitleColor');
 const feedSubtitleInput = document.getElementById('feedSubtitle');
@@ -117,9 +125,13 @@ const feedBtnTextInput = document.getElementById('feedBtnText');
 
 const zoomModal = document.getElementById('zoomModal'); const zoomedImg = document.getElementById('zoomedImg');
 
-let userImgObj = null;
-let feedBgBannerObj = null;
-let currentFeedBgMode = 'image';
+let userImgObj = null; 
+let feedBgBannerObj = null; 
+
+// 🌟 新增：用户上传的大版Banner标题图对象
+let userTopBannerTitleObj = null; 
+
+let currentFeedBgMode = 'image'; 
 
 let homeColor = 'blue'; let myPageColor = 'blue';
 const globalImageCache = {}; const globalSvgTextCache = {};
@@ -174,8 +186,115 @@ function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highli
     for (let i = 0; i < parts.length; i++) { ctx.fillStyle = baseColor; ctx.fillText(parts[i], currentX, fixedY); currentX += Math.floor(ctx.measureText(parts[i]).width); if (i < parts.length - 1) { ctx.fillStyle = highlightColor; ctx.fillText(highlightText, currentX, fixedY); currentX += Math.floor(ctx.measureText(highlightText).width); } }
 }
 
+// 🌟 创建完整的大版主 Banner (底图 + 插入的左侧配图 + 右侧标题图)
+async function createTopBannerCanvas(kvImg) {
+    const defaultBanner = await loadImage(config.homeMainBanner);
+    if (!defaultBanner || !defaultBanner.width) return null;
+
+    const c = document.createElement('canvas');
+    c.width = defaultBanner.width;
+    c.height = defaultBanner.height;
+    const ctx = c.getContext('2d');
+    setupHighQualityContext(ctx);
+
+    // 1. 画基础大底图
+    ctx.drawImage(defaultBanner, 0, 0);
+
+    // 2. 在指定坐标 (48, 156) 插入 420x282 的 KV 配图 (如果全局上传了图片就用，否则用默认 hero)
+    if (kvImg && kvImg.width) {
+        const targetX = 48, targetY = 156, targetW = 420, targetH = 282;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(targetX, targetY, targetW, targetH);
+        ctx.clip();
+        
+        const scale = Math.min(targetW / kvImg.width, targetH / kvImg.height);
+        const drawW = kvImg.width * scale;
+        const drawH = kvImg.height * scale;
+        
+        const drawX = targetX + (targetW - drawW) / 2;
+        const drawY = targetY + (targetH - drawH) / 2;
+        
+        drawSharpenedImage(ctx, kvImg, drawX, drawY, drawW, drawH, 0.3);
+        ctx.restore();
+    }
+
+    // 🌟 3. 在指定坐标 (468, 168) 插入 660x252 的标题图
+    const titleImg = userTopBannerTitleObj || await loadImage(config.topBannerTitleImg);
+    if (titleImg && titleImg.width) {
+        const titleX = 468, titleY = 168, titleW = 660, titleH = 252;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(titleX, titleY, titleW, titleH);
+        ctx.clip();
+        
+        // 标题同样采用最大不裁切（contain）等比缩放
+        const titleScale = Math.min(titleW / titleImg.width, titleH / titleImg.height);
+        const tDrawW = titleImg.width * titleScale;
+        const tDrawH = titleImg.height * titleScale;
+        
+        const tDrawX = titleX + (titleW - tDrawW) / 2;
+        const tDrawY = titleY + (titleH - tDrawH) / 2;
+        
+        // 文字图片过度锐化容易有锯齿，这里直接用原生 drawImage
+        ctx.drawImage(titleImg, tDrawX, tDrawY, tDrawW, tDrawH);
+        ctx.restore();
+    }
+
+    return c;
+}
+
+// 绘制大版主 Banner (纯净切图版本)
+async function drawTopHomeBanner(canvas, ctx, kvImg) {
+    if (!canvas || !ctx) return;
+    const bCanvas = await createTopBannerCanvas(kvImg);
+    if (bCanvas) {
+        canvas.width = bCanvas.width;
+        canvas.height = bCanvas.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bCanvas, 0, 0);
+    }
+}
+
+// 绘制大版主 Banner (带顶层透明手机 UI 遮罩)
+async function drawTopHomePage(canvas, ctx, kvImg) {
+    if (!canvas || !ctx) return;
+    const uiImg = await loadImage(config.topHomePageUI);
+    const bCanvas = await createTopBannerCanvas(kvImg);
+
+    if (!uiImg || !uiImg.width || !bCanvas) return;
+    
+    canvas.width = uiImg.width;
+    canvas.height = uiImg.height;
+    setupHighQualityContext(ctx);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. 画合成好的 Banner (等比缩放至 UI 宽度)
+    const scale = canvas.width / bCanvas.width;
+    const drawW = canvas.width;
+    const drawH = bCanvas.height * scale;
+    ctx.drawImage(bCanvas, 0, 0, drawW, drawH);
+
+    // 2. 盖上带透明镂空的手机 UI 蒙版
+    ctx.drawImage(uiImg, 0, 0, canvas.width, canvas.height);
+}
+
 async function renderHomeCanvas() {
-    if (!lightCanvas) return; const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg; await drawMode(false, lightCanvas, lightCtx, kvImg);
+    const heroImg = await loadImage(config.heroImage); 
+    const kvImg = userImgObj || heroImg; 
+
+    if (topHomeBannerCanvas) {
+        await drawTopHomeBanner(topHomeBannerCanvas, topHomeBannerCtx, kvImg); 
+    }
+
+    if (topHomePageCanvas) {
+        await drawTopHomePage(topHomePageCanvas, topHomePageCtx, kvImg); 
+    }
+
+    if (lightCanvas) {
+        await drawMode(false, lightCanvas, lightCtx, kvImg);
+    }
+
     if (lightBannerCanvas && lightBannerCtx) { const lbCanvas = await createFullBannerCanvas(false); lightBannerCanvas.width = lbCanvas.width; lightBannerCanvas.height = lbCanvas.height; setupHighQualityContext(lightBannerCtx); lightBannerCtx.clearRect(0, 0, lightBannerCanvas.width, lightBannerCanvas.height); lightBannerCtx.drawImage(lbCanvas, 0, 0); }
     if (darkBannerCanvas && darkBannerCtx) { const dbCanvas = await createFullBannerCanvas(true); darkBannerCanvas.width = dbCanvas.width; darkBannerCanvas.height = dbCanvas.height; setupHighQualityContext(darkBannerCtx); darkBannerCtx.clearRect(0, 0, darkBannerCanvas.width, darkBannerCanvas.height); darkBannerCtx.drawImage(dbCanvas, 0, 0); }
 }
@@ -212,9 +331,17 @@ async function renderMyPageBanner() {
             canvas.width = banner2Img.width; canvas.height = banner2Img.height; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(banner2Img, 0, 0);
             if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
             const capsuleTxt = (textCapsuleInput?.value || '').slice(0, TEXT_LIMITS.capsule); const titleTxt = (myPageTitle?.value || '').slice(0, TEXT_LIMITS.myPageTitle); const highlightTxt = myPageHighlight?.value || ''; const subtitleTxt = (myPageSubtitle?.value || '').slice(0, TEXT_LIMITS.myPageSubtitle);
+            
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
-            ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '900 38px "FZLanTingHeiS-R", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
-            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = '900 44px "FZLanTingHeiS-R", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
+            
+            ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+            ctx.font = 'normal 38px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; 
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
+            
+            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; 
+            ctx.font = 'normal 44px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; 
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
+            
             ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = ' 38px "FZLTHK", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(128)); ctx.restore();
         }
     };
@@ -233,7 +360,6 @@ async function createFeedBannerCanvas() {
     const ctx = canvas.getContext('2d');
     setupHighQualityContext(ctx);
 
-    // 1. 动态底板逻辑
     if (currentFeedBgMode === 'image') {
         const defaultBg = await loadImage(config.feedBanner);
         const bgBannerImg = feedBgBannerObj || defaultBg;
@@ -249,7 +375,7 @@ async function createFeedBannerCanvas() {
         let w = canvas.width, h = canvas.height;
         let halfW = w / 2, halfH = h / 2;
         let length = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
-
+        
         let x0 = halfW - Math.cos(rad) * length / 2;
         let y0 = halfH - Math.sin(rad) * length / 2;
         let x1 = halfW + Math.cos(rad) * length / 2;
@@ -265,54 +391,48 @@ async function createFeedBannerCanvas() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // 2. 配图逻辑
-    const defaultImg = await loadImage(config.feedExampleImage);
+    const defaultImg = await loadImage(config.feedExampleImage); 
     const imgToDraw = userImgObj || defaultImg;
     if (imgToDraw && imgToDraw.width) {
         ctx.save();
         const imgW = 412, imgH = 360;
         const imgX = 74.5;
         const imgY = 185;
-
+        
         ctx.beginPath();
         ctx.rect(imgX, imgY, imgW, imgH);
-        ctx.clip();
-
+        ctx.clip(); 
+        
         const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
         const drawW = imgToDraw.width * scale;
         const drawH = imgToDraw.height * scale;
-
+        
         const drawX = imgX + (imgW - drawW) / 2;
         const drawY = imgY + (imgH - drawH) / 2;
-
+        
         drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
         ctx.restore();
     }
 
-    // 3. 文字与按钮 (🌟 应用动态颜色与文字)
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
 
     const centerX = 280.5;
-
-    // 主标题
+    
     const titleTxt = (feedTitleInput?.value || '主标题7个字').slice(0, 7);
     ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif';
-    ctx.fillStyle = feedTitleColor?.value || '#000000'; // 动态颜色
+    ctx.fillStyle = feedTitleColor?.value || '#000000'; 
     ctx.fillText(titleTxt, centerX, 69);
 
-    // 副标题
     const subtitleTxt = (feedSubtitleInput?.value || '副标题字数最多10个字').slice(0, 10);
     ctx.font = 'normal 36px "FZLTHK", sans-serif';
-    ctx.fillStyle = feedSubtitleColor?.value || '#000000'; // 动态颜色
+    ctx.fillStyle = feedSubtitleColor?.value || '#000000'; 
     ctx.fillText(subtitleTxt, centerX, 124);
 
-    // 按钮背景 (固定黑色，规范要求)
     ctx.fillStyle = '#000000';
     drawRoundRect(ctx, 45, 557, 471, 108, 54);
     ctx.fill();
 
-    // 按钮文字 (动态文字，固定白色)
     const btnTxt = (feedBtnTextInput?.value || '立即参加').slice(0, 4);
     ctx.font = 'normal 36px "FZLanTingHeiS-DB", sans-serif';
     ctx.fillStyle = '#FFFFFF';
@@ -325,7 +445,7 @@ async function createFeedBannerCanvas() {
 
 async function renderFeedCanvas() {
     const fbCanvas = await createFeedBannerCanvas();
-
+    
     if (feedBannerCanvas && feedBannerCtx) {
         feedBannerCanvas.width = fbCanvas.width;
         feedBannerCanvas.height = fbCanvas.height;
@@ -336,7 +456,7 @@ async function renderFeedCanvas() {
 
     if (!feedCanvas || !feedCtx) return;
     try {
-        const bgImg = await loadImage(config.feedBg);
+        const bgImg = await loadImage(config.feedBg); 
         if (!bgImg || !bgImg.width) return;
         feedCanvas.width = bgImg.width;
         feedCanvas.height = bgImg.height;
@@ -410,7 +530,7 @@ resourceDropdown.addEventListener('change', (e) => {
     [homeControls, myPageControls, feedControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
-
+    
     if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed') {
         baseGlobalPicArea.style.display = 'block';
     } else {
@@ -459,11 +579,10 @@ feedGradColor1?.addEventListener('input', renderFeedCanvas);
 feedGradColor2?.addEventListener('input', renderFeedCanvas);
 feedSolidColor?.addEventListener('input', renderFeedCanvas);
 feedGradAngle?.addEventListener('input', (e) => {
-    feedGradAngleVal.innerText = e.target.value + '°';
+    feedGradAngleVal.innerText = e.target.value + '°'; 
     renderFeedCanvas();
 });
 
-// 🌟 监听文字与字色的修改
 feedTitleInput?.addEventListener('input', renderFeedCanvas);
 feedTitleColor?.addEventListener('input', renderFeedCanvas);
 feedSubtitleInput?.addEventListener('input', renderFeedCanvas);
@@ -473,18 +592,18 @@ feedBtnTextInput?.addEventListener('input', renderFeedCanvas);
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
 const dropZone = document.getElementById('uploadDropZone'); const fileInput = document.getElementById('imageUpload'); const previewImg = document.getElementById('uploadPreviewImg');
-function handleFileUpload(file) {
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = async ev => {
-        const src = ev.target.result;
-        userImgObj = await loadImage(src);
-        if (previewImg) previewImg.src = src;
-        await renderHomeCanvas();
-        await renderMyPage();
-        await renderFeedCanvas();
-    };
-    reader.readAsDataURL(file);
+function handleFileUpload(file) { 
+    if (!file || !file.type.startsWith('image/')) return; 
+    const reader = new FileReader(); 
+    reader.onload = async ev => { 
+        const src = ev.target.result; 
+        userImgObj = await loadImage(src); 
+        if (previewImg) previewImg.src = src; 
+        await renderHomeCanvas(); 
+        await renderMyPage(); 
+        await renderFeedCanvas(); 
+    }; 
+    reader.readAsDataURL(file); 
 }
 if (fileInput) { fileInput.addEventListener('change', e => handleFileUpload(e.target.files[0])); }
 if (dropZone) { dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); }); dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); }); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFileUpload(e.dataTransfer.files[0]); } }); }
@@ -508,10 +627,37 @@ if (feedBgFileInput) { feedBgFileInput.addEventListener('change', e => handleFee
 if (feedBgDropZone) {
     feedBgDropZone.addEventListener('dragover', (e) => { e.preventDefault(); feedBgDropZone.classList.add('drag-over'); });
     feedBgDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); feedBgDropZone.classList.remove('drag-over'); });
-    feedBgDropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        feedBgDropZone.classList.remove('drag-over');
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFeedBgFileUpload(e.dataTransfer.files[0]); }
+    feedBgDropZone.addEventListener('drop', (e) => { 
+        e.preventDefault(); 
+        feedBgDropZone.classList.remove('drag-over'); 
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleFeedBgFileUpload(e.dataTransfer.files[0]); } 
+    });
+}
+
+// 🌟 新增：处理大版Banner标题图的上传
+const tbDropZone = document.getElementById('topBannerTitleDropZone');
+const tbFileInput = document.getElementById('topBannerTitleUpload');
+const tbPreviewImg = document.getElementById('topBannerTitlePreviewImg');
+
+function handleTopBannerTitleUpload(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async ev => {
+        const src = ev.target.result;
+        userTopBannerTitleObj = await loadImage(src);
+        if (tbPreviewImg) tbPreviewImg.src = src;
+        await renderHomeCanvas();
+    };
+    reader.readAsDataURL(file);
+}
+if (tbFileInput) { tbFileInput.addEventListener('change', e => handleTopBannerTitleUpload(e.target.files[0])); }
+if (tbDropZone) {
+    tbDropZone.addEventListener('dragover', (e) => { e.preventDefault(); tbDropZone.classList.add('drag-over'); });
+    tbDropZone.addEventListener('dragleave', (e) => { e.preventDefault(); tbDropZone.classList.remove('drag-over'); });
+    tbDropZone.addEventListener('drop', (e) => { 
+        e.preventDefault(); 
+        tbDropZone.classList.remove('drag-over'); 
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { handleTopBannerTitleUpload(e.dataTransfer.files[0]); } 
     });
 }
 
@@ -523,15 +669,18 @@ function initExportModal() {
     confirmExportBtn.addEventListener('click', async () => {
         if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络'); const zip = new JSZip(); let selectedCount = 0; const originalText = confirmExportBtn.innerText; confirmExportBtn.innerText = '正在极速打包中...'; confirmExportBtn.disabled = true;
         try {
+            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) { zip.file(`1314顶部Banner-大版主Banner带壳预览.png`, await canvasToBlob(topHomePageCanvas)); selectedCount++; }
+            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) { zip.file(`1314顶部Banner-大版主Banner纯净版.png`, await canvasToBlob(topHomeBannerCanvas)); selectedCount++; }
+            
+            if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { zip.file(`1314顶部Banner-下拉沉浸带壳预览-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
             if (document.getElementById('chkHomeKV')?.checked) { const kvCanvas = document.createElement('canvas'); const kvCtx = kvCanvas.getContext('2d'); kvCanvas.width = 420; kvCanvas.height = 282; setupHighQualityContext(kvCtx); const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg; if (kvImg && kvImg.width) { const scale = Math.max(420 / kvImg.width, 282 / kvImg.height); const drawW = kvImg.width * scale, drawH = kvImg.height * scale; const drawX = (420 - drawW) / 2, drawY = (282 - drawH) / 2; drawSharpenedImage(kvCtx, kvImg, drawX, drawY, drawW, drawH, 0.3); } zip.file(`1314顶部Banner-KV切图.png`, await canvasToBlob(kvCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomeBannerLight')?.checked) { zip.file(`1314顶部Banner-完整版-日间-${homeColor}.png`, await canvasToBlob(await createFullBannerCanvas(false))); selectedCount++; }
-            if (document.getElementById('chkHomeBannerDark')?.checked) { zip.file(`1314顶部Banner-完整版-夜间-${homeColor}.png`, await canvasToBlob(await createFullBannerCanvas(true))); selectedCount++; }
-            if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { zip.file(`1314顶部Banner-带壳预览-日间-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
-
+            if (document.getElementById('chkHomeBannerLight')?.checked && lightBannerCanvas) { zip.file(`1314顶部Banner-下拉完整版-日间-${homeColor}.png`, await canvasToBlob(lightBannerCanvas)); selectedCount++; }
+            if (document.getElementById('chkHomeBannerDark')?.checked && darkBannerCanvas) { zip.file(`1314顶部Banner-下拉完整版-夜间-${homeColor}.png`, await canvasToBlob(darkBannerCanvas)); selectedCount++; }
+            
             if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { zip.file(`我的页面-完整Banner-日间-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { zip.file(`我的页面-完整Banner-夜间-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { zip.file(`我的页面-带壳预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
-
+            
             if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { zip.file(`Feed-独立卡片.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; }
             if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { zip.file(`Feed-带壳预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; }
 
@@ -542,13 +691,14 @@ function initExportModal() {
 }
 
 window.onload = async () => {
-    if ('fonts' in document) {
-        try {
-            await document.fonts.load('normal 38px "FZLTHK"');
-            await document.fonts.load('normal 44px "FZLanTingHeiS-R"');
+    if ('fonts' in document) { 
+        try { 
+            await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); 
+            await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); 
+            await document.fonts.load('normal 38px "FZLTHK"'); 
             await document.fonts.load('normal 42px "FZLanTingHeiS-H"');
             await document.fonts.load('normal 36px "FZLanTingHeiS-DB"');
-        } catch (e) { }
+        } catch (e) { } 
     }
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
     updateResourceDropdown('NA');

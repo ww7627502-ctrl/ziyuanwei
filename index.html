@@ -76,8 +76,23 @@
                     </div>
 
                     <div id="homeControls" class="control-group">
+
+                        <!-- 🌟 新增：专门用于大版Banner标题图片的上传 -->
                         <div class="sidebar-section">
-                            <div class="section-title">主题颜色</div>
+                            <div class="section-title">大版 Banner 标题图替换 (660x252)</div>
+                            <label id="topBannerTitleDropZone" class="upload-drop-zone" for="topBannerTitleUpload"
+                                style="padding: 10px;">
+                                <img id="topBannerTitlePreviewImg" class="upload-preview-img"
+                                    src="assets/top-banner-w.png" alt="当前标题图"
+                                    style="max-height: 40px; object-fit: contain;">
+                                <span class="upload-text"
+                                    style="font-size: 12px; margin-top: 6px;">点击或将图拖拽到此处替换标题</span>
+                                <input type="file" id="topBannerTitleUpload" style="display:none;" accept="image/*">
+                            </label>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="section-title">下拉 Banner 主题颜色</div>
                             <div class="color-selector">
                                 <label><input type="radio" name="homeColor" value="blue" checked> 科技蓝 (默认)</label>
                                 <label><input type="radio" name="homeColor" value="green"> 生态绿</label>
@@ -87,7 +102,7 @@
                             </div>
                         </div>
                         <div class="sidebar-section">
-                            <div class="section-title">文案修改</div>
+                            <div class="section-title">下拉 Banner 文案修改</div>
                             <div class="input-group">
                                 <span>第一行 (最多6字):</span>
                                 <input type="text" id="textLine1" value="教练问是不是" maxlength="6">
@@ -228,62 +243,90 @@
 
             <!-- ==================== 1. 13.14首页顶部沉浸banner ==================== -->
             <div id="homeView" class="view-section active">
-                <div class="preview-grid">
-                    <div class="side-column">
-                        <div class="preview-card transparent-card">
-                            <div class="card-title" style="text-align: center;">带壳预览 (日间模式)</div>
-                            <canvas id="lightCanvas" class="phone-canvas zoomable-canvas"></canvas>
+
+                <div style="display: flex; gap: 24px; align-items: flex-start;">
+
+                    <div style="flex: 1.6; display: flex; gap: 20px;">
+                        <!-- 1. 大版首页主Banner预览 -->
+                        <div class="preview-card transparent-card" style="flex: 1; padding: 12px;">
+                            <div class="card-title" style="text-align: center; font-size: 14px;">大版首页带壳效果</div>
+                            <canvas id="topHomePageCanvas" class="phone-canvas zoomable-canvas"
+                                style="width: 100%; max-height: 70vh;"></canvas>
+                        </div>
+
+                        <!-- 2. 下拉沉浸Banner预览 -->
+                        <div class="preview-card transparent-card" style="flex: 1; padding: 12px;">
+                            <div class="card-title" style="text-align: center; font-size: 14px;">下拉沉浸带壳效果</div>
+                            <canvas id="lightCanvas" class="phone-canvas zoomable-canvas"
+                                style="width: 100%; max-height: 70vh;"></canvas>
                         </div>
                     </div>
-                    <div class="main-column">
-                        <div class="preview-card transparent-card">
-                            <div class="card-title">独立 Banner 切图预览 (完整版)</div>
+
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+
+                        <!-- 大版独立 Banner -->
+                        <div class="preview-card transparent-card" style="padding: 10px;">
+                            <div class="card-title" style="font-size: 13px;">大版首页主 Banner (纯净切图)</div>
+                            <canvas id="topHomeBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
+                        </div>
+
+                        <!-- 完整的下拉 Banner (日间) -->
+                        <div class="preview-card transparent-card" style="padding: 10px;">
+                            <div class="card-title" style="font-size: 13px;">下拉沉浸切图 (日间完整版)</div>
                             <canvas id="lightBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
                         </div>
-                        <div class="preview-card transparent-card">
-                            <div class="card-title">夜间模式 Banner 预览</div>
+
+                        <!-- 完整的下拉 Banner (夜间) -->
+                        <div class="preview-card transparent-card" style="padding: 10px;">
+                            <div class="card-title" style="font-size: 13px;">下拉沉浸切图 (夜间完整版)</div>
                             <canvas id="darkBannerCanvas" class="banner-canvas zoomable-canvas"></canvas>
                         </div>
 
-                        <div class="preview-card transparent-card">
-                            <div class="spec-title-wrapper">
-                                <div class="spec-title-icon"></div>基础规范
-                            </div>
-                            <div class="spec-table">
-                                <div class="spec-row">
-                                    <div class="spec-label">图标尺寸：</div>
-                                    <div class="spec-val">1170*540 px &nbsp;&nbsp; 420*282 px</div>
-                                </div>
-                                <div class="spec-row">
-                                    <div class="spec-label">主标题：</div>
-                                    <div class="spec-val">主标题版权字体，字号：60号-90号内；</div>
-                                </div>
-                                <div class="spec-row">
-                                    <div class="spec-label">副标题：</div>
-                                    <div class="spec-val">副标题版权字体，字号：30号-45号内；</div>
-                                </div>
-                                <div class="spec-row">
-                                    <div class="spec-label">上线位置：</div>
-                                    <div class="spec-val">13.14版本首页top banner</div>
-                                </div>
-                                <div class="spec-row">
-                                    <div class="spec-label">格式：</div>
-                                    <div class="spec-val">jpeg</div>
-                                </div>
-                                <div class="spec-row note-row">
-                                    <div class="note-badge">注意1:</div>
-                                    <div class="note-text">仅第一帧会出现下拉banner，切需要在商业化走申请流程</div>
-                                </div>
-
-                                <div class="focus-box">
-                                    <div class="spec-row note-row">
-                                        <div class="note-badge">注意2:</div>
-                                        <div class="note-text">若申请首页弹窗资源，需同步放弃首页大 banner 资源</div>
+                        <div class="preview-card transparent-card" style="padding: 10px;">
+                            <details>
+                                <summary
+                                    style="cursor: pointer; outline: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; color: #333;">
+                                    <div class="spec-title-icon" style="margin-right: 6px; display: inline-block;">
                                     </div>
-                                    <div class="focus-title">重点关注</div>
+                                    <span style="flex: 1;">查看详细基础规范</span>
+                                    <span style="font-size: 12px; color: #888;">(点击展开)</span>
+                                </summary>
+                                <div class="spec-table" style="font-size: 11px; margin-top: 12px;">
+                                    <div class="spec-row">
+                                        <div class="spec-label">图标尺寸：</div>
+                                        <div class="spec-val">1170*540 px &nbsp;&nbsp; 420*282 px</div>
+                                    </div>
+                                    <div class="spec-row">
+                                        <div class="spec-label">主标题：</div>
+                                        <div class="spec-val">主标题版权字体，字号：60号-90号内；</div>
+                                    </div>
+                                    <div class="spec-row">
+                                        <div class="spec-label">副标题：</div>
+                                        <div class="spec-val">副标题版权字体，字号：30号-45号内；</div>
+                                    </div>
+                                    <div class="spec-row">
+                                        <div class="spec-label">上线位置：</div>
+                                        <div class="spec-val">13.14版本首页top banner</div>
+                                    </div>
+                                    <div class="spec-row">
+                                        <div class="spec-label">格式：</div>
+                                        <div class="spec-val">jpeg</div>
+                                    </div>
+                                    <div class="spec-row note-row">
+                                        <div class="note-badge">注意1:</div>
+                                        <div class="note-text">仅第一帧会出现下拉banner，切需要在商业化走申请流程</div>
+                                    </div>
+                                    <div class="focus-box" style="margin-top: 8px;">
+                                        <div class="spec-row note-row">
+                                            <div class="note-badge">注意2:</div>
+                                            <div class="note-text">若申请首页弹窗资源，需同步放弃首页大 banner 资源</div>
+                                        </div>
+                                        <div class="focus-title" style="top: -8px;">重点关注</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </details>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -424,17 +467,18 @@
             <div class="export-modal-header">选择需要导出的资源</div>
             <div class="export-modal-body">
 
-                <!-- 第一：SS级 首页顶部banner -->
                 <div class="export-group">
                     <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span
                             class="export-badge ss">【SS级】</span></div>
+                    <label><input type="checkbox" id="chkTopHomePhone" checked> 大版首页主 Banner (带壳预览)</label>
+                    <label><input type="checkbox" id="chkTopHomeBanner" checked> 大版首页主 Banner (独立底图)</label>
+
+                    <label><input type="checkbox" id="chkHomePhone" checked> 下拉沉浸 Banner (带壳预览)</label>
                     <label><input type="checkbox" id="chkHomeKV" checked> 独立 KV 切图 (420x282)</label>
-                    <label><input type="checkbox" id="chkHomeBannerLight" checked> 完整 Banner 切图 (日间)</label>
-                    <label><input type="checkbox" id="chkHomeBannerDark" checked> 完整 Banner 切图 (夜间)</label>
-                    <label><input type="checkbox" id="chkHomePhone" checked> 手机带壳效果预览 (日间)</label>
+                    <label><input type="checkbox" id="chkHomeBannerLight" checked> 下拉沉浸 Banner 切图 (日间)</label>
+                    <label><input type="checkbox" id="chkHomeBannerDark" checked> 下拉沉浸 Banner 切图 (夜间)</label>
                 </div>
 
-                <!-- 第二：SS级 首页feed 10出1 (已提到前面) -->
                 <div class="export-group">
                     <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span>
                     </div>
@@ -442,7 +486,6 @@
                     <label><input type="checkbox" id="chkFeedPhone" checked> 手机带壳效果预览</label>
                 </div>
 
-                <!-- 第三：S级 我的页面banner (已放到后面) -->
                 <div class="export-group">
                     <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span>
                     </div>
