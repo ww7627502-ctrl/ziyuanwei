@@ -15,7 +15,7 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
         { value: 'dev_1_1_13', text: '【A级】A1.1.13 NA - 搜索框icon' },
         { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
-        { value: 'dev_1_1_16', text: 'A1.1.16 NA - 我的空间/简单扫描banner' },
+        { value: 'dev_1_1_16', text: '【A级】A1.1.16 NA - 我的空间/简单扫描banner' },
         { value: 'dev_1_1_17', text: 'A1.1.17 NA - 活动中心' },
         { value: 'dev_1_1_18', text: 'A1.1.18 NA - 共享点对点' },
         { value: 'dev_1_1_19', text: 'A1.1.19 NA - 共享点对点icon（push）' },
@@ -51,6 +51,8 @@ const config = {
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
     feedExampleImage: 'assets/feed-image.png',
     searchBoxPage: 'assets/search-box-page.png', searchBoxIcon: 'assets/search-box-icon.png',
+    mySpacePage: 'assets/my-space-page.png', searchBtSvg: 'assets/search-bt.svg', searchArrowSvg: 'assets/search-arrow.svg',
+    mySpaceExampleImage: 'assets/search-banner-image.png', 
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
     colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' },
@@ -70,6 +72,7 @@ const homeControls = document.getElementById('homeControls');
 const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
 const searchIconControls = document.getElementById('searchIconControls');
+const mySpaceControls = document.getElementById('mySpaceControls');
 const developingPrompt = document.getElementById('developingPrompt');
 
 const viewDevelopingPrompt = document.getElementById('viewDevelopingPrompt');
@@ -77,6 +80,7 @@ const homeView = document.getElementById('homeView');
 const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 const searchIconView = document.getElementById('searchIconView');
+const mySpaceView = document.getElementById('mySpaceView');
 
 // 画布
 const topHomePageCanvas = document.getElementById('topHomePageCanvas'); const topHomePageCtx = topHomePageCanvas?.getContext('2d');
@@ -84,6 +88,7 @@ const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lig
 const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPageFullCtx = myPageFullCanvas?.getContext('2d');
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
 const searchPageCanvas = document.getElementById('searchPageCanvas'); const searchPageCtx = searchPageCanvas?.getContext('2d');
+const mySpacePageCanvas = document.getElementById('mySpacePageCanvas'); const mySpacePageCtx = mySpacePageCanvas?.getContext('2d');
 
 const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
@@ -92,13 +97,14 @@ const myPageCanvas = document.getElementById('myPageCanvas'); const myPageCtx = 
 const myPageDarkCanvas = document.getElementById('myPageDarkCanvas'); const myPageDarkCtx = myPageDarkCanvas?.getContext('2d');
 const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feedBannerCtx = feedBannerCanvas?.getContext('2d');
 const searchIconExportCanvas = document.getElementById('searchIconExportCanvas'); const searchIconExportCtx = searchIconExportCanvas?.getContext('2d');
+const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); const mySpaceExportCtx = mySpaceExportCanvas?.getContext('2d');
 
 // 输入控件
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
 const homeColorRadios = document.getElementsByName('homeColor'); const myPageColorRadios = document.getElementsByName('myPageColor');
 
-// 背景与细节控制
+// 首页底板控制
 const topBgModeRadios = document.getElementsByName('topBgMode');
 const topBgModeImage = document.getElementById('topBgModeImage');
 const topBgModeGradient = document.getElementById('topBgModeGradient');
@@ -109,6 +115,7 @@ const topGradAngle = document.getElementById('topGradAngle');
 const topGradAngleVal = document.getElementById('topGradAngleVal');
 const topSolidColor = document.getElementById('topSolidColor');
 
+// Feed底板控制
 const feedBgModeRadios = document.getElementsByName('feedBgMode');
 const feedBgModeImage = document.getElementById('feedBgModeImage');
 const feedBgModeGradient = document.getElementById('feedBgModeGradient');
@@ -123,6 +130,20 @@ const feedTitleInput = document.getElementById('feedTitle'); const feedTitleColo
 const feedSubtitleInput = document.getElementById('feedSubtitle'); const feedSubtitleColor = document.getElementById('feedSubtitleColor');
 const feedBtnTextInput = document.getElementById('feedBtnText');
 
+// 我的空间控制
+const mySpaceBgModeRadios = document.getElementsByName('mySpaceBgMode');
+const mySpaceBgModeSolid = document.getElementById('mySpaceBgModeSolid');
+const mySpaceBgModeGradient = document.getElementById('mySpaceBgModeGradient');
+const mySpaceSolidColor = document.getElementById('mySpaceSolidColor');
+const mySpaceGradColor1 = document.getElementById('mySpaceGradColor1');
+const mySpaceGradColor2 = document.getElementById('mySpaceGradColor2');
+
+const mySpaceTitleInput = document.getElementById('mySpaceTitle');
+const mySpaceSubInput = document.getElementById('mySpaceSub');
+const mySpaceBtnTextInput = document.getElementById('mySpaceBtnText');
+const mySpaceBtnGrad1 = document.getElementById('mySpaceBtnGrad1'); 
+const mySpaceBtnGrad2 = document.getElementById('mySpaceBtnGrad2');
+
 // 全局状态与缓存
 let userImgObj = null; 
 let feedBgBannerObj = null; 
@@ -131,6 +152,7 @@ let topBgBannerObj = null;
 let userTopBannerTitleObj = null; 
 let currentFeedBgMode = 'image'; 
 let homeColor = 'blue'; let myPageColor = 'blue';
+let currentMySpaceBgMode = 'solid';
 const globalImageCache = {}; const globalSvgTextCache = {};
 
 // ==================== 图片处理与加载函数 ====================
@@ -328,7 +350,6 @@ async function renderSearchIcon() {
         searchPageCtx.drawImage(bgImg, 0, 0);
 
         if (iconImg && iconImg.width) {
-            // 页面上的 128x128 预览区域，采用 contain 缩放
             const targetX = 48, targetY = 359, targetW = 128, targetH = 128;
             searchPageCtx.save();
             const scale = Math.min(targetW / iconImg.width, targetH / iconImg.height);
@@ -340,7 +361,6 @@ async function renderSearchIcon() {
         }
     }
 
-    // 绘制用于导出的 204x204 纯净切图
     if (searchIconExportCanvas && searchIconExportCtx) {
         searchIconExportCanvas.width = 204;
         searchIconExportCanvas.height = 204;
@@ -358,10 +378,147 @@ async function renderSearchIcon() {
     }
 }
 
+// ==================== 我的空间/简单扫描 Banner ====================
+async function createMySpaceBannerCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1182; canvas.height = 252;
+    const ctx = canvas.getContext('2d');
+    setupHighQualityContext(ctx);
+
+    // 1. 绘制底板
+    if (currentMySpaceBgMode === 'solid') {
+        ctx.fillStyle = mySpaceSolidColor.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else {
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        grad.addColorStop(0, mySpaceGradColor1.value);
+        grad.addColorStop(1, mySpaceGradColor2.value);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // 2. 绘制主标题 (固定黑色)
+    const titleTxt = (mySpaceTitleInput?.value || '主标题最多11个文字').slice(0, 11);
+    ctx.font = 'normal 50px "FZLanTingHeiS-DB-GB", sans-serif';
+    ctx.fillStyle = '#000000';
+    ctx.textBaseline = 'top'; // 统一左上角对齐
+    ctx.fillText(titleTxt, 62, 62);
+
+    // 3. 绘制副标题 (固定灰色 #777777)
+    const subTxt = (mySpaceSubInput?.value || '副标题最多8个字').slice(0, 8);
+    ctx.font = 'normal 42px "FZLanTingHeiS-R-GB", sans-serif';
+    ctx.fillStyle = '#777777';
+    ctx.textBaseline = 'top';
+    ctx.fillText(subTxt, 62, 142);
+
+    // 4. 绘制渐变按钮 
+    const btnSvg = await loadImage(config.searchBtSvg);
+    const btnX = 410, btnY = 144; // 143.63 取整
+
+    if (btnSvg && btnSvg.width) {
+        // 创建一个独立的小画板，尺寸和按钮完全一样
+        const btnCanvas = document.createElement('canvas');
+        btnCanvas.width = btnSvg.width; btnCanvas.height = btnSvg.height;
+        const btnCtx = btnCanvas.getContext('2d');
+        
+        // --- 核心：在独立画板上绘制并填充渐变 ---
+        btnCtx.drawImage(btnSvg, 0, 0);
+        btnCtx.globalCompositeOperation = 'source-in';
+        
+        const btnGrad = btnCtx.createLinearGradient(0, 0, btnCanvas.width, 0);
+        btnGrad.addColorStop(0, mySpaceBtnGrad1.value);
+        btnGrad.addColorStop(1, mySpaceBtnGrad2.value);
+        btnCtx.fillStyle = btnGrad;
+        btnCtx.fillRect(0, 0, btnCanvas.width, btnCanvas.height);
+        
+        // 恢复正常模式，准备画字和箭头
+        btnCtx.globalCompositeOperation = 'source-over';
+        
+        // 文字：在独立画板里，绝对左上角对齐
+        const btnTxt = mySpaceBtnTextInput.value || '去查看';
+        btnCtx.font = 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif';
+        btnCtx.fillStyle = '#FFFFFF';
+        btnCtx.textBaseline = 'top';
+        btnCtx.textAlign = 'left';
+        btnCtx.fillText(btnTxt, 22, 7.26);
+
+        // 箭头：在独立画板里，绝对坐标对齐
+        const arrowSvg = await loadImage(config.searchArrowSvg);
+        if (arrowSvg && arrowSvg.width) {
+            btnCtx.drawImage(arrowSvg, 146, 13.38); 
+        }
+
+        // 最后，把整个小画板贴到大 Banner 上
+        ctx.drawImage(btnCanvas, btnX, btnY);
+    }
+
+    // 5. 绘制右侧配图 (300x220, 位于 x795, y17)
+    const defaultMySpaceImg = await loadImage(config.mySpaceExampleImage);
+    const imgToDraw = userImgObj || defaultMySpaceImg; // 全局上传的图 或 默认图
+
+    if (imgToDraw && imgToDraw.width) {
+        ctx.save();
+        const imgX = 795, imgY = 17, imgW = 300, imgH = 220;
+        ctx.beginPath();
+        ctx.rect(imgX, imgY, imgW, imgH);
+        ctx.clip(); // 限制绘制区域，保证绝不超框
+        
+        // 等比缩放，居中裁剪
+        const scale = Math.max(imgW / imgToDraw.width, imgH / imgToDraw.height); // 使用 max 保证填满整个区域
+        const drawW = imgToDraw.width * scale;
+        const drawH = imgToDraw.height * scale;
+        const drawX = imgX + (imgW - drawW) / 2;
+        const drawY = imgY + (imgH - drawH) / 2;
+        
+        drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
+        ctx.restore();
+    }
+
+    return canvas;
+}
+
+async function renderMySpaceCanvas() {
+    const bannerCanvas = await createMySpaceBannerCanvas();
+    
+    // 渲染独立切图 (1182x252) - 无圆角
+    if (mySpaceExportCanvas && mySpaceExportCtx) {
+        mySpaceExportCanvas.width = bannerCanvas.width;
+        mySpaceExportCanvas.height = bannerCanvas.height;
+        setupHighQualityContext(mySpaceExportCtx);
+        mySpaceExportCtx.clearRect(0, 0, mySpaceExportCanvas.width, mySpaceExportCanvas.height);
+        
+        // 直接绘制，去掉了之前的圆角 clip
+        mySpaceExportCtx.drawImage(bannerCanvas, 0, 0);
+    }
+
+    // 渲染页面预览 (等比缩放)
+    if (!mySpacePageCanvas || !mySpacePageCtx) return;
+    const pageImg = await loadImage(config.mySpacePage);
+    if (pageImg && pageImg.width) {
+        mySpacePageCanvas.width = pageImg.width;
+        mySpacePageCanvas.height = pageImg.height;
+        setupHighQualityContext(mySpacePageCtx);
+        mySpacePageCtx.clearRect(0, 0, mySpacePageCanvas.width, mySpacePageCanvas.height);
+        mySpacePageCtx.drawImage(pageImg, 0, 0);
+
+        const targetW = 1107;
+        const scale = targetW / bannerCanvas.width; // 缩放比 ≈ 0.9365
+        const targetH = bannerCanvas.height * scale; // ≈ 236
+        const drawX = 31, drawY = 847;
+        const scaledRadius = 50 * scale;
+
+        mySpacePageCtx.save();
+        drawRoundRect(mySpacePageCtx, drawX, drawY, targetW, targetH, scaledRadius);
+        mySpacePageCtx.clip();
+        mySpacePageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
+        mySpacePageCtx.restore();
+    }
+}
+
 
 // ==================== 界面交互事件 ====================
 
-// 关键更新：去掉多余的SVG图标，回归纯粹的极简文字列表
+// 极简侧边栏列表
 function updateResourceDropdown(terminalId) {
     const resourceList = document.getElementById('resourceList');
     if (!resourceList) return;
@@ -371,13 +528,10 @@ function updateResourceDropdown(terminalId) {
     pages.forEach((page, index) => {
         const item = document.createElement('div');
         item.className = 'resource-item';
-        // 默认选中逻辑
         if ((terminalId === 'NA' && page.value === 'na_home') || (terminalId !== 'NA' && index === 0)) {
             item.classList.add('active');
         }
         item.dataset.value = page.value;
-
-        // 🌟 直接只保留文字
         item.innerHTML = `<div class="resource-item-text" title="${page.text}">${page.text}</div>`;
 
         item.addEventListener('click', (e) => {
@@ -385,50 +539,31 @@ function updateResourceDropdown(terminalId) {
             item.classList.add('active');
             switchResourceView(page.value);
         });
-
         resourceList.appendChild(item);
     });
 
     const activeItem = resourceList.querySelector('.active');
-    if (activeItem) {
-        switchResourceView(activeItem.dataset.value);
-    } else {
-        switchResourceView(null);
-    }
+    if (activeItem) switchResourceView(activeItem.dataset.value);
+    else switchResourceView(null);
 }
 
-// 提取出来的视图切换逻辑
 function switchResourceView(selected) {
-    [homeControls, myPageControls, feedControls, searchIconControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, searchIconView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, searchIconView, mySpaceView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
 
-    if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed' || selected === 'dev_1_1_13') {
+    if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed' || selected === 'dev_1_1_13' || selected === 'dev_1_1_16') {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
     }
 
-    if (selected === 'na_home') { 
-        homeControls.classList.add('active'); 
-        homeView.classList.add('active'); 
-    } 
-    else if (selected === 'na_mypage') { 
-        myPageControls.classList.add('active'); 
-        myPageView.classList.add('active'); 
-    } 
-    else if (selected === 'na_feed') { 
-        feedControls.classList.add('active'); 
-        feedView.classList.add('active'); 
-    } 
-    else if (selected === 'dev_1_1_13') {
-        searchIconControls.classList.add('active');
-        searchIconView.classList.add('active');
-    }
-    else { 
-        developingPrompt.classList.remove('hidden'); 
-        viewDevelopingPrompt.classList.add('active'); 
-    }
+    if (selected === 'na_home') { homeControls.classList.add('active'); homeView.classList.add('active'); } 
+    else if (selected === 'na_mypage') { myPageControls.classList.add('active'); myPageView.classList.add('active'); } 
+    else if (selected === 'na_feed') { feedControls.classList.add('active'); feedView.classList.add('active'); } 
+    else if (selected === 'dev_1_1_13') { searchIconControls.classList.add('active'); searchIconView.classList.add('active'); }
+    else if (selected === 'dev_1_1_16') { mySpaceControls.classList.add('active'); mySpaceView.classList.add('active'); }
+    else { developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active'); }
 }
 
 const buBtns = document.querySelectorAll('.bu-btn');
@@ -442,7 +577,7 @@ buBtns.forEach(btn => {
         } else { 
             document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); 
             wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden'); 
-            [homeView, myPageView, feedView, searchIconView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active')); 
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active')); 
         }
     });
 });
@@ -469,17 +604,11 @@ function openDetailModal(targetType) {
     } 
     else if (targetType === 'homeLight') {
         detailModalTitle.innerText = '小图状态 Banner - 纯净图';
-        detailImagesBox.innerHTML = `
-            <div class="banner-label">日间完整版</div><img src="${lightBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;">
-            <div class="banner-label" style="margin-top:16px;">夜间完整版</div><img src="${darkBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;">
-        `;
+        detailImagesBox.innerHTML = `<div class="banner-label">日间完整版</div><img src="${lightBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;"><div class="banner-label" style="margin-top:16px;">夜间完整版</div><img src="${darkBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;">`;
     }
     else if (targetType === 'myPage') {
         detailModalTitle.innerText = '我的页面 Banner - 纯净图';
-        detailImagesBox.innerHTML = `
-            <div class="banner-label">日间模式</div><img src="${myPageCanvas.toDataURL()}" style="max-height: 250px; width: auto;">
-            <div class="banner-label" style="margin-top:16px;">夜间模式</div><img src="${myPageDarkCanvas.toDataURL()}" style="max-height: 250px; width: auto;">
-        `;
+        detailImagesBox.innerHTML = `<div class="banner-label">日间模式</div><img src="${myPageCanvas.toDataURL()}" style="max-height: 250px; width: auto;"><div class="banner-label" style="margin-top:16px;">夜间模式</div><img src="${myPageDarkCanvas.toDataURL()}" style="max-height: 250px; width: auto;">`;
     }
     else if (targetType === 'feed') {
         detailModalTitle.innerText = 'Feed10出1卡片 - 纯净图';
@@ -488,6 +617,10 @@ function openDetailModal(targetType) {
     else if (targetType === 'searchIcon') {
         detailModalTitle.innerText = '搜索框 icon - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (204x204)</div><img src="${searchIconExportCanvas.toDataURL()}" style="max-height: 204px; width: auto; border: 1px dashed #ccc;">`;
+    }
+    else if (targetType === 'mySpace') {
+        detailModalTitle.innerText = '我的空间 Banner - 纯净切图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (1182x252)</div><img src="${mySpaceExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     }
     detailModal.style.display = 'flex';
 }
@@ -522,6 +655,18 @@ feedGradColor1?.addEventListener('input', renderFeedCanvas); feedGradColor2?.add
 feedGradAngle?.addEventListener('input', (e) => { feedGradAngleVal.innerText = e.target.value + '°'; renderFeedCanvas(); });
 feedTitleInput?.addEventListener('input', renderFeedCanvas); feedTitleColor?.addEventListener('input', renderFeedCanvas); feedSubtitleInput?.addEventListener('input', renderFeedCanvas); feedSubtitleColor?.addEventListener('input', renderFeedCanvas); feedBtnTextInput?.addEventListener('input', renderFeedCanvas);
 
+// 我的空间监听
+mySpaceBgModeRadios.forEach(r => r.addEventListener('change', async e => {
+    currentMySpaceBgMode = e.target.value; mySpaceBgModeSolid.classList.add('hidden'); mySpaceBgModeGradient.classList.add('hidden');
+    if (currentMySpaceBgMode === 'solid') mySpaceBgModeSolid.classList.remove('hidden'); else mySpaceBgModeGradient.classList.remove('hidden');
+    await renderMySpaceCanvas();
+}));
+mySpaceSolidColor?.addEventListener('input', renderMySpaceCanvas); mySpaceGradColor1?.addEventListener('input', renderMySpaceCanvas); mySpaceGradColor2?.addEventListener('input', renderMySpaceCanvas);
+mySpaceTitleInput?.addEventListener('input', renderMySpaceCanvas);
+mySpaceSubInput?.addEventListener('input', renderMySpaceCanvas);
+mySpaceBtnTextInput?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad1?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad2?.addEventListener('input', renderMySpaceCanvas);
+
+
 // ==================== 文件上传与拖拽 ====================
 function handleFileUpload(file, callback) {
     if (!file || !file.type.startsWith('image/')) return;
@@ -537,8 +682,7 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
     }
 }
 
-// 核心联动：全局图上传时，也会触发 renderSearchIcon
-bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => { userImgObj = await loadImage(src); await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); });
+bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => { userImgObj = await loadImage(src); await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); await renderMySpaceCanvas(); });
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
@@ -564,7 +708,6 @@ function initExportModal() {
             const isChecked = e.target.checked;
             itemChks.forEach(chk => chk.checked = isChecked);
         });
-
         itemChks.forEach(chk => {
             chk.addEventListener('change', () => {
                 const allChecked = Array.from(itemChks).every(c => c.checked);
@@ -608,9 +751,11 @@ function initExportModal() {
             if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
 
-            // 新增搜索框的打包逻辑
             if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) { bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas)); selectedCount++; }
             if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) { previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas)); selectedCount++; }
+
+            if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas) { bannerFolder.file(`我的空间-独立切图(1182x252).png`, await canvasToBlob(mySpaceExportCanvas)); selectedCount++; }
+            if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas) { previewFolder.file(`我的空间-页面预览.png`, await canvasToBlob(mySpacePageCanvas)); selectedCount++; }
 
             if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
             const zipBlob = await zip.generateAsync({ type: 'blob' }); 
@@ -631,8 +776,7 @@ function initExportModal() {
 window.onload = async () => {
     if ('fonts' in document) { try { await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 38px "FZLTHK"'); await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); } catch (e) { } }
     
-    // 初始化时也调用一次渲染搜索框
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); await renderMySpaceCanvas();
     
     updateResourceDropdown('NA'); initExportModal();
 };
