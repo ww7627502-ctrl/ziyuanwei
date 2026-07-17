@@ -28,8 +28,7 @@
             <div class="sidebar-section">
                 <div class="section-title"><span class="step-label">1</span>所属业务线</div>
                 <div class="bu-selector">
-                    <button class="bu-btn active" data-bu="wangpan"><img src="assets/1baiduwangpan.svg"
-                            alt="网盘"></button>
+                    <button class="bu-btn active" data-bu="wangpan"><img src="assets/1baiduwangpan.svg" alt="网盘"></button>
                     <button class="bu-btn" data-bu="yike"><img src="assets/2yikexiangce.svg" alt="一刻"></button>
                     <button class="bu-btn" data-bu="chuhai"><img src="assets/3chuhaifangxiang.svg" alt="出海"></button>
                 </div>
@@ -52,8 +51,7 @@
                     </div>
                 </div>
                 <!-- 增加了 flex: 1 和 overflow: hidden 让它填满底部并支持内部滚动 -->
-                <div class="sidebar-section"
-                    style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
+                <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
                     <div class="section-title"><span class="step-label">3</span>页面配置 (资源位)</div>
                     <!-- 改成了 resourceList -->
                     <div id="resourceList" class="resource-list"></div>
@@ -66,8 +64,7 @@
 
             <!-- 修复：将内联的 flex 移到 CSS 中，避免无法隐藏 -->
             <div id="viewDevelopingPrompt" class="view-section prompt-view">
-                <img src="assets/hero-banner.png"
-                    style="width: 200px; opacity: 0.2; filter: grayscale(1); margin-bottom: 20px;">
+                <img src="assets/hero-banner.png" style="width: 200px; opacity: 0.2; filter: grayscale(1); margin-bottom: 20px;">
                 <h2 style="font-weight: normal; font-size: 20px; color: #888;">当前页面的视觉预览正在接入中...</h2>
             </div>
 
@@ -79,8 +76,7 @@
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">大图状态</div>
-                        <canvas id="topHomePageCanvas" class="phone-canvas zoomable-canvas"
-                            data-target="homeTop"></canvas>
+                        <canvas id="topHomePageCanvas" class="phone-canvas zoomable-canvas" data-target="homeTop"></canvas>
                     </div>
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">小图状态</div>
@@ -92,12 +88,12 @@
             <!-- 2. 我的页面 banner -->
             <div id="myPageView" class="view-section">
                 <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
-                    提示：点击下方手机预览图中的banner可查看纯净版大图</div>
+                    提示：点击下方手机预览图中的banner可查看纯净版大图
+                </div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">我的页面</div>
-                        <canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas"
-                            data-target="myPage"></canvas>
+                        <canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas" data-target="myPage"></canvas>
                     </div>
                 </div>
             </div>
@@ -105,7 +101,8 @@
             <!-- 3. 首页 feed 10出1 -->
             <div id="feedView" class="view-section">
                 <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
-                    提示：点击下方手机预览图中的banner可查看纯净版大图</div>
+                    提示：点击下方手机预览图中的banner可查看纯净版大图
+                </div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">Feed10出1</div>
@@ -113,6 +110,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 4. 搜索框 icon (新增) -->
+            <div id="searchIconView" class="view-section">
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                    提示：点击下方手机预览图可查看纯净版切图
+                </div>
+                <div class="preview-grid flex-center">
+                    <div class="preview-card transparent-card">
+                        <div class="card-title text-center">搜索框 icon</div>
+                        <canvas id="searchPageCanvas" class="phone-canvas zoomable-canvas" data-target="searchIcon"></canvas>
+                    </div>
+                </div>
+            </div>
+
         </main>
 
         <!-- ==================== 右侧：参数控制面板 ==================== -->
@@ -121,8 +132,7 @@
 
                 <!-- 全局通用配图 (保持独立) -->
                 <div id="baseGlobalPicArea" class="sidebar-section">
-                    <div class="section-title"
-                        style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">全局基础配图</div>
+                    <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">全局基础配图</div>
                     <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
                         <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png" alt="当前配图">
                         <span class="upload-text">点击或将图片拖拽到此处替换</span>
@@ -132,7 +142,6 @@
 
                 <!-- ================= 首页参数 (按视图分类) ================= -->
                 <div id="homeControls" class="control-group active">
-
                     <!-- 分组 1: 大图状态 -->
                     <div class="panel-group">
                         <div class="panel-group-header">大图状态Banner 配置</div>
@@ -145,50 +154,37 @@
                                     <label><input type="radio" name="topBgMode" value="solid"> 纯色</label>
                                 </div>
                                 <div id="topBgModeImage">
-                                    <label id="topBgUploadDropZone" class="upload-drop-zone" for="topBgImageUpload"
-                                        style="padding: 10px; min-height: 60px;">
-                                        <img id="topBgUploadPreviewImg" class="upload-preview-img"
-                                            src="assets/home-page-main-banner.png" alt="当前底板"
-                                            style="max-height: 30px; object-fit: contain;">
+                                    <label id="topBgUploadDropZone" class="upload-drop-zone" for="topBgImageUpload" style="padding: 10px; min-height: 60px;">
+                                        <img id="topBgUploadPreviewImg" class="upload-preview-img" src="assets/home-page-main-banner.png" alt="当前底板" style="max-height: 30px; object-fit: contain;">
                                         <span class="upload-text" style="font-size: 11px; margin-top: 4px;">替换底图</span>
                                         <input type="file" id="topBgImageUpload" style="display:none;" accept="image/*">
                                     </label>
                                 </div>
                                 <div id="topBgModeGradient" class="hidden">
-                                    <div
-                                        style="background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div style="background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
                                         <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                                            <div class="color-picker-wrap"><span>起始</span><input type="color"
-                                                    id="topGradColor1" value="#B4EC51"></div>
-                                            <div class="color-picker-wrap"><span>终止</span><input type="color"
-                                                    id="topGradColor2" value="#429321"></div>
+                                            <div class="color-picker-wrap"><span>起始</span><input type="color" id="topGradColor1" value="#B4EC51"></div>
+                                            <div class="color-picker-wrap"><span>终止</span><input type="color" id="topGradColor2" value="#429321"></div>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span style="font-size: 12px; color: #666; width: 28px;">角度</span>
-                                            <input type="range" id="topGradAngle" min="0" max="360" value="90"
-                                                style="flex: 1;">
-                                            <span id="topGradAngleVal"
-                                                style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">90°</span>
+                                            <input type="range" id="topGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                            <span id="topGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">90°</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="topBgModeSolid" class="hidden">
-                                    <div class="input-group"
-                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
                                         <span style="margin:0;">背景色:</span>
-                                        <input type="color" id="topSolidColor" value="#E0F2FE"
-                                            style="width: 100%; height: 28px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                        <input type="color" id="topSolidColor" value="#E0F2FE" style="width: 100%; height: 28px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="sidebar-section">
                                 <div class="section-title">标题图替换 (660x252)</div>
-                                <label id="topBannerTitleDropZone" class="upload-drop-zone" for="topBannerTitleUpload"
-                                    style="padding: 10px; min-height: 60px;">
-                                    <img id="topBannerTitlePreviewImg" class="upload-preview-img"
-                                        src="assets/top-banner-w.png" alt="当前标题图"
-                                        style="max-height: 30px; object-fit: contain;">
+                                <label id="topBannerTitleDropZone" class="upload-drop-zone" for="topBannerTitleUpload" style="padding: 10px; min-height: 60px;">
+                                    <img id="topBannerTitlePreviewImg" class="upload-preview-img" src="assets/top-banner-w.png" alt="当前标题图" style="max-height: 30px; object-fit: contain;">
                                     <span class="upload-text" style="font-size: 11px; margin-top: 4px;">替换标题图</span>
                                     <input type="file" id="topBannerTitleUpload" style="display:none;" accept="image/*">
                                 </label>
@@ -241,14 +237,10 @@
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title">文案修改</div>
-                                <div class="input-group"><span>胶囊文字:</span><input type="text" id="textCapsule"
-                                        value="三个字" maxlength="3"></div>
-                                <div class="input-group"><span>大标题(最多9字):</span><input type="text" id="myPageTitle"
-                                        value="主标题九个字" maxlength="9"></div>
-                                <div class="input-group"><span>高亮文字:</span><input type="text" id="myPageHighlight"
-                                        value="九个" maxlength="9"></div>
-                                <div class="input-group"><span>副标题(最多8字):</span><input type="text" id="myPageSubtitle"
-                                        value="副标题八个字" maxlength="8"></div>
+                                <div class="input-group"><span>胶囊文字:</span><input type="text" id="textCapsule" value="三个字" maxlength="3"></div>
+                                <div class="input-group"><span>大标题(最多9字):</span><input type="text" id="myPageTitle" value="主标题九个字" maxlength="9"></div>
+                                <div class="input-group"><span>高亮文字:</span><input type="text" id="myPageHighlight" value="九个" maxlength="9"></div>
+                                <div class="input-group"><span>副标题(最多8字):</span><input type="text" id="myPageSubtitle" value="副标题八个字" maxlength="8"></div>
                             </div>
                         </div>
                     </div>
@@ -268,38 +260,28 @@
                                 </div>
                                 <div id="feedBgModeImage">
                                     <label id="feedBgUploadDropZone" class="upload-drop-zone" for="feedBgImageUpload">
-                                        <img id="feedBgUploadPreviewImg" class="upload-preview-img"
-                                            src="assets/home-feed-banner.png" alt="当前底板">
+                                        <img id="feedBgUploadPreviewImg" class="upload-preview-img" src="assets/home-feed-banner.png" alt="当前底板">
                                         <span class="upload-text">点击或将图拖拽到此处替换底板</span>
-                                        <input type="file" id="feedBgImageUpload" style="display:none;"
-                                            accept="image/*">
+                                        <input type="file" id="feedBgImageUpload" style="display:none;" accept="image/*">
                                     </label>
                                 </div>
                                 <div id="feedBgModeGradient" class="hidden">
-                                    <div
-                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <div
-                                            style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
-                                            <div class="color-picker-wrap"><span>起始色</span><input type="color"
-                                                    id="feedGradColor1" value="#FFF099"></div>
-                                            <div class="color-picker-wrap"><span>终止色</span><input type="color"
-                                                    id="feedGradColor2" value="#F2F5F8"></div>
+                                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div class="color-picker-wrap"><span>起始色</span><input type="color" id="feedGradColor1" value="#FFF099"></div>
+                                            <div class="color-picker-wrap"><span>终止色</span><input type="color" id="feedGradColor2" value="#F2F5F8"></div>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span style="font-size: 12px; color: #666; width: 36px;">角度</span>
-                                            <input type="range" id="feedGradAngle" min="0" max="360" value="180"
-                                                style="flex: 1;">
-                                            <span id="feedGradAngleVal"
-                                                style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">180°</span>
+                                            <input type="range" id="feedGradAngle" min="0" max="360" value="180" style="flex: 1;">
+                                            <span id="feedGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">180°</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="feedBgModeSolid" class="hidden">
-                                    <div class="input-group"
-                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
                                         <span style="margin:0;">背景色:</span>
-                                        <input type="color" id="feedSolidColor" value="#FFFFFF"
-                                            style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                        <input type="color" id="feedSolidColor" value="#FFFFFF" style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                             </div>
@@ -307,20 +289,16 @@
                             <div class="sidebar-section">
                                 <div class="section-title">文案与颜色配置 (居中)</div>
                                 <div class="input-group">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">主标题 (最多7字):</span>
-                                        <input type="color" id="feedTitleColor" value="#000000"
-                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="feedTitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="feedTitle" value="主标题7个字" maxlength="7">
                                 </div>
                                 <div class="input-group">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">副标题 (最多10字):</span>
-                                        <input type="color" id="feedSubtitleColor" value="#000000"
-                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="feedSubtitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="feedSubtitle" value="副标题字数最多10个字" maxlength="10">
                                 </div>
@@ -328,6 +306,20 @@
                                     <span>按钮文案 (最多4字):</span>
                                     <input type="text" id="feedBtnText" value="立即参加" maxlength="4">
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= 搜索框 icon 参数 ================= -->
+                <div id="searchIconControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">搜索框 icon 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】本资源位仅需一张配图。<br>
+                                👉 请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                系统会自动在页面等比缩放为 128x128 预览，并生成 204x204 纯净切图导出。
                             </div>
                         </div>
                     </div>
@@ -349,6 +341,7 @@
         <canvas id="myPageCanvas"></canvas>
         <canvas id="myPageDarkCanvas"></canvas>
         <canvas id="feedBannerCanvas"></canvas>
+        <canvas id="searchIconExportCanvas"></canvas>
     </div>
 
     <!-- ==================== 大图详情 Modal ==================== -->
@@ -370,48 +363,38 @@
             <div class="export-modal-header">选择需要导出的资源</div>
             <div class="export-modal-body">
 
-                <!-- 新增：全选/取消全选 控制区 -->
                 <div style="padding-bottom: 12px; border-bottom: 1px solid #e0e6ed; margin-bottom: 16px;">
-                    <label
-                        style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #258AFF;">
-                        <input type="checkbox" id="selectAllExport" checked
-                            style="cursor: pointer; width: 16px; height: 16px;">
-                        全选 / 取消全选
+                    <label style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #258AFF;">
+                        <input type="checkbox" id="selectAllExport" checked style="cursor: pointer; width: 16px; height: 16px;"> 全选 / 取消全选
                     </label>
                 </div>
 
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span
-                            class="export-badge ss">【SS级】</span></div>
-                    <label><input type="checkbox" id="chkTopHomePhone" class="export-item-chk" checked>
-                        首页-大图状态预览</label>
-                    <label><input type="checkbox" id="chkTopHomeBanner" class="export-item-chk" checked>
-                        首页-大图状态Banner</label>
+                    <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span class="export-badge ss">【SS级】</span></div>
+                    <label><input type="checkbox" id="chkTopHomePhone" class="export-item-chk" checked> 首页-大图状态预览</label>
+                    <label><input type="checkbox" id="chkTopHomeBanner" class="export-item-chk" checked> 首页-大图状态Banner</label>
                     <label><input type="checkbox" id="chkHomePhone" class="export-item-chk" checked> 首页-小图状态预览</label>
-                    <label><input type="checkbox" id="chkHomeBannerLight" class="export-item-chk" checked>
-                        首页-小图状态Banner(日间)</label>
-                    <label><input type="checkbox" id="chkHomeBannerDark" class="export-item-chk" checked>
-                        首页-小图状态Banner(夜间)</label>
-                    <label><input type="checkbox" id="chkHomeKV" class="export-item-chk" checked> 首页-独立切图
-                        (420x282)</label>
+                    <label><input type="checkbox" id="chkHomeBannerLight" class="export-item-chk" checked> 首页-小图状态Banner(日间)</label>
+                    <label><input type="checkbox" id="chkHomeBannerDark" class="export-item-chk" checked> 首页-小图状态Banner(夜间)</label>
+                    <label><input type="checkbox" id="chkHomeKV" class="export-item-chk" checked> 首页-独立切图 (420x282)</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span>
-                    </div>
-                    <label><input type="checkbox" id="chkFeedBannerExport" class="export-item-chk" checked>
-                        首页-Feed10出1banner</label>
-                    <label><input type="checkbox" id="chkFeedPhone" class="export-item-chk" checked>
-                        首页-Feed10出1预览</label>
+                    <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span></div>
+                    <label><input type="checkbox" id="chkFeedBannerExport" class="export-item-chk" checked> 首页-Feed10出1banner</label>
+                    <label><input type="checkbox" id="chkFeedPhone" class="export-item-chk" checked> 首页-Feed10出1预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span>
-                    </div>
-                    <label><input type="checkbox" id="chkMyPageBannerLight" class="export-item-chk" checked>
-                        我的-Banner(日间)</label>
-                    <label><input type="checkbox" id="chkMyPageBannerDark" class="export-item-chk" checked>
-                        我的-Banner(夜间)</label>
+                    <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span></div>
+                    <label><input type="checkbox" id="chkMyPageBannerLight" class="export-item-chk" checked> 我的-Banner(日间)</label>
+                    <label><input type="checkbox" id="chkMyPageBannerDark" class="export-item-chk" checked> 我的-Banner(夜间)</label>
                     <label><input type="checkbox" id="chkMyPagePhone" class="export-item-chk" checked> 我的-预览</label>
                 </div>
+                <div class="export-group">
+                    <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkSearchIconExport" class="export-item-chk" checked> 搜索框-独立切图 (204x204)</label>
+                    <label><input type="checkbox" id="chkSearchPageExport" class="export-item-chk" checked> 搜索框-页面预览</label>
+                </div>
+
             </div>
             <div class="export-modal-footer">
                 <button class="btn secondary-btn" id="cancelExportBtn">取消</button>
@@ -422,5 +405,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
