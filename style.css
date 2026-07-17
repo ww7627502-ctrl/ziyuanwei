@@ -122,6 +122,7 @@
     padding: 0;
 }
 
+/* 核心布局修复：严格锁定全局高度 */
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
@@ -129,6 +130,7 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
+    margin: 0;
 }
 
 /* 头部 */
@@ -186,33 +188,46 @@ body {
     width: 100vw;
 }
 
+/* 基础侧边栏 */
 .sidebar {
     width: 340px;
     min-width: 340px;
     background: #fff;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
     padding: 16px;
 }
 
+/* 左侧边栏专用限制：打死全局滚动，只允许列表区域滚动 */
 .left-sidebar {
     border-right: 1px solid var(--border-color);
     width: 300px;
     min-width: 300px;
+    overflow: hidden !important;
+    padding-bottom: 0;
 }
 
+/* 右侧参数面板保持内部整体滚动 */
 .right-sidebar {
     border-left: 1px solid var(--border-color);
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.03);
     z-index: 5;
     background: #fafafa;
+    overflow-y: auto;
+}
+
+/* 关键高度传递管道：打通步骤2和步骤3的容器 */
+#wangpanWorkspace {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 }
 
 /* ========================================================== */
-/* 右侧面板卡片分组样式 (新增) */
+/* 右侧面板卡片分组样式 */
 /* ========================================================== */
 .panel-group {
     background: #fff;
@@ -238,10 +253,9 @@ body {
 
 .panel-group-body .sidebar-section:last-child {
     margin-bottom: 0;
-    /* 移除组内最后一个元素的底边距 */
 }
 
-/* 中间画板工作区 (Figma 风格底色) */
+/* 中间画板工作区 */
 .center-workspace {
     flex: 1;
     background: #E5E5E5;
@@ -294,21 +308,6 @@ body {
 .bu-btn.active img {
     filter: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-.custom-select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 13px;
-    outline: none;
-    background: #f9f9f9;
-}
-
-.custom-select:focus {
-    border-color: var(--primary-color);
-    background: #fff;
 }
 
 .upload-drop-zone {
@@ -451,7 +450,6 @@ body {
     animation: fadeIn 0.3s;
 }
 
-/* 修复空状态无法隐藏的冲突：只有 active 时才设为 flex */
 .view-section.prompt-view.active {
     display: flex;
     flex-direction: column;
@@ -476,7 +474,7 @@ body {
 }
 
 /* ========================================================== */
-/* 弹窗样式 (通用与全新大图展示弹窗) */
+/* 弹窗样式 */
 /* ========================================================== */
 .modal {
     display: none;
@@ -492,7 +490,6 @@ body {
     backdrop-filter: blur(4px);
 }
 
-/* 全新的无规范大图弹窗 */
 .detail-modal-panel {
     background: #fff;
     border-radius: 12px;
@@ -707,4 +704,108 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]:focus::-webkit-slider-thumb {
     box-shadow: 0 0 0 3px rgba(37, 138, 255, 0.2);
+}
+
+/* ================= 像素级还原 Figma 侧边栏质感 ================= */
+
+.resource-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 8px;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex: 1;
+    min-height: 0;
+    padding-bottom: 20px;
+    /* 让列表背景占满侧边栏，但内容通过内边距往里缩 */
+    margin-left: -16px;
+    margin-right: -16px;
+}
+
+/* 列表纵向滚动条 - 极致极简 */
+.resource-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.resource-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.resource-list::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 5px;
+    border: 3px solid #fff;
+    /* 用白边伪装出细线滚动条 */
+}
+
+.resource-list:hover::-webkit-scrollbar-thumb {
+    background: #D9D9D9;
+    /* 只有鼠标移入列表才显示滚动条 */
+}
+
+/* --- 核心优化：每一行的排版与呼吸感 --- */
+.resource-item {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    /* 恢复 Figma 标准的 32px 高度，靠内部排版出质感 */
+    padding: 0 16px 0 28px;
+    /* 🎯关键：大幅增加左侧留白(28px)，产生缩进安全感 */
+    cursor: pointer;
+    font-size: 12px;
+    /* 🎯关键：缩小到12px，极致的专业感 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* 借用系统原生字体 */
+    -webkit-font-smoothing: antialiased;
+    /* 🎯关键：开启字体抗锯齿，让文字变得锐利、纤细 */
+    color: rgba(0, 0, 0, 0.8);
+    /* 柔和的黑灰色，不刺眼 */
+    user-select: none;
+    transition: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.resource-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    /* Figma 极其克制的浅灰悬浮 */
+}
+
+.resource-item.active {
+    background-color: #E5F3FF;
+    /* Figma 经典的选中蓝 */
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.resource-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    /* 严格的 8px 间距 */
+    color: rgba(0, 0, 0, 0.25);
+    /* 🎯关键：图标颜色大幅度变浅，退居二线 */
+    flex-shrink: 0;
+}
+
+.resource-item.active .resource-item-icon {
+    color: #18A0FB;
+    /* 选中时图标高亮 */
+}
+
+.resource-item-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    line-height: 32px;
+    /* 保证文字绝对垂直居中 */
+}
+
+.resource-item-text::-webkit-scrollbar {
+    display: none;
 }

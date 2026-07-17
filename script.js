@@ -1,10 +1,40 @@
 // ==================== 1. 目录结构数据 ====================
 const PAGE_DIRECTORY = {
     'NA': [
+        { value: 'dev_1_1_1', text: 'A1.1.1 NA - 开屏' },
+        { value: 'dev_1_1_1_1', text: 'A1.1.1.1 NA - 品牌开屏模板' },
+        { value: 'dev_1_1_2', text: 'A1.1.2 NA - 首页弹窗' },
+        
+        // 保留你已有的带级别标注和核心渲染逻辑的项
         { value: 'na_home', text: '【SS级】A1.1.3 NA - 13.14首页顶部沉浸banner' },
         { value: 'na_feed', text: '【SS级】A1.1.4 NA - 首页feed 10出1' },
         { value: 'na_mypage', text: '【S级】A1.1.5 NA - 我的页面banner' },
-        { value: 'dev_1', text: 'A1.1.1.1 NA - 其他占位' }
+        
+        { value: 'dev_1_1_6', text: 'A1.1.6 NA - 首页角标+飘条' },
+        { value: 'dev_1_1_7', text: 'A1.1.7 NA - 我的弹窗' },
+        { value: 'dev_1_1_9', text: 'A1.1.9 NA - 会员频道下拉2楼' },
+        { value: 'dev_1_1_10', text: 'A1.1.10 NA - 共享页角标' },
+        { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上角标' },
+        { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
+        { value: 'dev_1_1_13', text: 'A1.1.13 NA - 搜索框icon' },
+        { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
+        { value: 'dev_1_1_16', text: 'A1.1.16 NA - 我的空间/简单扫描banner/金币兑换banner' },
+        { value: 'dev_1_1_17', text: 'A1.1.17 NA - 活动中心' },
+        { value: 'dev_1_1_18', text: 'A1.1.18 NA - 共享点对点' },
+        { value: 'dev_1_1_19', text: 'A1.1.19 NA - 共享点对点icon（push）' },
+        { value: 'dev_1_1_20', text: 'A1.1.20 NA - 网盘商城feed流长banner' },
+        { value: 'dev_1_1_21', text: 'A1.1.21 NA - 商城feed流宽banner' },
+        { value: 'dev_1_1_23', text: 'A1.1.23 NA - 支付结果页推荐banner' },
+        { value: 'dev_1_1_24', text: 'A1.1.24 NA - 付费引导皮肤' },
+        { value: 'dev_1_1_25', text: 'A1.1.25 NA - 动因收银台皮肤' },
+        { value: 'dev_1_1_26', text: 'A1.1.26 NA - 收银台优惠券弹窗' },
+        { value: 'dev_1_1_27', text: 'A1.1.27 NA - 会员卡运营位规范' },
+        { value: 'dev_1_1_28', text: 'A1.1.28 NA - 商业化团队空间运营入口' },
+        { value: 'dev_1_1_29', text: 'A1.1.29 NA - 简单打印首页banner' },
+        { value: 'dev_1_1_30', text: 'A1.1.30 NA - 会员福利商品图' },
+        { value: 'dev_1_1_31', text: 'A1.1.31 NA - 收银台运营位banner' },
+        { value: 'dev_1_1_32_bg', text: 'A1.1.32 NA - 我的页背景皮肤配置规范' },
+        { value: 'dev_1_1_32_push', text: 'A1.1.32 NA - 首页push' }
     ],
     'PC': [{ value: 'pc_link', text: 'A1.2.1 PC - 首页文字链' }],
     'Web': [{ value: 'web_link', text: 'A1.3.1 Web - 文字链' }],
@@ -35,7 +65,8 @@ const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B0
 // ==================== DOM 元素获取 ====================
 const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
-const resourceDropdown = document.getElementById('resourceDropdown');
+// 这里换成了 resourceList
+const resourceList = document.getElementById('resourceList');
 
 const baseGlobalPicArea = document.getElementById('baseGlobalPicArea');
 const homeControls = document.getElementById('homeControls');
@@ -48,13 +79,12 @@ const homeView = document.getElementById('homeView');
 const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 
-// 画布 - 显示的 (带壳)
+// 画布
 const topHomePageCanvas = document.getElementById('topHomePageCanvas'); const topHomePageCtx = topHomePageCanvas?.getContext('2d');
 const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lightCanvas?.getContext('2d');
 const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPageFullCtx = myPageFullCanvas?.getContext('2d');
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
 
-// 画布 - 隐藏的 (纯切图)
 const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas'); const darkBannerCtx = darkBannerCanvas?.getContext('2d');
@@ -283,29 +313,49 @@ async function renderFeedCanvas() {
 }
 
 // ==================== 界面交互事件 ====================
+
+// 关键更新：高度还原 Figma 风格的列表渲染（含 SVG 图标）
+// 关键更新：去掉多余的SVG图标，回归纯粹的极简文字列表
 function updateResourceDropdown(terminalId) {
-    resourceDropdown.innerHTML = ''; const pages = PAGE_DIRECTORY[terminalId] || [];
-    pages.forEach(page => { const option = document.createElement('option'); option.value = page.value; option.textContent = page.text; if (terminalId === 'NA' && page.value === 'na_home') { option.selected = true; } resourceDropdown.appendChild(option); });
-    resourceDropdown.dispatchEvent(new Event('change'));
+    const resourceList = document.getElementById('resourceList');
+    if (!resourceList) return;
+    resourceList.innerHTML = ''; 
+    const pages = PAGE_DIRECTORY[terminalId] || [];
+
+    pages.forEach((page, index) => {
+        const item = document.createElement('div');
+        item.className = 'resource-item';
+        
+        // 默认选中逻辑
+        if ((terminalId === 'NA' && page.value === 'na_home') || (terminalId !== 'NA' && index === 0)) {
+            item.classList.add('active');
+        }
+        item.dataset.value = page.value;
+
+        // 🌟 直接只保留文字，干掉那个多余的图标
+        item.innerHTML = `
+            <div class="resource-item-text" title="${page.text}">${page.text}</div>
+        `;
+
+        item.addEventListener('click', (e) => {
+            document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
+            item.classList.add('active');
+            switchResourceView(page.value);
+        });
+
+        resourceList.appendChild(item);
+    });
+
+    const activeItem = resourceList.querySelector('.active');
+    if (activeItem) {
+        switchResourceView(activeItem.dataset.value);
+    } else {
+        switchResourceView(null);
+    }
 }
 
-const buBtns = document.querySelectorAll('.bu-btn');
-buBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        buBtns.forEach(b => b.classList.remove('active')); const currentBtn = e.currentTarget; currentBtn.classList.add('active'); const targetBU = currentBtn.dataset.bu;
-        if (targetBU === 'wangpan') { document.documentElement.style.setProperty('--primary-color', '#258AFF'); wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden'); updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal); } 
-        else { document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden'); [homeView, myPageView, feedView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active')); }
-    });
-});
-
-const terminalBtns = document.querySelectorAll('.terminal-btn');
-terminalBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => { terminalBtns.forEach(b => b.classList.remove('active')); const currentBtn = e.currentTarget; currentBtn.classList.add('active'); updateResourceDropdown(currentBtn.dataset.terminal); });
-});
-
-resourceDropdown.addEventListener('change', (e) => {
-    const selected = e.target.value;
-    
+// 提取出来的视图切换逻辑
+function switchResourceView(selected) {
     [homeControls, myPageControls, feedControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
@@ -332,6 +382,31 @@ resourceDropdown.addEventListener('change', (e) => {
         developingPrompt.classList.remove('hidden'); 
         viewDevelopingPrompt.classList.add('active'); 
     }
+}
+
+const buBtns = document.querySelectorAll('.bu-btn');
+buBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        buBtns.forEach(b => b.classList.remove('active')); const currentBtn = e.currentTarget; currentBtn.classList.add('active'); const targetBU = currentBtn.dataset.bu;
+        if (targetBU === 'wangpan') { 
+            document.documentElement.style.setProperty('--primary-color', '#258AFF'); 
+            wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden'); 
+            updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal); 
+        } else { 
+            document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); 
+            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden'); 
+            [homeView, myPageView, feedView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active')); 
+        }
+    });
+});
+
+const terminalBtns = document.querySelectorAll('.terminal-btn');
+terminalBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => { 
+        terminalBtns.forEach(b => b.classList.remove('active')); 
+        const currentBtn = e.currentTarget; currentBtn.classList.add('active'); 
+        updateResourceDropdown(currentBtn.dataset.terminal); 
+    });
 });
 
 
@@ -418,7 +493,7 @@ bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewI
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
 
-// ==================== 导出 ZIP 逻辑 (含全选与分文件夹) ====================
+// ==================== 导出 ZIP 逻辑 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
 function initExportModal() {
@@ -427,7 +502,6 @@ function initExportModal() {
     const cancelExportBtn = document.getElementById('cancelExportBtn'); 
     const confirmExportBtn = document.getElementById('confirmExportBtn');
     
-    // 全选逻辑获取DOM
     const selectAllChk = document.getElementById('selectAllExport');
     const itemChks = document.querySelectorAll('.export-item-chk');
 
@@ -436,7 +510,6 @@ function initExportModal() {
     cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; }); 
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
 
-    // === 全选与单选的联动逻辑 ===
     if (selectAllChk) {
         selectAllChk.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
@@ -445,7 +518,6 @@ function initExportModal() {
 
         itemChks.forEach(chk => {
             chk.addEventListener('change', () => {
-                // 如果所有子项都被勾选，则全选框勾上，否则取消全选框
                 const allChecked = Array.from(itemChks).every(c => c.checked);
                 selectAllChk.checked = allChecked;
             });
@@ -456,7 +528,6 @@ function initExportModal() {
         if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络'); 
         
         const zip = new JSZip(); 
-        // === 建立分文件夹结构 ===
         const previewFolder = zip.folder("带壳预览图");
         const bannerFolder = zip.folder("纯净Banner切图");
         
@@ -466,23 +537,12 @@ function initExportModal() {
         confirmExportBtn.disabled = true;
 
         try {
-            // ======== 1. 首页大图/小图/KV ========
-            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) { 
-                previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) { 
-                bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { 
-                previewFolder.file(`首页-小图状态预览-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; 
-            }
+            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) { previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas)); selectedCount++; }
+            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) { bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas)); selectedCount++; }
+            if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { previewFolder.file(`首页-小图状态预览-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
             
-            if (document.getElementById('chkHomeBannerLight')?.checked && lightBannerCanvas) { 
-                bannerFolder.file(`首页-小图状态Banner(日间)-${homeColor}.png`, await canvasToBlob(lightBannerCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkHomeBannerDark')?.checked && darkBannerCanvas) { 
-                bannerFolder.file(`首页-小图状态Banner(夜间)-${homeColor}.png`, await canvasToBlob(darkBannerCanvas)); selectedCount++; 
-            }
+            if (document.getElementById('chkHomeBannerLight')?.checked && lightBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(日间)-${homeColor}.png`, await canvasToBlob(lightBannerCanvas)); selectedCount++; }
+            if (document.getElementById('chkHomeBannerDark')?.checked && darkBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(夜间)-${homeColor}.png`, await canvasToBlob(darkBannerCanvas)); selectedCount++; }
             
             if (document.getElementById('chkHomeKV')?.checked) { 
                 const kvCanvas = document.createElement('canvas'); const kvCtx = kvCanvas.getContext('2d'); 
@@ -497,24 +557,12 @@ function initExportModal() {
                 bannerFolder.file(`首页-独立切图.png`, await canvasToBlob(kvCanvas)); selectedCount++; 
             }
             
-            // ======== 2. Feed 10出1 ========
-            if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { 
-                bannerFolder.file(`首页-Feed10出1banner.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { 
-                previewFolder.file(`首页-Feed10出1预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; 
-            }
+            if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { bannerFolder.file(`首页-Feed10出1banner.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; }
+            if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { previewFolder.file(`首页-Feed10出1预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; }
 
-            // ======== 3. 我的页面 ========
-            if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { 
-                bannerFolder.file(`我的-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { 
-                bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; 
-            }
-            if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { 
-                previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; 
-            }
+            if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { bannerFolder.file(`我的-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
+            if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
+            if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
 
             if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
             
