@@ -128,6 +128,28 @@
                 </div>
             </div>
 
+            <!-- 6. 活动中心 -->
+            <div id="myActivityView" class="view-section">
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
+                <div class="preview-grid flex-center">
+                    <div class="preview-card transparent-card">
+                        <div class="card-title text-center">活动中心 Banner 预览</div>
+                        <canvas id="myActivityPageCanvas" class="phone-canvas zoomable-canvas" data-target="myActivity"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 共享点对点 -->
+            <div id="peerSharingView" class="view-section">
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
+                <div class="preview-grid flex-center">
+                    <div class="preview-card transparent-card">
+                        <div class="card-title text-center">共享点对点 Banner 预览</div>
+                        <canvas id="peerSharingPageCanvas" class="phone-canvas zoomable-canvas" data-target="peerSharing"></canvas>
+                    </div>
+                </div>
+            </div>
+
         </main>
 
         <!-- ==================== 右侧：参数控制面板 ==================== -->
@@ -145,7 +167,6 @@
 
                 <!-- ================= 首页参数 ================= -->
                 <div id="homeControls" class="control-group active">
-                    <!-- 省略部分与原版一致，保持原样 -->
                     <div class="panel-group">
                         <div class="panel-group-header">大图状态Banner 配置</div>
                         <div class="panel-group-body">
@@ -342,7 +363,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="sidebar-section">
                                 <div class="section-title" style="margin-bottom: 12px;">文案配置 (颜色已固定)</div>
                                 <div class="input-group">
@@ -396,7 +416,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="sidebar-section">
                                 <div class="section-title" style="margin-bottom: 12px;">文案与高亮配置</div>
                                 <div class="input-group">
@@ -435,13 +454,125 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <div id="developingPrompt" class="developing-prompt hidden">
-                    <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
-                    <div>该配置面板正在开发中，敬请期待...</div>
+                <!-- ================= 活动中心 Banner 参数 ================= -->
+                <div id="myActivityControls" class="control-group">
+                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">活动中心 Banner 配置</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">渐变底板颜色 (670x320)</div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color" id="myActivityGrad1" value="#9EED60"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color" id="myActivityGrad2" value="#FCFF70"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题/第一行 (最多8字):</span>
+                                        <input type="color" id="myActivitySubColor" value="#777777" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="myActivitySub" value="甜粽小吃铺开业啦" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
+                                        <input type="color" id="myActivityTitle1Color" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="myActivityTitle1" value="包粽子免费得" maxlength="7">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
+                                        <input type="color" id="myActivityTitle2Color" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="myActivityTitle2" value="iPhone" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮文案 (最多3字):</span>
+                                        <input type="color" id="myActivityBtnColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="myActivityBtnText" value="按钮字" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- ================= 共享点对点 Banner 参数 ================= -->
+                <div id="peerSharingControls" class="control-group">
+                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">共享点对点 Banner 配置</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">渐变底板颜色 (670x320)</div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color" id="peerSharingGrad1" value="#D16FFF"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color" id="peerSharingGrad2" value="#5C6CFF"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题/第一行 (最多8字):</span>
+                                        <input type="color" id="peerSharingSubColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="peerSharingSub" value="甜粽小吃铺开业啦" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
+                                        <input type="color" id="peerSharingTitle1Color" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="peerSharingTitle1" value="包粽子免费得" maxlength="7">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
+                                        <input type="color" id="peerSharingTitle2Color" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="peerSharingTitle2" value="iPhone" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮文案 (最多3字):</span>
+                                        <input type="color" id="peerSharingBtnColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="peerSharingBtnText" value="按钮字" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="developingPrompt" class="developing-prompt hidden">
+                <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
+                <div>该配置面板正在开发中，敬请期待...</div>
             </div>
         </aside>
     </div>
@@ -457,6 +588,8 @@
         <canvas id="searchIconExportCanvas"></canvas>
         <canvas id="mySpaceExportCanvas"></canvas>
         <canvas id="simpleScanExportCanvas"></canvas>
+        <canvas id="myActivityExportCanvas"></canvas>
+        <canvas id="peerSharingExportCanvas"></canvas>
     </div>
 
     <!-- ==================== 大图详情 Modal ==================== -->
@@ -512,6 +645,16 @@
                     <label><input type="checkbox" id="chkSimpleScanExport" class="export-item-chk" checked> 简单扫描-独立切图 (1182x252)</label>
                     <label><input type="checkbox" id="chkSimpleScanPageExport" class="export-item-chk" checked> 简单扫描-页面预览</label>
                 </div>
+                <div class="export-group">
+                    <div class="export-group-title">A1.1.17 NA - 活动中心 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkMyActivityExport" class="export-item-chk" checked> 活动中心-独立切图 (670x320)</label>
+                    <label><input type="checkbox" id="chkMyActivityPageExport" class="export-item-chk" checked> 活动中心-页面预览</label>
+                </div>
+                <div class="export-group">
+                    <div class="export-group-title">A1.1.18 NA - 共享点对点 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkPeerSharingExport" class="export-item-chk" checked> 共享点对点-独立切图 (670x320)</label>
+                    <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked> 共享点对点-页面预览</label>
+                </div>
             </div>
             <div class="export-modal-footer">
                 <button class="btn secondary-btn" id="cancelExportBtn">取消</button>
@@ -522,4 +665,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

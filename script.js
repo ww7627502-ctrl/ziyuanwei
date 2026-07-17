@@ -13,11 +13,11 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_10', text: 'A1.1.10 NA - 共享页角标' },
         { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上角标' },
         { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
-        { value: 'dev_1_1_13', text: 'A1.1.13 NA - 搜索框icon' },
+        { value: 'dev_1_1_13', text: '【A级】A1.1.13 NA - 搜索框icon' },
         { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
         { value: 'dev_1_1_16', text: '【A级】A1.1.16 NA - 我的空间/简单扫描banner' },
-        { value: 'dev_1_1_17', text: 'A1.1.17 NA - 活动中心' },
-        { value: 'dev_1_1_18', text: 'A1.1.18 NA - 共享点对点' },
+        { value: 'dev_1_1_17', text: '【A级】A1.1.17 NA - 活动中心' },
+        { value: 'dev_1_1_18', text: '【A级】A1.1.18 NA - 共享点对点' },
         { value: 'dev_1_1_19', text: 'A1.1.19 NA - 共享点对点icon（push）' },
         { value: 'dev_1_1_20', text: 'A1.1.20 NA - 网盘商城feed流长banner' },
         { value: 'dev_1_1_21', text: 'A1.1.21 NA - 商城feed流宽banner' },
@@ -51,14 +51,18 @@ const config = {
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
     feedExampleImage: 'assets/feed-image.png',
     searchBoxPage: 'assets/search-box-page.png', searchBoxIcon: 'assets/search-box-icon.png',
-    
     // 我的空间 / 简单扫描
-    mySpacePage: 'assets/my-space-page.png', 
+    mySpacePage: 'assets/my-space-page.png',
     simpleScanPage: 'assets/simple-banner-scan.png',
-    searchBtSvg: 'assets/search-bt.svg', 
+    searchBtSvg: 'assets/search-bt.svg',
     searchArrowSvg: 'assets/search-arrow.svg',
-    mySpaceExampleImage: 'assets/search-banner-image.png', 
-    simpleScanExampleImage: 'assets/simple-banner-scan-image.png', 
+    mySpaceExampleImage: 'assets/search-banner-image.png',
+    simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
+    // 活动中心
+    myActivityPage: 'assets/my-activity-enter-banner.png',
+    // 共享点对点
+    peerSharingPage: 'assets/peer-to-peer-sharing.png',
+    peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png',
 
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
@@ -80,6 +84,8 @@ const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
 const searchIconControls = document.getElementById('searchIconControls');
 const mySpaceControls = document.getElementById('mySpaceControls');
+const myActivityControls = document.getElementById('myActivityControls');
+const peerSharingControls = document.getElementById('peerSharingControls');
 const developingPrompt = document.getElementById('developingPrompt');
 
 const viewDevelopingPrompt = document.getElementById('viewDevelopingPrompt');
@@ -88,6 +94,8 @@ const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 const searchIconView = document.getElementById('searchIconView');
 const mySpaceView = document.getElementById('mySpaceView');
+const myActivityView = document.getElementById('myActivityView');
+const peerSharingView = document.getElementById('peerSharingView');
 
 // 画布
 const topHomePageCanvas = document.getElementById('topHomePageCanvas'); const topHomePageCtx = topHomePageCanvas?.getContext('2d');
@@ -97,6 +105,8 @@ const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCa
 const searchPageCanvas = document.getElementById('searchPageCanvas'); const searchPageCtx = searchPageCanvas?.getContext('2d');
 const mySpacePageCanvas = document.getElementById('mySpacePageCanvas'); const mySpacePageCtx = mySpacePageCanvas?.getContext('2d');
 const simpleScanPageCanvas = document.getElementById('simpleScanPageCanvas'); const simpleScanPageCtx = simpleScanPageCanvas?.getContext('2d');
+const myActivityPageCanvas = document.getElementById('myActivityPageCanvas'); const myActivityPageCtx = myActivityPageCanvas?.getContext('2d');
+const peerSharingPageCanvas = document.getElementById('peerSharingPageCanvas'); const peerSharingPageCtx = peerSharingPageCanvas?.getContext('2d');
 
 const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
@@ -107,6 +117,8 @@ const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feed
 const searchIconExportCanvas = document.getElementById('searchIconExportCanvas'); const searchIconExportCtx = searchIconExportCanvas?.getContext('2d');
 const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); const mySpaceExportCtx = mySpaceExportCanvas?.getContext('2d');
 const simpleScanExportCanvas = document.getElementById('simpleScanExportCanvas'); const simpleScanExportCtx = simpleScanExportCanvas?.getContext('2d');
+const myActivityExportCanvas = document.getElementById('myActivityExportCanvas'); const myActivityExportCtx = myActivityExportCanvas?.getContext('2d');
+const peerSharingExportCanvas = document.getElementById('peerSharingExportCanvas'); const peerSharingExportCtx = peerSharingExportCanvas?.getContext('2d');
 
 // 输入控件
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
@@ -149,7 +161,7 @@ const mySpaceGradColor2 = document.getElementById('mySpaceGradColor2');
 const mySpaceTitleInput = document.getElementById('mySpaceTitle');
 const mySpaceSubInput = document.getElementById('mySpaceSub');
 const mySpaceBtnTextInput = document.getElementById('mySpaceBtnText');
-const mySpaceBtnGrad1 = document.getElementById('mySpaceBtnGrad1'); 
+const mySpaceBtnGrad1 = document.getElementById('mySpaceBtnGrad1');
 const mySpaceBtnGrad2 = document.getElementById('mySpaceBtnGrad2');
 
 const simpleScanBgModeRadios = document.getElementsByName('simpleScanBgMode');
@@ -163,16 +175,43 @@ const simpleScanHighlightInput = document.getElementById('simpleScanHighlight');
 const simpleScanHighlightColor = document.getElementById('simpleScanHighlightColor');
 const simpleScanSubInput = document.getElementById('simpleScanSub');
 const simpleScanBtnTextInput = document.getElementById('simpleScanBtnText');
-const simpleScanBtnGrad1 = document.getElementById('simpleScanBtnGrad1'); 
+const simpleScanBtnGrad1 = document.getElementById('simpleScanBtnGrad1');
 const simpleScanBtnGrad2 = document.getElementById('simpleScanBtnGrad2');
 
+// 活动中心 控制
+const myActivityGrad1 = document.getElementById('myActivityGrad1');
+const myActivityGrad2 = document.getElementById('myActivityGrad2');
+const myActivitySub = document.getElementById('myActivitySub');
+const myActivityTitle1 = document.getElementById('myActivityTitle1');
+const myActivityTitle2 = document.getElementById('myActivityTitle2');
+const myActivityBtnText = document.getElementById('myActivityBtnText');
+
+const myActivitySubColor = document.getElementById('myActivitySubColor');
+const myActivityTitle1Color = document.getElementById('myActivityTitle1Color');
+const myActivityTitle2Color = document.getElementById('myActivityTitle2Color');
+const myActivityBtnColor = document.getElementById('myActivityBtnColor');
+
+// 共享点对点 控制
+const peerSharingGrad1 = document.getElementById('peerSharingGrad1');
+const peerSharingGrad2 = document.getElementById('peerSharingGrad2');
+const peerSharingSub = document.getElementById('peerSharingSub');
+const peerSharingTitle1 = document.getElementById('peerSharingTitle1');
+const peerSharingTitle2 = document.getElementById('peerSharingTitle2');
+const peerSharingBtnText = document.getElementById('peerSharingBtnText');
+
+const peerSharingSubColor = document.getElementById('peerSharingSubColor');
+const peerSharingTitle1Color = document.getElementById('peerSharingTitle1Color');
+const peerSharingTitle2Color = document.getElementById('peerSharingTitle2Color');
+const peerSharingBtnColor = document.getElementById('peerSharingBtnColor');
+
+
 // 全局状态与缓存
-let userImgObj = null; 
-let feedBgBannerObj = null; 
+let userImgObj = null;
+let feedBgBannerObj = null;
 let currentTopBgMode = 'image';
 let topBgBannerObj = null;
-let userTopBannerTitleObj = null; 
-let currentFeedBgMode = 'image'; 
+let userTopBannerTitleObj = null;
+let currentFeedBgMode = 'image';
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid';
 let currentSimpleScanBgMode = 'solid';
@@ -301,9 +340,9 @@ async function createFullBannerCanvas(isDark) {
 }
 
 async function renderHomeCanvas() {
-    const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg; 
-    if (topHomeBannerCanvas) await drawTopHomeBanner(topHomeBannerCanvas, topHomeBannerCtx, kvImg); 
-    if (topHomePageCanvas) await drawTopHomePage(topHomePageCanvas, topHomePageCtx, kvImg); 
+    const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg;
+    if (topHomeBannerCanvas) await drawTopHomeBanner(topHomeBannerCanvas, topHomeBannerCtx, kvImg);
+    if (topHomePageCanvas) await drawTopHomePage(topHomePageCanvas, topHomePageCtx, kvImg);
     if (lightCanvas) await drawMode(false, lightCanvas, lightCtx, kvImg);
     if (lightBannerCanvas && lightBannerCtx) { const lbCanvas = await createFullBannerCanvas(false); lightBannerCanvas.width = lbCanvas.width; lightBannerCanvas.height = lbCanvas.height; setupHighQualityContext(lightBannerCtx); lightBannerCtx.clearRect(0, 0, lightBannerCanvas.width, lightBannerCanvas.height); lightBannerCtx.drawImage(lbCanvas, 0, 0); }
     if (darkBannerCanvas && darkBannerCtx) { const dbCanvas = await createFullBannerCanvas(true); darkBannerCanvas.width = dbCanvas.width; darkBannerCanvas.height = dbCanvas.height; setupHighQualityContext(darkBannerCtx); darkBannerCtx.clearRect(0, 0, darkBannerCanvas.width, darkBannerCanvas.height); darkBannerCtx.drawImage(dbCanvas, 0, 0); }
@@ -389,7 +428,6 @@ async function renderSearchIcon() {
         searchIconExportCanvas.height = 204;
         setupHighQualityContext(searchIconExportCtx);
         searchIconExportCtx.clearRect(0, 0, 204, 204);
-        
         if (iconImg && iconImg.width) {
             const targetW = 204, targetH = 204;
             const scale = Math.min(targetW / iconImg.width, targetH / iconImg.height);
@@ -422,7 +460,7 @@ async function build1182Banner(opts) {
 
     // 2. 绘制主标题 (支持高亮变色)
     ctx.font = 'normal 50px "FZLanTingHeiS-DB-GB", sans-serif';
-    ctx.textBaseline = 'top'; 
+    ctx.textBaseline = 'top';
     drawDualColorText(ctx, opts.title, opts.highlight, 62, 62, '#000000', opts.highlightColor);
 
     // 3. 绘制副标题 (固定灰色 #777777)
@@ -433,24 +471,20 @@ async function build1182Banner(opts) {
 
     // 4. 绘制渐变按钮 
     const btnSvg = await loadImage(config.searchBtSvg);
-    const btnX = 410, btnY = 144; 
+    const btnX = 410, btnY = 144;
 
     if (btnSvg && btnSvg.width) {
         const btnCanvas = document.createElement('canvas');
         btnCanvas.width = btnSvg.width; btnCanvas.height = btnSvg.height;
         const btnCtx = btnCanvas.getContext('2d');
-        
         btnCtx.drawImage(btnSvg, 0, 0);
         btnCtx.globalCompositeOperation = 'source-in';
-        
         const btnGrad = btnCtx.createLinearGradient(0, 0, btnCanvas.width, 0);
         btnGrad.addColorStop(0, opts.btnGrad1);
         btnGrad.addColorStop(1, opts.btnGrad2);
         btnCtx.fillStyle = btnGrad;
         btnCtx.fillRect(0, 0, btnCanvas.width, btnCanvas.height);
-        
         btnCtx.globalCompositeOperation = 'source-over';
-        
         // 按钮文字
         btnCtx.font = 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif';
         btnCtx.fillStyle = '#FFFFFF';
@@ -461,7 +495,7 @@ async function build1182Banner(opts) {
         // 箭头
         const arrowSvg = await loadImage(config.searchArrowSvg);
         if (arrowSvg && arrowSvg.width) {
-            btnCtx.drawImage(arrowSvg, 146, 13.38); 
+            btnCtx.drawImage(arrowSvg, 146, 13.38);
         }
         ctx.drawImage(btnCanvas, btnX, btnY);
     }
@@ -475,15 +509,13 @@ async function build1182Banner(opts) {
         const imgX = 795, imgY = 17, imgW = 300, imgH = 220;
         ctx.beginPath();
         ctx.rect(imgX, imgY, imgW, imgH);
-        ctx.clip(); 
-        
+        ctx.clip();
         // 👉 使用 Math.min 保证图片完整显示 (contain 模式)，绝对不会被裁切
         const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
         const drawW = imgToDraw.width * scale;
         const drawH = imgToDraw.height * scale;
         const drawX = imgX + (imgW - drawW) / 2;
         const drawY = imgY + (imgH - drawH) / 2;
-        
         drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
         ctx.restore();
     }
@@ -499,7 +531,7 @@ async function renderMySpaceCanvas() {
         grad1: mySpaceGradColor1?.value || '#E5F3FF',
         grad2: mySpaceGradColor2?.value || '#FFFFFF',
         title: (mySpaceTitleInput?.value || '主标题最多11个文字').slice(0, 11),
-        highlight: '', 
+        highlight: '',
         highlightColor: '#000000',
         sub: (mySpaceSubInput?.value || '副标题最多8个字').slice(0, 8),
         btnText: mySpaceBtnTextInput?.value || '去查看',
@@ -509,7 +541,6 @@ async function renderMySpaceCanvas() {
     };
 
     const bannerCanvas = await build1182Banner(opts);
-    
     // 独立切图 (无圆角)
     if (mySpaceExportCanvas && mySpaceExportCtx) {
         mySpaceExportCanvas.width = bannerCanvas.width;
@@ -530,8 +561,8 @@ async function renderMySpaceCanvas() {
             mySpacePageCtx.drawImage(pageImg, 0, 0);
 
             const targetW = 1107;
-            const scale = targetW / bannerCanvas.width; 
-            const targetH = bannerCanvas.height * scale; 
+            const scale = targetW / bannerCanvas.width;
+            const targetH = bannerCanvas.height * scale;
             const drawX = 31, drawY = 847;
             const scaledRadius = 50 * scale;
 
@@ -552,7 +583,7 @@ async function renderSimpleScanCanvas() {
         grad1: simpleScanGradColor1?.value || '#E5F3FF',
         grad2: simpleScanGradColor2?.value || '#FFFFFF',
         title: (simpleScanTitleInput?.value || '简单扫描网页版重磅来袭').slice(0, 11),
-        highlight: simpleScanHighlightInput?.value || '重磅来袭', 
+        highlight: simpleScanHighlightInput?.value || '重磅来袭',
         highlightColor: simpleScanHighlightColor?.value || '#14B5FF',
         sub: (simpleScanSubInput?.value || '支持批量格式转换').slice(0, 8),
         btnText: simpleScanBtnTextInput?.value || '去查看',
@@ -562,7 +593,6 @@ async function renderSimpleScanCanvas() {
     };
 
     const bannerCanvas = await build1182Banner(opts);
-    
     // 独立切图 (无圆角)
     if (simpleScanExportCanvas && simpleScanExportCtx) {
         simpleScanExportCanvas.width = bannerCanvas.width;
@@ -583,8 +613,8 @@ async function renderSimpleScanCanvas() {
             simpleScanPageCtx.drawImage(pageImg, 0, 0);
 
             const targetW = 1134;
-            const scale = targetW / bannerCanvas.width; 
-            const targetH = bannerCanvas.height * scale; 
+            const scale = targetW / bannerCanvas.width;
+            const targetH = bannerCanvas.height * scale;
             const drawX = 18.01, drawY = 1158;
             const scaledRadius = 50 * scale;
 
@@ -598,13 +628,255 @@ async function renderSimpleScanCanvas() {
 }
 
 
+// 渲染: 活动中心
+async function renderMyActivityCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 670; canvas.height = 320;
+    const ctx = canvas.getContext('2d');
+    setupHighQualityContext(ctx);
+
+    // 1. 背景渐变 (45度)
+    let angle = 45;
+    let rad = (angle - 90) * Math.PI / 180;
+    let w = canvas.width, h = canvas.height;
+    let halfW = w / 2, halfH = h / 2;
+    let length = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+    let x0 = halfW - Math.cos(rad) * length / 2;
+    let y0 = halfH - Math.sin(rad) * length / 2;
+    let x1 = halfW + Math.cos(rad) * length / 2;
+    let y1 = halfH + Math.sin(rad) * length / 2;
+    const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
+    exactGrad.addColorStop(0, myActivityGrad1?.value || '#9EED60');
+    exactGrad.addColorStop(1, myActivityGrad2?.value || '#FCFF70');
+    ctx.fillStyle = exactGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. 文字配置
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    // 2.1 第一行 (副标题)
+    ctx.fillStyle = myActivitySubColor?.value || '#777777';
+    ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
+    ctx.fillText((myActivitySub?.value || '甜粽小吃铺开业啦').slice(0, 8), 47.01, 47.67);
+
+    // 2.2 第二行 (大标题1)
+    ctx.fillStyle = myActivityTitle1Color?.value || '#000000';
+    ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
+    ctx.fillText((myActivityTitle1?.value || '包粽子免费得').slice(0, 7), 47.01, 87.5);
+
+    // 2.3 第三行 (大标题2)
+    ctx.fillStyle = myActivityTitle2Color?.value || '#000000';
+    ctx.fillText((myActivityTitle2?.value || 'iPhone').slice(0, 7), 47.01, 146.92);
+
+    // 3. 按钮 (描边颜色，圆角拉满)
+    const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
+    const radius = btnH / 2;
+    const btnColor = myActivityBtnColor?.value || '#000000';
+
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = btnColor;
+    
+    drawRoundRect(
+        ctx, 
+        btnX + lw / 2, 
+        btnY + lw / 2, 
+        btnW - lw, 
+        btnH - lw, 
+        radius - lw / 2
+    );
+    ctx.stroke();
+
+    // 3.1 按钮内部文字 (居中)
+    ctx.fillStyle = btnColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'normal 32px "FZLanTingHeiS-DB", sans-serif';
+    ctx.fillText((myActivityBtnText?.value || '按钮字').slice(0, 3), btnX + btnW / 2, btnY + btnH / 2);
+
+    // 4. 图片渲染 (不裁切Contain)
+    const defaultImg = await loadImage(config.feedExampleImage);
+    const imgToDraw = userImgObj || defaultImg;
+    if (imgToDraw && imgToDraw.width) {
+        ctx.save();
+        const imgX = 382, imgY = 28, imgW = 270, imgH = 270;
+        ctx.beginPath();
+        ctx.rect(imgX, imgY, imgW, imgH);
+        ctx.clip();
+        
+        const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
+        const drawW = imgToDraw.width * scale;
+        const drawH = imgToDraw.height * scale;
+        const drawX = imgX + (imgW - drawW) / 2;
+        const drawY = imgY + (imgH - drawH) / 2;
+        
+        drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
+        ctx.restore();
+    }
+
+    // 导出纯净切图 (670x320)
+    if (myActivityExportCanvas && myActivityExportCtx) {
+        myActivityExportCanvas.width = canvas.width;
+        myActivityExportCanvas.height = canvas.height;
+        setupHighQualityContext(myActivityExportCtx);
+        myActivityExportCtx.clearRect(0, 0, myActivityExportCanvas.width, myActivityExportCanvas.height);
+        myActivityExportCtx.drawImage(canvas, 0, 0);
+    }
+
+    // 页面预览图 (缩放 + 圆角裁切)
+    if (myActivityPageCanvas && myActivityPageCtx) {
+        const pageImg = await loadImage(config.myActivityPage);
+        if (pageImg && pageImg.width) {
+            myActivityPageCanvas.width = pageImg.width;
+            myActivityPageCanvas.height = pageImg.height;
+            setupHighQualityContext(myActivityPageCtx);
+            myActivityPageCtx.clearRect(0, 0, myActivityPageCanvas.width, myActivityPageCanvas.height);
+            myActivityPageCtx.drawImage(pageImg, 0, 0);
+
+            const targetW = 1045.2;
+            const scale = targetW / canvas.width;
+            const targetH = canvas.height * scale;
+            const drawX = 62.4, drawY = 1542.84;
+            const bannerRadius = 21.84;
+            
+            myActivityPageCtx.save();
+            drawRoundRect(myActivityPageCtx, drawX, drawY, targetW, targetH, bannerRadius);
+            myActivityPageCtx.clip();
+            myActivityPageCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, drawX, drawY, targetW, targetH);
+            myActivityPageCtx.restore();
+        }
+    }
+}
+
+// 渲染: 共享点对点
+async function renderPeerSharingCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 670; canvas.height = 320;
+    const ctx = canvas.getContext('2d');
+    setupHighQualityContext(ctx);
+
+    // 1. 背景渐变 (45度)
+    let angle = 45;
+    let rad = (angle - 90) * Math.PI / 180;
+    let w = canvas.width, h = canvas.height;
+    let halfW = w / 2, halfH = h / 2;
+    let length = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+    let x0 = halfW - Math.cos(rad) * length / 2;
+    let y0 = halfH - Math.sin(rad) * length / 2;
+    let x1 = halfW + Math.cos(rad) * length / 2;
+    let y1 = halfH + Math.sin(rad) * length / 2;
+    const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
+    exactGrad.addColorStop(0, peerSharingGrad1?.value || '#D16FFF');
+    exactGrad.addColorStop(1, peerSharingGrad2?.value || '#5C6CFF');
+    ctx.fillStyle = exactGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. 文字配置
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    // 2.1 第一行 (副标题)
+    ctx.fillStyle = peerSharingSubColor?.value || '#FFFFFF';
+    ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
+    ctx.fillText((peerSharingSub?.value || '甜粽小吃铺开业啦').slice(0, 8), 47.01, 47.67);
+
+    // 2.2 第二行 (大标题1)
+    ctx.fillStyle = peerSharingTitle1Color?.value || '#FFFFFF';
+    ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
+    ctx.fillText((peerSharingTitle1?.value || '包粽子免费得').slice(0, 7), 47.01, 87.5);
+
+    // 2.3 第三行 (大标题2)
+    ctx.fillStyle = peerSharingTitle2Color?.value || '#FFFFFF';
+    ctx.fillText((peerSharingTitle2?.value || 'iPhone').slice(0, 7), 47.01, 146.92);
+
+    // 3. 按钮 (描边颜色，圆角拉满)
+    const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
+    const radius = btnH / 2;
+    const btnColor = peerSharingBtnColor?.value || '#FFFFFF';
+
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = btnColor;
+
+    drawRoundRect(
+        ctx,
+        btnX + lw / 2,
+        btnY + lw / 2,
+        btnW - lw,
+        btnH - lw,
+        radius - lw / 2
+    );
+    ctx.stroke();
+
+    // 3.1 按钮内部文字 (居中)
+    ctx.fillStyle = btnColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'normal 32px "FZLanTingHeiS-DB", sans-serif';
+    ctx.fillText((peerSharingBtnText?.value || '按钮字').slice(0, 3), btnX + btnW / 2, btnY + btnH / 2);
+
+    // 4. 图片渲染 (不裁切Contain)
+    const defaultImg = await loadImage(config.peerSharingExampleImage);
+    const imgToDraw = userImgObj || defaultImg;
+    if (imgToDraw && imgToDraw.width) {
+        ctx.save();
+        const imgX = 382, imgY = 28, imgW = 270, imgH = 270;
+        ctx.beginPath();
+        ctx.rect(imgX, imgY, imgW, imgH);
+        ctx.clip();
+
+        const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
+        const drawW = imgToDraw.width * scale;
+        const drawH = imgToDraw.height * scale;
+        const drawX = imgX + (imgW - drawW) / 2;
+        const drawY = imgY + (imgH - drawH) / 2;
+
+        drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
+        ctx.restore();
+    }
+
+    // 导出纯净切图 (670x320)
+    if (peerSharingExportCanvas && peerSharingExportCtx) {
+        peerSharingExportCanvas.width = canvas.width;
+        peerSharingExportCanvas.height = canvas.height;
+        setupHighQualityContext(peerSharingExportCtx);
+        peerSharingExportCtx.clearRect(0, 0, peerSharingExportCanvas.width, peerSharingExportCanvas.height);
+        peerSharingExportCtx.drawImage(canvas, 0, 0);
+    }
+
+    // 页面预览图 (缩放 + 圆角裁切)
+    if (peerSharingPageCanvas && peerSharingPageCtx) {
+        const pageImg = await loadImage(config.peerSharingPage);
+        if (pageImg && pageImg.width) {
+            peerSharingPageCanvas.width = pageImg.width;
+            peerSharingPageCanvas.height = pageImg.height;
+            setupHighQualityContext(peerSharingPageCtx);
+            peerSharingPageCtx.clearRect(0, 0, peerSharingPageCanvas.width, peerSharingPageCanvas.height);
+            peerSharingPageCtx.drawImage(pageImg, 0, 0);
+
+            // 完美推算：1170(底图宽) - 51.48 * 2 = 1067.04
+            const targetW = 1067.04;
+            const scale = targetW / canvas.width;
+            const targetH = canvas.height * scale;
+            const drawX = 51.48, drawY = 1679.66;
+            const bannerRadius = 21.84; 
+
+            peerSharingPageCtx.save();
+            drawRoundRect(peerSharingPageCtx, drawX, drawY, targetW, targetH, bannerRadius);
+            peerSharingPageCtx.clip();
+            peerSharingPageCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, drawX, drawY, targetW, targetH);
+            peerSharingPageCtx.restore();
+        }
+    }
+}
+
+
 // ==================== 界面交互事件 ====================
 
 // 极简侧边栏列表
 function updateResourceDropdown(terminalId) {
     const resourceList = document.getElementById('resourceList');
     if (!resourceList) return;
-    resourceList.innerHTML = ''; 
+    resourceList.innerHTML = '';
     const pages = PAGE_DIRECTORY[terminalId] || [];
 
     pages.forEach((page, index) => {
@@ -629,22 +901,23 @@ function updateResourceDropdown(terminalId) {
     else switchResourceView(null);
 }
 
-function switchResourceView(selected) {
-    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, searchIconView, mySpaceView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+function switchResourceView(selected) {  [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
 
-    if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed' || selected === 'dev_1_1_13' || selected === 'dev_1_1_16') {
+    if (selected === 'na_home' || selected === 'na_mypage' || selected === 'na_feed' || selected === 'dev_1_1_13' || selected === 'dev_1_1_16' || selected === 'dev_1_1_17' || selected === 'dev_1_1_18') {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
     }
 
-    if (selected === 'na_home') { homeControls.classList.add('active'); homeView.classList.add('active'); } 
-    else if (selected === 'na_mypage') { myPageControls.classList.add('active'); myPageView.classList.add('active'); } 
-    else if (selected === 'na_feed') { feedControls.classList.add('active'); feedView.classList.add('active'); } 
+    if (selected === 'na_home') { homeControls.classList.add('active'); homeView.classList.add('active'); }
+    else if (selected === 'na_mypage') { myPageControls.classList.add('active'); myPageView.classList.add('active'); }
+    else if (selected === 'na_feed') { feedControls.classList.add('active'); feedView.classList.add('active'); }
     else if (selected === 'dev_1_1_13') { searchIconControls.classList.add('active'); searchIconView.classList.add('active'); }
     else if (selected === 'dev_1_1_16') { mySpaceControls.classList.add('active'); mySpaceView.classList.add('active'); }
+    else if (selected === 'dev_1_1_17') { myActivityControls.classList.add('active'); myActivityView.classList.add('active'); }
+    else if (selected === 'dev_1_1_18') { peerSharingControls.classList.add('active'); peerSharingView.classList.add('active'); }
     else { developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active'); }
 }
 
@@ -652,24 +925,24 @@ const buBtns = document.querySelectorAll('.bu-btn');
 buBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         buBtns.forEach(b => b.classList.remove('active')); const currentBtn = e.currentTarget; currentBtn.classList.add('active'); const targetBU = currentBtn.dataset.bu;
-        if (targetBU === 'wangpan') { 
-            document.documentElement.style.setProperty('--primary-color', '#258AFF'); 
-            wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden'); 
-            updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal); 
-        } else { 
-            document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF'); 
-            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden'); 
-            [homeView, myPageView, feedView, searchIconView, mySpaceView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active')); 
+        if (targetBU === 'wangpan') {
+            document.documentElement.style.setProperty('--primary-color', '#258AFF');
+            wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
+            updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
+        } else {
+            document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF');
+            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
         }
     });
 });
 
 const terminalBtns = document.querySelectorAll('.terminal-btn');
 terminalBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => { 
-        terminalBtns.forEach(b => b.classList.remove('active')); 
-        const currentBtn = e.currentTarget; currentBtn.classList.add('active'); 
-        updateResourceDropdown(currentBtn.dataset.terminal); 
+    btn.addEventListener('click', (e) => {
+        terminalBtns.forEach(b => b.classList.remove('active'));
+        const currentBtn = e.currentTarget; currentBtn.classList.add('active');
+        updateResourceDropdown(currentBtn.dataset.terminal);
     });
 });
 
@@ -679,11 +952,11 @@ const detailImagesBox = document.getElementById('detailImagesBox');
 const detailModalTitle = document.getElementById('detailModalTitle');
 
 function openDetailModal(targetType) {
-    detailImagesBox.innerHTML = ''; 
+    detailImagesBox.innerHTML = '';
     if (targetType === 'homeTop') {
         detailModalTitle.innerText = '大图状态 Banner - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">纯净切图</div><img src="${topHomeBannerCanvas.toDataURL()}" style="max-height: 400px; width: auto;">`;
-    } 
+    }
     else if (targetType === 'homeLight') {
         detailModalTitle.innerText = '小图状态 Banner - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">日间完整版</div><img src="${lightBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;"><div class="banner-label" style="margin-top:16px;">夜间完整版</div><img src="${darkBannerCanvas.toDataURL()}" style="max-height: 250px; width: auto;">`;
@@ -708,6 +981,14 @@ function openDetailModal(targetType) {
         detailModalTitle.innerText = '简单扫描 Banner - 纯净切图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (1182x252)</div><img src="${simpleScanExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     }
+    else if (targetType === 'myActivity') {
+        detailModalTitle.innerText = '活动中心 Banner - 纯净切图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (670x320)</div><img src="${myActivityExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
+    }
+    else if (targetType === 'peerSharing') {
+        detailModalTitle.innerText = '共享点对点 Banner - 纯净切图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (670x320)</div><img src="${peerSharingExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
+    }
     detailModal.style.display = 'flex';
 }
 
@@ -716,7 +997,7 @@ document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
 });
 
 document.querySelector('.close-detail-modal')?.addEventListener('click', () => { detailModal.style.display = 'none'; });
-detailModal?.addEventListener('click', (e) => { if(e.target === detailModal) detailModal.style.display = 'none'; });
+detailModal?.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.style.display = 'none'; });
 
 // ==================== 参数输入监听 ====================
 homeColorRadios.forEach(r => r.addEventListener('change', async e => { homeColor = e.target.value; await renderHomeCanvas(); }));
@@ -765,6 +1046,29 @@ simpleScanHighlightColor?.addEventListener('input', renderSimpleScanCanvas);
 simpleScanSubInput?.addEventListener('input', renderSimpleScanCanvas);
 simpleScanBtnTextInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad1?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad2?.addEventListener('input', renderSimpleScanCanvas);
 
+// 活动中心监听
+myActivityGrad1?.addEventListener('input', renderMyActivityCanvas);
+myActivityGrad2?.addEventListener('input', renderMyActivityCanvas);
+myActivitySub?.addEventListener('input', renderMyActivityCanvas);
+myActivityTitle1?.addEventListener('input', renderMyActivityCanvas);
+myActivityTitle2?.addEventListener('input', renderMyActivityCanvas);
+myActivityBtnText?.addEventListener('input', renderMyActivityCanvas);
+myActivitySubColor?.addEventListener('input', renderMyActivityCanvas);
+myActivityTitle1Color?.addEventListener('input', renderMyActivityCanvas);
+myActivityTitle2Color?.addEventListener('input', renderMyActivityCanvas);
+myActivityBtnColor?.addEventListener('input', renderMyActivityCanvas);
+
+// 共享点对点监听
+peerSharingGrad1?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingGrad2?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingSub?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingTitle1?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingTitle2?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingBtnText?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingSubColor?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingTitle1Color?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingTitle2Color?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingBtnColor?.addEventListener('input', renderPeerSharingCanvas);
 
 // ==================== 文件上传与拖拽 ====================
 function handleFileUpload(file, callback) {
@@ -774,17 +1078,17 @@ function handleFileUpload(file, callback) {
 
 function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
     const dz = document.getElementById(dropZoneId), input = document.getElementById(inputId), prev = document.getElementById(previewId);
-    if (input) input.addEventListener('change', e => handleFileUpload(e.target.files[0], async src => { if(prev) prev.src = src; await processFn(src); }));
+    if (input) input.addEventListener('change', e => handleFileUpload(e.target.files[0], async src => { if (prev) prev.src = src; await processFn(src); }));
     if (dz) {
         dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); }); dz.addEventListener('dragleave', e => { e.preventDefault(); dz.classList.remove('drag-over'); });
-        dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files.length > 0) handleFileUpload(e.dataTransfer.files[0], async src => { if(prev) prev.src = src; await processFn(src); }); });
+        dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files.length > 0) handleFileUpload(e.dataTransfer.files[0], async src => { if (prev) prev.src = src; await processFn(src); }); });
     }
 }
 
-bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => { 
-    userImgObj = await loadImage(src); 
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); 
-    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); 
+bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => {
+    userImgObj = await loadImage(src);
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
+    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
 });
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
@@ -794,16 +1098,16 @@ bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTit
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
 function initExportModal() {
-    const exportModal = document.getElementById('exportModal'); 
-    const openExportModalBtn = document.getElementById('openExportModalBtn'); 
-    const cancelExportBtn = document.getElementById('cancelExportBtn'); 
+    const exportModal = document.getElementById('exportModal');
+    const openExportModalBtn = document.getElementById('openExportModalBtn');
+    const cancelExportBtn = document.getElementById('cancelExportBtn');
     const confirmExportBtn = document.getElementById('confirmExportBtn');
     const selectAllChk = document.getElementById('selectAllExport');
     const itemChks = document.querySelectorAll('.export-item-chk');
 
     if (!exportModal || !openExportModalBtn) return;
-    openExportModalBtn.addEventListener('click', () => { exportModal.style.display = 'flex'; }); 
-    cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; }); 
+    openExportModalBtn.addEventListener('click', () => { exportModal.style.display = 'flex'; });
+    cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; });
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
 
     if (selectAllChk) {
@@ -820,13 +1124,13 @@ function initExportModal() {
     }
 
     confirmExportBtn.addEventListener('click', async () => {
-        if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络'); 
-        const zip = new JSZip(); 
+        if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络');
+        const zip = new JSZip();
         const previewFolder = zip.folder("带壳预览图");
         const bannerFolder = zip.folder("纯净Banner切图");
-        let selectedCount = 0; 
-        const originalText = confirmExportBtn.innerText; 
-        confirmExportBtn.innerText = '正在极速打包中...'; 
+        let selectedCount = 0;
+        const originalText = confirmExportBtn.innerText;
+        confirmExportBtn.innerText = '正在极速打包中...';
         confirmExportBtn.disabled = true;
 
         try {
@@ -835,54 +1139,59 @@ function initExportModal() {
             if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { previewFolder.file(`首页-小图状态预览-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
             if (document.getElementById('chkHomeBannerLight')?.checked && lightBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(日间)-${homeColor}.png`, await canvasToBlob(lightBannerCanvas)); selectedCount++; }
             if (document.getElementById('chkHomeBannerDark')?.checked && darkBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(夜间)-${homeColor}.png`, await canvasToBlob(darkBannerCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomeKV')?.checked) { 
-                const kvCanvas = document.createElement('canvas'); const kvCtx = kvCanvas.getContext('2d'); 
-                kvCanvas.width = 420; kvCanvas.height = 282; setupHighQualityContext(kvCtx); 
-                const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg; 
-                if (kvImg && kvImg.width) { 
-                    const scale = Math.min(420 / kvImg.width, 282 / kvImg.height); 
-                    const drawW = kvImg.width * scale, drawH = kvImg.height * scale; 
-                    const drawX = (420 - drawW) / 2, drawY = (282 - drawH) / 2; 
-                    drawSharpenedImage(kvCtx, kvImg, drawX, drawY, drawW, drawH, 0.3); 
-                } 
-                bannerFolder.file(`首页-独立切图.png`, await canvasToBlob(kvCanvas)); selectedCount++; 
+            if (document.getElementById('chkHomeKV')?.checked) {
+                const kvCanvas = document.createElement('canvas'); const kvCtx = kvCanvas.getContext('2d');
+                kvCanvas.width = 420; kvCanvas.height = 282; setupHighQualityContext(kvCtx);
+                const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg;
+                if (kvImg && kvImg.width) {
+                    const scale = Math.min(420 / kvImg.width, 282 / kvImg.height);
+                    const drawW = kvImg.width * scale, drawH = kvImg.height * scale;
+                    const drawX = (420 - drawW) / 2, drawY = (282 - drawH) / 2;
+                    drawSharpenedImage(kvCtx, kvImg, drawX, drawY, drawW, drawH, 0.3);
+                }
+                bannerFolder.file(`首页-独立切图.png`, await canvasToBlob(kvCanvas)); selectedCount++;
             }
             if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { bannerFolder.file(`首页-Feed10出1banner.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; }
             if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { previewFolder.file(`首页-Feed10出1预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; }
-
             if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { bannerFolder.file(`我的-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
-
+            
             if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) { bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas)); selectedCount++; }
             if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) { previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas)); selectedCount++; }
-
+            
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas) { bannerFolder.file(`我的空间-独立切图(1182x252).png`, await canvasToBlob(mySpaceExportCanvas)); selectedCount++; }
             if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas) { previewFolder.file(`我的空间-页面预览.png`, await canvasToBlob(mySpacePageCanvas)); selectedCount++; }
             if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas) { bannerFolder.file(`简单扫描-独立切图(1182x252).png`, await canvasToBlob(simpleScanExportCanvas)); selectedCount++; }
             if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas) { previewFolder.file(`简单扫描-页面预览.png`, await canvasToBlob(simpleScanPageCanvas)); selectedCount++; }
+            
+            // 活动中心
+            if (document.getElementById('chkMyActivityExport')?.checked && myActivityExportCanvas) { bannerFolder.file(`活动中心-独立切图(670x320).png`, await canvasToBlob(myActivityExportCanvas)); selectedCount++; }
+            if (document.getElementById('chkMyActivityPageExport')?.checked && myActivityPageCanvas) { previewFolder.file(`活动中心-页面预览.png`, await canvasToBlob(myActivityPageCanvas)); selectedCount++; }
+            
+            // 共享点对点
+            if (document.getElementById('chkPeerSharingExport')?.checked && peerSharingExportCanvas) { bannerFolder.file(`共享点对点-独立切图(670x320).png`, await canvasToBlob(peerSharingExportCanvas)); selectedCount++; }
+            if (document.getElementById('chkPeerSharingPageExport')?.checked && peerSharingPageCanvas) { previewFolder.file(`共享点对点-页面预览.png`, await canvasToBlob(peerSharingPageCanvas)); selectedCount++; }
 
             if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
-            const zipBlob = await zip.generateAsync({ type: 'blob' }); 
-            const link = document.createElement('a'); 
-            link.download = `按需导出切图集合.zip`; 
-            link.href = URL.createObjectURL(zipBlob); 
-            link.click(); 
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.download = `按需导出切图集合.zip`;
+            link.href = URL.createObjectURL(zipBlob);
+            link.click();
             exportModal.style.display = 'none';
-        } catch (e) { 
-            alert("【导出报错】\n\n原因: " + e.message); 
-        } finally { 
-            confirmExportBtn.innerText = originalText; 
-            confirmExportBtn.disabled = false; 
+        } catch (e) {
+            alert("【导出报错】\n\n原因: " + e.message);
+        } finally {
+            confirmExportBtn.innerText = originalText;
+            confirmExportBtn.disabled = false;
         }
     });
 }
 
 window.onload = async () => {
     if ('fonts' in document) { try { await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 38px "FZLTHK"'); await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); } catch (e) { } }
-    
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); 
-    await renderMySpaceCanvas(); await renderSimpleScanCanvas();
-    
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
+    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
     updateResourceDropdown('NA'); initExportModal();
 };
