@@ -1218,7 +1218,13 @@ function initExportModal() {
 }
 
 window.onload = async () => {
-    // 1. 加载字体
+    // ================= 核心修复：UI 优先 =================
+    // 1. 第一时间把左侧菜单和弹窗结构渲染出来，瞬间完成，告别等待！
+    updateResourceDropdown('NA'); 
+    initExportModal();
+
+    // ================= 耗时操作：放后台执行 =================
+    // 2. 去加载外部字体（可能受网络影响）
     if ('fonts' in document) { 
         try { 
             await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); 
@@ -1229,10 +1235,13 @@ window.onload = async () => {
         } catch (e) { } 
     }
     
-    // 2. 初始只渲染第一个面板（首页），极大地提升首次加载速度！
+    // 3. 最后才开始默默渲染中间的预览画板
     await renderHomeCanvas(); 
-    
-    // 3. 初始化 UI
-    updateResourceDropdown('NA'); 
-    initExportModal();
+    await renderMyPage(); 
+    await renderFeedCanvas(); 
+    await renderSearchIcon();
+    await renderMySpaceCanvas(); 
+    await renderSimpleScanCanvas(); 
+    await renderMyActivityCanvas(); 
+    await renderPeerSharingCanvas();
 };
