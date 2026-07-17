@@ -121,6 +121,10 @@
                         <div class="card-title text-center">我的空间页面预览</div>
                         <canvas id="mySpacePageCanvas" class="phone-canvas zoomable-canvas" data-target="mySpace"></canvas>
                     </div>
+                    <div class="preview-card transparent-card">
+                        <div class="card-title text-center">简单扫描页面预览</div>
+                        <canvas id="simpleScanPageCanvas" class="phone-canvas zoomable-canvas" data-target="simpleScan"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -141,6 +145,7 @@
 
                 <!-- ================= 首页参数 ================= -->
                 <div id="homeControls" class="control-group active">
+                    <!-- 省略部分与原版一致，保持原样 -->
                     <div class="panel-group">
                         <div class="panel-group-header">大图状态Banner 配置</div>
                         <div class="panel-group-body">
@@ -309,13 +314,15 @@
 
                 <!-- ================= 我的空间/扫描 Banner 参数 ================= -->
                 <div id="mySpaceControls" class="control-group">
+                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域统一上传。
+                    </div>
+
+                    <!-- 【我的空间】面板 -->
                     <div class="panel-group">
                         <div class="panel-group-header">我的空间 Banner 配置</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
-                                <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 12px; padding: 8px; background: #eef5ff; border-radius: 4px;">
-                                    👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域上传替换。
-                                </div>
                                 <div class="section-title">底板样式 (1182x252)</div>
                                 <div class="color-selector" style="margin-bottom: 12px;">
                                     <label><input type="radio" name="mySpaceBgMode" value="solid" checked> 纯色</label>
@@ -364,6 +371,71 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 【简单扫描】面板 -->
+                    <div class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">简单扫描 Banner 配置</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">底板样式 (1182x252)</div>
+                                <div class="color-selector" style="margin-bottom: 12px;">
+                                    <label><input type="radio" name="simpleScanBgMode" value="solid" checked> 纯色</label>
+                                    <label><input type="radio" name="simpleScanBgMode" value="gradient"> 渐变色</label>
+                                </div>
+                                <div id="simpleScanBgModeSolid">
+                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <span style="margin:0;">背景色:</span><input type="color" id="simpleScanSolidColor" value="#FFFFFF" style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                    </div>
+                                </div>
+                                <div id="simpleScanBgModeGradient" class="hidden">
+                                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div class="color-picker-wrap"><span>起始</span><input type="color" id="simpleScanGradColor1" value="#E5F3FF"></div>
+                                            <div class="color-picker-wrap"><span>终止</span><input type="color" id="simpleScanGradColor2" value="#FFFFFF"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与高亮配置</div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">主标题 (最多11字):</span>
+                                    <input type="text" id="simpleScanTitle" value="简单扫描网页版重磅来袭" maxlength="11">
+                                </div>
+                                <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="flex: 1;">
+                                        <span style="font-size: 11px; display: block; margin-bottom: 2px;">高亮词(支持变色):</span>
+                                        <input type="text" id="simpleScanHighlight" value="重磅来袭" style="margin-bottom: 0;">
+                                    </div>
+                                    <div style="width: 50px;">
+                                        <span style="font-size: 11px; display: block; margin-bottom: 2px;">颜色:</span>
+                                        <input type="color" id="simpleScanHighlightColor" value="#14B5FF" style="width: 100%; height: 28px; padding: 0; border: none;">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">副标题 (最多8字，固定灰色):</span>
+                                    <input type="text" id="simpleScanSub" value="支持批量格式转换" maxlength="8">
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮样式配置</div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">按钮文案 (固定白色):</span>
+                                    <input type="text" id="simpleScanBtnText" value="去查看">
+                                </div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
+                                    <span style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色 (用于填充SVG):</span>
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="simpleScanBtnGrad1" value="#06A7FF"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="simpleScanBtnGrad2" value="#0066FF"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div id="developingPrompt" class="developing-prompt hidden">
@@ -384,6 +456,7 @@
         <canvas id="feedBannerCanvas"></canvas>
         <canvas id="searchIconExportCanvas"></canvas>
         <canvas id="mySpaceExportCanvas"></canvas>
+        <canvas id="simpleScanExportCanvas"></canvas>
     </div>
 
     <!-- ==================== 大图详情 Modal ==================== -->
@@ -436,6 +509,8 @@
                     <div class="export-group-title">A1.1.16 NA - 我的空间/简单扫描 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMySpaceExport" class="export-item-chk" checked> 我的空间-独立切图 (1182x252)</label>
                     <label><input type="checkbox" id="chkMySpacePageExport" class="export-item-chk" checked> 我的空间-页面预览</label>
+                    <label><input type="checkbox" id="chkSimpleScanExport" class="export-item-chk" checked> 简单扫描-独立切图 (1182x252)</label>
+                    <label><input type="checkbox" id="chkSimpleScanPageExport" class="export-item-chk" checked> 简单扫描-页面预览</label>
                 </div>
             </div>
             <div class="export-modal-footer">

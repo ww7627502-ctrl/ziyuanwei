@@ -13,7 +13,7 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_10', text: 'A1.1.10 NA - 共享页角标' },
         { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上角标' },
         { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
-        { value: 'dev_1_1_13', text: '【A级】A1.1.13 NA - 搜索框icon' },
+        { value: 'dev_1_1_13', text: 'A1.1.13 NA - 搜索框icon' },
         { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
         { value: 'dev_1_1_16', text: '【A级】A1.1.16 NA - 我的空间/简单扫描banner' },
         { value: 'dev_1_1_17', text: 'A1.1.17 NA - 活动中心' },
@@ -51,8 +51,15 @@ const config = {
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
     feedExampleImage: 'assets/feed-image.png',
     searchBoxPage: 'assets/search-box-page.png', searchBoxIcon: 'assets/search-box-icon.png',
-    mySpacePage: 'assets/my-space-page.png', searchBtSvg: 'assets/search-bt.svg', searchArrowSvg: 'assets/search-arrow.svg',
+    
+    // 我的空间 / 简单扫描
+    mySpacePage: 'assets/my-space-page.png', 
+    simpleScanPage: 'assets/simple-banner-scan.png',
+    searchBtSvg: 'assets/search-bt.svg', 
+    searchArrowSvg: 'assets/search-arrow.svg',
     mySpaceExampleImage: 'assets/search-banner-image.png', 
+    simpleScanExampleImage: 'assets/simple-banner-scan-image.png', 
+
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
     colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' },
@@ -89,6 +96,7 @@ const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPa
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
 const searchPageCanvas = document.getElementById('searchPageCanvas'); const searchPageCtx = searchPageCanvas?.getContext('2d');
 const mySpacePageCanvas = document.getElementById('mySpacePageCanvas'); const mySpacePageCtx = mySpacePageCanvas?.getContext('2d');
+const simpleScanPageCanvas = document.getElementById('simpleScanPageCanvas'); const simpleScanPageCtx = simpleScanPageCanvas?.getContext('2d');
 
 const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
@@ -98,6 +106,7 @@ const myPageDarkCanvas = document.getElementById('myPageDarkCanvas'); const myPa
 const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feedBannerCtx = feedBannerCanvas?.getContext('2d');
 const searchIconExportCanvas = document.getElementById('searchIconExportCanvas'); const searchIconExportCtx = searchIconExportCanvas?.getContext('2d');
 const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); const mySpaceExportCtx = mySpaceExportCanvas?.getContext('2d');
+const simpleScanExportCanvas = document.getElementById('simpleScanExportCanvas'); const simpleScanExportCtx = simpleScanExportCanvas?.getContext('2d');
 
 // 输入控件
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
@@ -130,19 +139,32 @@ const feedTitleInput = document.getElementById('feedTitle'); const feedTitleColo
 const feedSubtitleInput = document.getElementById('feedSubtitle'); const feedSubtitleColor = document.getElementById('feedSubtitleColor');
 const feedBtnTextInput = document.getElementById('feedBtnText');
 
-// 我的空间控制
+// 我的空间 / 简单扫描 控制
 const mySpaceBgModeRadios = document.getElementsByName('mySpaceBgMode');
 const mySpaceBgModeSolid = document.getElementById('mySpaceBgModeSolid');
 const mySpaceBgModeGradient = document.getElementById('mySpaceBgModeGradient');
 const mySpaceSolidColor = document.getElementById('mySpaceSolidColor');
 const mySpaceGradColor1 = document.getElementById('mySpaceGradColor1');
 const mySpaceGradColor2 = document.getElementById('mySpaceGradColor2');
-
 const mySpaceTitleInput = document.getElementById('mySpaceTitle');
 const mySpaceSubInput = document.getElementById('mySpaceSub');
 const mySpaceBtnTextInput = document.getElementById('mySpaceBtnText');
 const mySpaceBtnGrad1 = document.getElementById('mySpaceBtnGrad1'); 
 const mySpaceBtnGrad2 = document.getElementById('mySpaceBtnGrad2');
+
+const simpleScanBgModeRadios = document.getElementsByName('simpleScanBgMode');
+const simpleScanBgModeSolid = document.getElementById('simpleScanBgModeSolid');
+const simpleScanBgModeGradient = document.getElementById('simpleScanBgModeGradient');
+const simpleScanSolidColor = document.getElementById('simpleScanSolidColor');
+const simpleScanGradColor1 = document.getElementById('simpleScanGradColor1');
+const simpleScanGradColor2 = document.getElementById('simpleScanGradColor2');
+const simpleScanTitleInput = document.getElementById('simpleScanTitle');
+const simpleScanHighlightInput = document.getElementById('simpleScanHighlight');
+const simpleScanHighlightColor = document.getElementById('simpleScanHighlightColor');
+const simpleScanSubInput = document.getElementById('simpleScanSub');
+const simpleScanBtnTextInput = document.getElementById('simpleScanBtnText');
+const simpleScanBtnGrad1 = document.getElementById('simpleScanBtnGrad1'); 
+const simpleScanBtnGrad2 = document.getElementById('simpleScanBtnGrad2');
 
 // 全局状态与缓存
 let userImgObj = null; 
@@ -153,6 +175,7 @@ let userTopBannerTitleObj = null;
 let currentFeedBgMode = 'image'; 
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid';
+let currentSimpleScanBgMode = 'solid';
 const globalImageCache = {}; const globalSvgTextCache = {};
 
 // ==================== 图片处理与加载函数 ====================
@@ -378,93 +401,84 @@ async function renderSearchIcon() {
     }
 }
 
-// ==================== 我的空间/简单扫描 Banner ====================
-async function createMySpaceBannerCanvas() {
+// ==================== 1182x252 Banner 共用渲染逻辑 ====================
+async function build1182Banner(opts) {
     const canvas = document.createElement('canvas');
     canvas.width = 1182; canvas.height = 252;
     const ctx = canvas.getContext('2d');
     setupHighQualityContext(ctx);
 
     // 1. 绘制底板
-    if (currentMySpaceBgMode === 'solid') {
-        ctx.fillStyle = mySpaceSolidColor.value;
+    if (opts.bgMode === 'solid') {
+        ctx.fillStyle = opts.solidColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     } else {
         const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        grad.addColorStop(0, mySpaceGradColor1.value);
-        grad.addColorStop(1, mySpaceGradColor2.value);
+        grad.addColorStop(0, opts.grad1);
+        grad.addColorStop(1, opts.grad2);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // 2. 绘制主标题 (固定黑色)
-    const titleTxt = (mySpaceTitleInput?.value || '主标题最多11个文字').slice(0, 11);
+    // 2. 绘制主标题 (支持高亮变色)
     ctx.font = 'normal 50px "FZLanTingHeiS-DB-GB", sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.textBaseline = 'top'; // 统一左上角对齐
-    ctx.fillText(titleTxt, 62, 62);
+    ctx.textBaseline = 'top'; 
+    drawDualColorText(ctx, opts.title, opts.highlight, 62, 62, '#000000', opts.highlightColor);
 
     // 3. 绘制副标题 (固定灰色 #777777)
-    const subTxt = (mySpaceSubInput?.value || '副标题最多8个字').slice(0, 8);
     ctx.font = 'normal 42px "FZLanTingHeiS-R-GB", sans-serif';
     ctx.fillStyle = '#777777';
     ctx.textBaseline = 'top';
-    ctx.fillText(subTxt, 62, 142);
+    ctx.fillText(opts.sub, 62, 142);
 
     // 4. 绘制渐变按钮 
     const btnSvg = await loadImage(config.searchBtSvg);
-    const btnX = 410, btnY = 144; // 143.63 取整
+    const btnX = 410, btnY = 144; 
 
     if (btnSvg && btnSvg.width) {
-        // 创建一个独立的小画板，尺寸和按钮完全一样
         const btnCanvas = document.createElement('canvas');
         btnCanvas.width = btnSvg.width; btnCanvas.height = btnSvg.height;
         const btnCtx = btnCanvas.getContext('2d');
         
-        // --- 核心：在独立画板上绘制并填充渐变 ---
         btnCtx.drawImage(btnSvg, 0, 0);
         btnCtx.globalCompositeOperation = 'source-in';
         
         const btnGrad = btnCtx.createLinearGradient(0, 0, btnCanvas.width, 0);
-        btnGrad.addColorStop(0, mySpaceBtnGrad1.value);
-        btnGrad.addColorStop(1, mySpaceBtnGrad2.value);
+        btnGrad.addColorStop(0, opts.btnGrad1);
+        btnGrad.addColorStop(1, opts.btnGrad2);
         btnCtx.fillStyle = btnGrad;
         btnCtx.fillRect(0, 0, btnCanvas.width, btnCanvas.height);
         
-        // 恢复正常模式，准备画字和箭头
         btnCtx.globalCompositeOperation = 'source-over';
         
-        // 文字：在独立画板里，绝对左上角对齐
-        const btnTxt = mySpaceBtnTextInput.value || '去查看';
+        // 按钮文字
         btnCtx.font = 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif';
         btnCtx.fillStyle = '#FFFFFF';
         btnCtx.textBaseline = 'top';
         btnCtx.textAlign = 'left';
-        btnCtx.fillText(btnTxt, 22, 7.26);
+        btnCtx.fillText(opts.btnText, 22, 7.26);
 
-        // 箭头：在独立画板里，绝对坐标对齐
+        // 箭头
         const arrowSvg = await loadImage(config.searchArrowSvg);
         if (arrowSvg && arrowSvg.width) {
             btnCtx.drawImage(arrowSvg, 146, 13.38); 
         }
-
-        // 最后，把整个小画板贴到大 Banner 上
         ctx.drawImage(btnCanvas, btnX, btnY);
     }
 
     // 5. 绘制右侧配图 (300x220, 位于 x795, y17)
-    const defaultMySpaceImg = await loadImage(config.mySpaceExampleImage);
-    const imgToDraw = userImgObj || defaultMySpaceImg; // 全局上传的图 或 默认图
+    const defaultImg = await loadImage(opts.defaultImgSrc);
+    const imgToDraw = userImgObj || defaultImg;
 
     if (imgToDraw && imgToDraw.width) {
         ctx.save();
         const imgX = 795, imgY = 17, imgW = 300, imgH = 220;
         ctx.beginPath();
         ctx.rect(imgX, imgY, imgW, imgH);
-        ctx.clip(); // 限制绘制区域，保证绝不超框
+        ctx.clip(); 
         
-        // 等比缩放，居中裁剪
-        const scale = Math.max(imgW / imgToDraw.width, imgH / imgToDraw.height); // 使用 max 保证填满整个区域
+        // 👉 使用 Math.min 保证图片完整显示 (contain 模式)，绝对不会被裁切
+        const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
         const drawW = imgToDraw.width * scale;
         const drawH = imgToDraw.height * scale;
         const drawX = imgX + (imgW - drawW) / 2;
@@ -477,41 +491,109 @@ async function createMySpaceBannerCanvas() {
     return canvas;
 }
 
+// 渲染: 我的空间
 async function renderMySpaceCanvas() {
-    const bannerCanvas = await createMySpaceBannerCanvas();
+    const opts = {
+        bgMode: currentMySpaceBgMode,
+        solidColor: mySpaceSolidColor?.value || '#FFFFFF',
+        grad1: mySpaceGradColor1?.value || '#E5F3FF',
+        grad2: mySpaceGradColor2?.value || '#FFFFFF',
+        title: (mySpaceTitleInput?.value || '主标题最多11个文字').slice(0, 11),
+        highlight: '', 
+        highlightColor: '#000000',
+        sub: (mySpaceSubInput?.value || '副标题最多8个字').slice(0, 8),
+        btnText: mySpaceBtnTextInput?.value || '去查看',
+        btnGrad1: mySpaceBtnGrad1?.value || '#06A7FF',
+        btnGrad2: mySpaceBtnGrad2?.value || '#0066FF',
+        defaultImgSrc: config.mySpaceExampleImage
+    };
+
+    const bannerCanvas = await build1182Banner(opts);
     
-    // 渲染独立切图 (1182x252) - 无圆角
+    // 独立切图 (无圆角)
     if (mySpaceExportCanvas && mySpaceExportCtx) {
         mySpaceExportCanvas.width = bannerCanvas.width;
         mySpaceExportCanvas.height = bannerCanvas.height;
         setupHighQualityContext(mySpaceExportCtx);
         mySpaceExportCtx.clearRect(0, 0, mySpaceExportCanvas.width, mySpaceExportCanvas.height);
-        
-        // 直接绘制，去掉了之前的圆角 clip
         mySpaceExportCtx.drawImage(bannerCanvas, 0, 0);
     }
 
-    // 渲染页面预览 (等比缩放)
-    if (!mySpacePageCanvas || !mySpacePageCtx) return;
-    const pageImg = await loadImage(config.mySpacePage);
-    if (pageImg && pageImg.width) {
-        mySpacePageCanvas.width = pageImg.width;
-        mySpacePageCanvas.height = pageImg.height;
-        setupHighQualityContext(mySpacePageCtx);
-        mySpacePageCtx.clearRect(0, 0, mySpacePageCanvas.width, mySpacePageCanvas.height);
-        mySpacePageCtx.drawImage(pageImg, 0, 0);
+    // 页面预览图 (缩放到宽 1107)
+    if (mySpacePageCanvas && mySpacePageCtx) {
+        const pageImg = await loadImage(config.mySpacePage);
+        if (pageImg && pageImg.width) {
+            mySpacePageCanvas.width = pageImg.width;
+            mySpacePageCanvas.height = pageImg.height;
+            setupHighQualityContext(mySpacePageCtx);
+            mySpacePageCtx.clearRect(0, 0, mySpacePageCanvas.width, mySpacePageCanvas.height);
+            mySpacePageCtx.drawImage(pageImg, 0, 0);
 
-        const targetW = 1107;
-        const scale = targetW / bannerCanvas.width; // 缩放比 ≈ 0.9365
-        const targetH = bannerCanvas.height * scale; // ≈ 236
-        const drawX = 31, drawY = 847;
-        const scaledRadius = 50 * scale;
+            const targetW = 1107;
+            const scale = targetW / bannerCanvas.width; 
+            const targetH = bannerCanvas.height * scale; 
+            const drawX = 31, drawY = 847;
+            const scaledRadius = 50 * scale;
 
-        mySpacePageCtx.save();
-        drawRoundRect(mySpacePageCtx, drawX, drawY, targetW, targetH, scaledRadius);
-        mySpacePageCtx.clip();
-        mySpacePageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
-        mySpacePageCtx.restore();
+            mySpacePageCtx.save();
+            drawRoundRect(mySpacePageCtx, drawX, drawY, targetW, targetH, scaledRadius);
+            mySpacePageCtx.clip();
+            mySpacePageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
+            mySpacePageCtx.restore();
+        }
+    }
+}
+
+// 渲染: 简单扫描
+async function renderSimpleScanCanvas() {
+    const opts = {
+        bgMode: currentSimpleScanBgMode,
+        solidColor: simpleScanSolidColor?.value || '#FFFFFF',
+        grad1: simpleScanGradColor1?.value || '#E5F3FF',
+        grad2: simpleScanGradColor2?.value || '#FFFFFF',
+        title: (simpleScanTitleInput?.value || '简单扫描网页版重磅来袭').slice(0, 11),
+        highlight: simpleScanHighlightInput?.value || '重磅来袭', 
+        highlightColor: simpleScanHighlightColor?.value || '#14B5FF',
+        sub: (simpleScanSubInput?.value || '支持批量格式转换').slice(0, 8),
+        btnText: simpleScanBtnTextInput?.value || '去查看',
+        btnGrad1: simpleScanBtnGrad1?.value || '#06A7FF',
+        btnGrad2: simpleScanBtnGrad2?.value || '#0066FF',
+        defaultImgSrc: config.simpleScanExampleImage
+    };
+
+    const bannerCanvas = await build1182Banner(opts);
+    
+    // 独立切图 (无圆角)
+    if (simpleScanExportCanvas && simpleScanExportCtx) {
+        simpleScanExportCanvas.width = bannerCanvas.width;
+        simpleScanExportCanvas.height = bannerCanvas.height;
+        setupHighQualityContext(simpleScanExportCtx);
+        simpleScanExportCtx.clearRect(0, 0, simpleScanExportCanvas.width, simpleScanExportCanvas.height);
+        simpleScanExportCtx.drawImage(bannerCanvas, 0, 0);
+    }
+
+    // 页面预览图 (缩放到宽 1134, x18.01, y1158)
+    if (simpleScanPageCanvas && simpleScanPageCtx) {
+        const pageImg = await loadImage(config.simpleScanPage);
+        if (pageImg && pageImg.width) {
+            simpleScanPageCanvas.width = pageImg.width;
+            simpleScanPageCanvas.height = pageImg.height;
+            setupHighQualityContext(simpleScanPageCtx);
+            simpleScanPageCtx.clearRect(0, 0, simpleScanPageCanvas.width, simpleScanPageCanvas.height);
+            simpleScanPageCtx.drawImage(pageImg, 0, 0);
+
+            const targetW = 1134;
+            const scale = targetW / bannerCanvas.width; 
+            const targetH = bannerCanvas.height * scale; 
+            const drawX = 18.01, drawY = 1158;
+            const scaledRadius = 50 * scale;
+
+            simpleScanPageCtx.save();
+            drawRoundRect(simpleScanPageCtx, drawX, drawY, targetW, targetH, scaledRadius);
+            simpleScanPageCtx.clip();
+            simpleScanPageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
+            simpleScanPageCtx.restore();
+        }
     }
 }
 
@@ -622,6 +704,10 @@ function openDetailModal(targetType) {
         detailModalTitle.innerText = '我的空间 Banner - 纯净切图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (1182x252)</div><img src="${mySpaceExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     }
+    else if (targetType === 'simpleScan') {
+        detailModalTitle.innerText = '简单扫描 Banner - 纯净切图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (1182x252)</div><img src="${simpleScanExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
+    }
     detailModal.style.display = 'flex';
 }
 
@@ -666,6 +752,19 @@ mySpaceTitleInput?.addEventListener('input', renderMySpaceCanvas);
 mySpaceSubInput?.addEventListener('input', renderMySpaceCanvas);
 mySpaceBtnTextInput?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad1?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad2?.addEventListener('input', renderMySpaceCanvas);
 
+// 简单扫描监听
+simpleScanBgModeRadios.forEach(r => r.addEventListener('change', async e => {
+    currentSimpleScanBgMode = e.target.value; simpleScanBgModeSolid.classList.add('hidden'); simpleScanBgModeGradient.classList.add('hidden');
+    if (currentSimpleScanBgMode === 'solid') simpleScanBgModeSolid.classList.remove('hidden'); else simpleScanBgModeGradient.classList.remove('hidden');
+    await renderSimpleScanCanvas();
+}));
+simpleScanSolidColor?.addEventListener('input', renderSimpleScanCanvas); simpleScanGradColor1?.addEventListener('input', renderSimpleScanCanvas); simpleScanGradColor2?.addEventListener('input', renderSimpleScanCanvas);
+simpleScanTitleInput?.addEventListener('input', renderSimpleScanCanvas);
+simpleScanHighlightInput?.addEventListener('input', renderSimpleScanCanvas);
+simpleScanHighlightColor?.addEventListener('input', renderSimpleScanCanvas);
+simpleScanSubInput?.addEventListener('input', renderSimpleScanCanvas);
+simpleScanBtnTextInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad1?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad2?.addEventListener('input', renderSimpleScanCanvas);
+
 
 // ==================== 文件上传与拖拽 ====================
 function handleFileUpload(file, callback) {
@@ -682,7 +781,11 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
     }
 }
 
-bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => { userImgObj = await loadImage(src); await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); await renderMySpaceCanvas(); });
+bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => { 
+    userImgObj = await loadImage(src); 
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); 
+    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); 
+});
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
@@ -756,6 +859,8 @@ function initExportModal() {
 
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas) { bannerFolder.file(`我的空间-独立切图(1182x252).png`, await canvasToBlob(mySpaceExportCanvas)); selectedCount++; }
             if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas) { previewFolder.file(`我的空间-页面预览.png`, await canvasToBlob(mySpacePageCanvas)); selectedCount++; }
+            if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas) { bannerFolder.file(`简单扫描-独立切图(1182x252).png`, await canvasToBlob(simpleScanExportCanvas)); selectedCount++; }
+            if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas) { previewFolder.file(`简单扫描-页面预览.png`, await canvasToBlob(simpleScanPageCanvas)); selectedCount++; }
 
             if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
             const zipBlob = await zip.generateAsync({ type: 'blob' }); 
@@ -776,7 +881,8 @@ function initExportModal() {
 window.onload = async () => {
     if ('fonts' in document) { try { await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 38px "FZLTHK"'); await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); } catch (e) { } }
     
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); await renderMySpaceCanvas();
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon(); 
+    await renderMySpaceCanvas(); await renderSimpleScanCanvas();
     
     updateResourceDropdown('NA'); initExportModal();
 };
