@@ -901,7 +901,11 @@ function updateResourceDropdown(terminalId) {
     else switchResourceView(null);
 }
 
-function switchResourceView(selected) {  [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls].forEach(ctrl => ctrl?.classList.remove('active'));
+// 记录一下哪些页面已经渲染过了，避免重复渲染
+const renderedPages = { home: true };
+
+async function switchResourceView(selected) {  
+    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
 
@@ -911,14 +915,38 @@ function switchResourceView(selected) {  [homeControls, myPageControls, feedCont
         baseGlobalPicArea.style.display = 'none';
     }
 
-    if (selected === 'na_home') { homeControls.classList.add('active'); homeView.classList.add('active'); }
-    else if (selected === 'na_mypage') { myPageControls.classList.add('active'); myPageView.classList.add('active'); }
-    else if (selected === 'na_feed') { feedControls.classList.add('active'); feedView.classList.add('active'); }
-    else if (selected === 'dev_1_1_13') { searchIconControls.classList.add('active'); searchIconView.classList.add('active'); }
-    else if (selected === 'dev_1_1_16') { mySpaceControls.classList.add('active'); mySpaceView.classList.add('active'); }
-    else if (selected === 'dev_1_1_17') { myActivityControls.classList.add('active'); myActivityView.classList.add('active'); }
-    else if (selected === 'dev_1_1_18') { peerSharingControls.classList.add('active'); peerSharingView.classList.add('active'); }
-    else { developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active'); }
+    // 切换面板并按需渲染
+    if (selected === 'na_home') { 
+        homeControls.classList.add('active'); homeView.classList.add('active'); 
+        if (!renderedPages.home) { await renderHomeCanvas(); renderedPages.home = true; }
+    }
+    else if (selected === 'na_mypage') { 
+        myPageControls.classList.add('active'); myPageView.classList.add('active'); 
+        if (!renderedPages.myPage) { await renderMyPage(); renderedPages.myPage = true; }
+    }
+    else if (selected === 'na_feed') { 
+        feedControls.classList.add('active'); feedView.classList.add('active'); 
+        if (!renderedPages.feed) { await renderFeedCanvas(); renderedPages.feed = true; }
+    }
+    else if (selected === 'dev_1_1_13') { 
+        searchIconControls.classList.add('active'); searchIconView.classList.add('active'); 
+        if (!renderedPages.searchIcon) { await renderSearchIcon(); renderedPages.searchIcon = true; }
+    }
+    else if (selected === 'dev_1_1_16') { 
+        mySpaceControls.classList.add('active'); mySpaceView.classList.add('active'); 
+        if (!renderedPages.mySpace) { await renderMySpaceCanvas(); await renderSimpleScanCanvas(); renderedPages.mySpace = true; }
+    }
+    else if (selected === 'dev_1_1_17') { 
+        myActivityControls.classList.add('active'); myActivityView.classList.add('active'); 
+        if (!renderedPages.myActivity) { await renderMyActivityCanvas(); renderedPages.myActivity = true; }
+    }
+    else if (selected === 'dev_1_1_18') { 
+        peerSharingControls.classList.add('active'); peerSharingView.classList.add('active'); 
+        if (!renderedPages.peerSharing) { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+    }
+    else { 
+        developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active'); 
+    }
 }
 
 const buBtns = document.querySelectorAll('.bu-btn');
@@ -1190,8 +1218,21 @@ function initExportModal() {
 }
 
 window.onload = async () => {
-    if ('fonts' in document) { try { await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('normal 38px "FZLTHK"'); await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); } catch (e) { } }
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
-    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-    updateResourceDropdown('NA'); initExportModal();
+    // 1. 加载字体
+    if ('fonts' in document) { 
+        try { 
+            await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); 
+            await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); 
+            await document.fonts.load('normal 38px "FZLTHK"'); 
+            await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); 
+            await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); 
+        } catch (e) { } 
+    }
+    
+    // 2. 初始只渲染第一个面板（首页），极大地提升首次加载速度！
+    await renderHomeCanvas(); 
+    
+    // 3. 初始化 UI
+    updateResourceDropdown('NA'); 
+    initExportModal();
 };
