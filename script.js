@@ -676,13 +676,13 @@ async function renderMyActivityCanvas() {
 
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
-    
+
     drawRoundRect(
-        ctx, 
-        btnX + lw / 2, 
-        btnY + lw / 2, 
-        btnW - lw, 
-        btnH - lw, 
+        ctx,
+        btnX + lw / 2,
+        btnY + lw / 2,
+        btnW - lw,
+        btnH - lw,
         radius - lw / 2
     );
     ctx.stroke();
@@ -703,13 +703,13 @@ async function renderMyActivityCanvas() {
         ctx.beginPath();
         ctx.rect(imgX, imgY, imgW, imgH);
         ctx.clip();
-        
+
         const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height);
         const drawW = imgToDraw.width * scale;
         const drawH = imgToDraw.height * scale;
         const drawX = imgX + (imgW - drawW) / 2;
         const drawY = imgY + (imgH - drawH) / 2;
-        
+
         drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3);
         ctx.restore();
     }
@@ -738,7 +738,7 @@ async function renderMyActivityCanvas() {
             const targetH = canvas.height * scale;
             const drawX = 62.4, drawY = 1542.84;
             const bannerRadius = 21.84;
-            
+
             myActivityPageCtx.save();
             drawRoundRect(myActivityPageCtx, drawX, drawY, targetW, targetH, bannerRadius);
             myActivityPageCtx.clip();
@@ -858,7 +858,7 @@ async function renderPeerSharingCanvas() {
             const scale = targetW / canvas.width;
             const targetH = canvas.height * scale;
             const drawX = 51.48, drawY = 1679.66;
-            const bannerRadius = 21.84; 
+            const bannerRadius = 21.84;
 
             peerSharingPageCtx.save();
             drawRoundRect(peerSharingPageCtx, drawX, drawY, targetW, targetH, bannerRadius);
@@ -904,7 +904,7 @@ function updateResourceDropdown(terminalId) {
 // 记录一下哪些页面已经渲染过了，避免重复渲染
 const renderedPages = { home: true };
 
-async function switchResourceView(selected) {  
+async function switchResourceView(selected) {
     [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
@@ -916,36 +916,36 @@ async function switchResourceView(selected) {
     }
 
     // 切换面板并按需渲染
-    if (selected === 'na_home') { 
-        homeControls.classList.add('active'); homeView.classList.add('active'); 
+    if (selected === 'na_home') {
+        homeControls.classList.add('active'); homeView.classList.add('active');
         if (!renderedPages.home) { await renderHomeCanvas(); renderedPages.home = true; }
     }
-    else if (selected === 'na_mypage') { 
-        myPageControls.classList.add('active'); myPageView.classList.add('active'); 
+    else if (selected === 'na_mypage') {
+        myPageControls.classList.add('active'); myPageView.classList.add('active');
         if (!renderedPages.myPage) { await renderMyPage(); renderedPages.myPage = true; }
     }
-    else if (selected === 'na_feed') { 
-        feedControls.classList.add('active'); feedView.classList.add('active'); 
+    else if (selected === 'na_feed') {
+        feedControls.classList.add('active'); feedView.classList.add('active');
         if (!renderedPages.feed) { await renderFeedCanvas(); renderedPages.feed = true; }
     }
-    else if (selected === 'dev_1_1_13') { 
-        searchIconControls.classList.add('active'); searchIconView.classList.add('active'); 
+    else if (selected === 'dev_1_1_13') {
+        searchIconControls.classList.add('active'); searchIconView.classList.add('active');
         if (!renderedPages.searchIcon) { await renderSearchIcon(); renderedPages.searchIcon = true; }
     }
-    else if (selected === 'dev_1_1_16') { 
-        mySpaceControls.classList.add('active'); mySpaceView.classList.add('active'); 
+    else if (selected === 'dev_1_1_16') {
+        mySpaceControls.classList.add('active'); mySpaceView.classList.add('active');
         if (!renderedPages.mySpace) { await renderMySpaceCanvas(); await renderSimpleScanCanvas(); renderedPages.mySpace = true; }
     }
-    else if (selected === 'dev_1_1_17') { 
-        myActivityControls.classList.add('active'); myActivityView.classList.add('active'); 
+    else if (selected === 'dev_1_1_17') {
+        myActivityControls.classList.add('active'); myActivityView.classList.add('active');
         if (!renderedPages.myActivity) { await renderMyActivityCanvas(); renderedPages.myActivity = true; }
     }
-    else if (selected === 'dev_1_1_18') { 
-        peerSharingControls.classList.add('active'); peerSharingView.classList.add('active'); 
+    else if (selected === 'dev_1_1_18') {
+        peerSharingControls.classList.add('active'); peerSharingView.classList.add('active');
         if (!renderedPages.peerSharing) { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
     }
-    else { 
-        developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active'); 
+    else {
+        developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active');
     }
 }
 
@@ -1184,19 +1184,19 @@ function initExportModal() {
             if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { bannerFolder.file(`我的-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
-            
+
             if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) { bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas)); selectedCount++; }
             if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) { previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas)); selectedCount++; }
-            
+
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas) { bannerFolder.file(`我的空间-独立切图(1182x252).png`, await canvasToBlob(mySpaceExportCanvas)); selectedCount++; }
             if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas) { previewFolder.file(`我的空间-页面预览.png`, await canvasToBlob(mySpacePageCanvas)); selectedCount++; }
             if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas) { bannerFolder.file(`简单扫描-独立切图(1182x252).png`, await canvasToBlob(simpleScanExportCanvas)); selectedCount++; }
             if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas) { previewFolder.file(`简单扫描-页面预览.png`, await canvasToBlob(simpleScanPageCanvas)); selectedCount++; }
-            
+
             // 活动中心
             if (document.getElementById('chkMyActivityExport')?.checked && myActivityExportCanvas) { bannerFolder.file(`活动中心-独立切图(670x320).png`, await canvasToBlob(myActivityExportCanvas)); selectedCount++; }
             if (document.getElementById('chkMyActivityPageExport')?.checked && myActivityPageCanvas) { previewFolder.file(`活动中心-页面预览.png`, await canvasToBlob(myActivityPageCanvas)); selectedCount++; }
-            
+
             // 共享点对点
             if (document.getElementById('chkPeerSharingExport')?.checked && peerSharingExportCanvas) { bannerFolder.file(`共享点对点-独立切图(670x320).png`, await canvasToBlob(peerSharingExportCanvas)); selectedCount++; }
             if (document.getElementById('chkPeerSharingPageExport')?.checked && peerSharingPageCanvas) { previewFolder.file(`共享点对点-页面预览.png`, await canvasToBlob(peerSharingPageCanvas)); selectedCount++; }
@@ -1220,28 +1220,38 @@ function initExportModal() {
 window.onload = async () => {
     // ================= 核心修复：UI 优先 =================
     // 1. 第一时间把左侧菜单和弹窗结构渲染出来，瞬间完成，告别等待！
-    updateResourceDropdown('NA'); 
+    updateResourceDropdown('NA');
     initExportModal();
 
     // ================= 耗时操作：放后台执行 =================
     // 2. 去加载外部字体（可能受网络影响）
-    if ('fonts' in document) { 
-        try { 
-            await document.fonts.load('normal 38px "FZLanTingHeiS-DB-GB"'); 
-            await document.fonts.load('normal 44px "FZLanTingHeiS-DB-GB"'); 
-            await document.fonts.load('normal 38px "FZLTHK"'); 
-            await document.fonts.load('normal 42px "FZLanTingHeiS-H"'); 
-            await document.fonts.load('normal 36px "FZLanTingHeiS-DB"'); 
-        } catch (e) { } 
+    // 2. 去加载外部字体 (可能受网络影响)
+    if ('fonts' in document) {
+        try {
+            // 前面的字号随便写个 10px 即可，主要为了触发下载
+            // 把你所有可能用到的名字全部强制加载一遍！特别是 R！
+            await document.fonts.load('10px "FZLanTingHeiS-R-GB"');
+            await document.fonts.load('10px "FZLanTingHeiS-R"');
+            await document.fonts.load('10px "FZLanTingHeiS-DB-GB"');
+            await document.fonts.load('10px "FZLanTingHeiS-DB"');
+            await document.fonts.load('10px "FZLanTingHeiS-H"');
+            await document.fonts.load('10px "FZLTHK"');
+
+            // 双保险：等所有的字体都确认解析完毕
+            await document.fonts.ready;
+        } catch (e) {
+            console.warn("字体加载报错:", e);
+        }
     }
-    
+
     // 3. 最后才开始默默渲染中间的预览画板
-    await renderHomeCanvas(); 
-    await renderMyPage(); 
-    await renderFeedCanvas(); 
+    await renderHomeCanvas();
+    // ... 下面的不变 
+    await renderMyPage();
+    await renderFeedCanvas();
     await renderSearchIcon();
-    await renderMySpaceCanvas(); 
-    await renderSimpleScanCanvas(); 
-    await renderMyActivityCanvas(); 
+    await renderMySpaceCanvas();
+    await renderSimpleScanCanvas();
+    await renderMyActivityCanvas();
     await renderPeerSharingCanvas();
 };
