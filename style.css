@@ -85,9 +85,9 @@
 }
 
 @font-face {
-    font-family: 'FZLanTingHeiS-R';
-    src: url('https://cdn.jsdelivr.net/gh/edwardtoday/xelatex-template@master/fonts/FZLanTingHeiS-R-GB.TTF') format('truetype');
-    font-weight: normal;
+font-family: 'FZLanTingHeiS-R';
+src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-R-GB.ttf') format('truetype');
+font-weight: normal;
 }
 
 @font-face {
@@ -131,8 +131,11 @@ body {
     height: 100vh;
     overflow: hidden;
     margin: 0;
+    
+    /* 👇 新增这两行，开启极限抗锯齿，让字体变细变清晰 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
-
 /* 头部 */
 .app-header {
     height: 50px;
