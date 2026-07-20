@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <title>配置中心</title>
     <link rel="stylesheet" href="style.css">
+    <!-- JSZip 用于导出功能 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- 引入 Figma 风格的颜色选择器库 (Pickr) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 </head>
 
 <body>
@@ -28,7 +32,8 @@
             <div class="sidebar-section">
                 <div class="section-title"><span class="step-label">1</span>所属业务线</div>
                 <div class="bu-selector">
-                    <button class="bu-btn active" data-bu="wangpan"><img src="assets/1baiduwangpan.svg" alt="网盘"></button>
+                    <button class="bu-btn active" data-bu="wangpan"><img src="assets/1baiduwangpan.svg"
+                            alt="网盘"></button>
                     <button class="bu-btn" data-bu="yike"><img src="assets/2yikexiangce.svg" alt="一刻"></button>
                     <button class="bu-btn" data-bu="chuhai"><img src="assets/3chuhaifangxiang.svg" alt="出海"></button>
                 </div>
@@ -50,7 +55,8 @@
                         <button class="terminal-btn" data-terminal="ipd">ipd端</button>
                     </div>
                 </div>
-                <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
+                <div class="sidebar-section"
+                    style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
                     <div class="section-title"><span class="step-label">3</span>页面配置 (资源位)</div>
                     <div id="resourceList" class="resource-list"></div>
                 </div>
@@ -61,17 +67,20 @@
         <main class="preview-area center-workspace">
 
             <div id="viewDevelopingPrompt" class="view-section prompt-view">
-                <img src="assets/hero-banner.png" style="width: 200px; opacity: 0.2; filter: grayscale(1); margin-bottom: 20px;">
+                <img src="assets/hero-banner.png"
+                    style="width: 200px; opacity: 0.2; filter: grayscale(1); margin-bottom: 20px;">
                 <h2 style="font-weight: normal; font-size: 20px; color: #888;">当前页面的视觉预览正在接入中...</h2>
             </div>
 
             <!-- 1. 13.14首页顶部沉浸banner -->
             <div id="homeView" class="view-section active">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图中的banner可查看纯净版大图</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                    提示：点击下方手机预览图中的banner可查看纯净版大图</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">大图状态</div>
-                        <canvas id="topHomePageCanvas" class="phone-canvas zoomable-canvas" data-target="homeTop"></canvas>
+                        <canvas id="topHomePageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="homeTop"></canvas>
                     </div>
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">小图状态</div>
@@ -82,18 +91,21 @@
 
             <!-- 2. 我的页面 banner -->
             <div id="myPageView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图中的banner可查看纯净版大图</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                    提示：点击下方手机预览图中的banner可查看纯净版大图</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">我的页面</div>
-                        <canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas" data-target="myPage"></canvas>
+                        <canvas id="myPageFullCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="myPage"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- 3. 首页 feed 10出1 -->
             <div id="feedView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图中的banner可查看纯净版大图</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                    提示：点击下方手机预览图中的banner可查看纯净版大图</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">Feed10出1</div>
@@ -104,48 +116,57 @@
 
             <!-- 4. 搜索框 icon -->
             <div id="searchIconView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图
+                </div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">搜索框 icon</div>
-                        <canvas id="searchPageCanvas" class="phone-canvas zoomable-canvas" data-target="searchIcon"></canvas>
+                        <canvas id="searchPageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="searchIcon"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- 5. 我的空间/简单扫描banner -->
             <div id="mySpaceView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看导出的1182大尺寸切图</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                    提示：点击下方手机预览图可查看导出的1182大尺寸切图</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">我的空间页面预览</div>
-                        <canvas id="mySpacePageCanvas" class="phone-canvas zoomable-canvas" data-target="mySpace"></canvas>
+                        <canvas id="mySpacePageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="mySpace"></canvas>
                     </div>
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">简单扫描页面预览</div>
-                        <canvas id="simpleScanPageCanvas" class="phone-canvas zoomable-canvas" data-target="simpleScan"></canvas>
+                        <canvas id="simpleScanPageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="simpleScan"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- 6. 活动中心 -->
             <div id="myActivityView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图
+                    (670x320)</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">活动中心 Banner 预览</div>
-                        <canvas id="myActivityPageCanvas" class="phone-canvas zoomable-canvas" data-target="myActivity"></canvas>
+                        <canvas id="myActivityPageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="myActivity"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- 7. 共享点对点 -->
             <div id="peerSharingView" class="view-section">
-                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
+                <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">提示：点击下方手机预览图可查看纯净版切图
+                    (670x320)</div>
                 <div class="preview-grid flex-center">
                     <div class="preview-card transparent-card">
                         <div class="card-title text-center">共享点对点 Banner 预览</div>
-                        <canvas id="peerSharingPageCanvas" class="phone-canvas zoomable-canvas" data-target="peerSharing"></canvas>
+                        <canvas id="peerSharingPageCanvas" class="phone-canvas zoomable-canvas"
+                            data-target="peerSharing"></canvas>
                     </div>
                 </div>
             </div>
@@ -157,7 +178,8 @@
             <div id="dynamicControlsArea">
 
                 <div id="baseGlobalPicArea" class="sidebar-section">
-                    <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">全局基础配图</div>
+                    <div class="section-title"
+                        style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">全局基础配图</div>
                     <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
                         <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png" alt="当前配图">
                         <span class="upload-text">点击或将图片拖拽到此处替换</span>
@@ -178,36 +200,49 @@
                                     <label><input type="radio" name="topBgMode" value="solid"> 纯色</label>
                                 </div>
                                 <div id="topBgModeImage">
-                                    <label id="topBgUploadDropZone" class="upload-drop-zone" for="topBgImageUpload" style="padding: 10px; min-height: 60px;">
-                                        <img id="topBgUploadPreviewImg" class="upload-preview-img" src="assets/home-page-main-banner.png" alt="当前底板" style="max-height: 30px; object-fit: contain;">
+                                    <label id="topBgUploadDropZone" class="upload-drop-zone" for="topBgImageUpload"
+                                        style="padding: 10px; min-height: 60px;">
+                                        <img id="topBgUploadPreviewImg" class="upload-preview-img"
+                                            src="assets/home-page-main-banner.png" alt="当前底板"
+                                            style="max-height: 30px; object-fit: contain;">
                                         <span class="upload-text" style="font-size: 11px; margin-top: 4px;">替换底图</span>
                                         <input type="file" id="topBgImageUpload" style="display:none;" accept="image/*">
                                     </label>
                                 </div>
                                 <div id="topBgModeGradient" class="hidden">
-                                    <div style="background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div
+                                        style="background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
                                         <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                                            <div class="color-picker-wrap"><span>起始</span><input type="color" id="topGradColor1" value="#B4EC51"></div>
-                                            <div class="color-picker-wrap"><span>终止</span><input type="color" id="topGradColor2" value="#429321"></div>
+                                            <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                    id="topGradColor1" value="#B4EC51"></div>
+                                            <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                    id="topGradColor2" value="#429321"></div>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span style="font-size: 12px; color: #666; width: 28px;">角度</span>
-                                            <input type="range" id="topGradAngle" min="0" max="360" value="90" style="flex: 1;">
-                                            <span id="topGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">90°</span>
+                                            <input type="range" id="topGradAngle" min="0" max="360" value="90"
+                                                style="flex: 1;">
+                                            <span id="topGradAngleVal"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">90°</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="topBgModeSolid" class="hidden">
-                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div class="input-group"
+                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
                                         <span style="margin:0;">背景色:</span>
-                                        <input type="color" id="topSolidColor" value="#E0F2FE" style="width: 100%; height: 28px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                        <input type="color" id="topSolidColor" value="#E0F2FE"
+                                            style="width: 100%; height: 28px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title">标题图替换 (660x252)</div>
-                                <label id="topBannerTitleDropZone" class="upload-drop-zone" for="topBannerTitleUpload" style="padding: 10px; min-height: 60px;">
-                                    <img id="topBannerTitlePreviewImg" class="upload-preview-img" src="assets/top-banner-w.png" alt="当前标题图" style="max-height: 30px; object-fit: contain;">
+                                <label id="topBannerTitleDropZone" class="upload-drop-zone" for="topBannerTitleUpload"
+                                    style="padding: 10px; min-height: 60px;">
+                                    <img id="topBannerTitlePreviewImg" class="upload-preview-img"
+                                        src="assets/top-banner-w.png" alt="当前标题图"
+                                        style="max-height: 30px; object-fit: contain;">
                                     <span class="upload-text" style="font-size: 11px; margin-top: 4px;">替换标题图</span>
                                     <input type="file" id="topBannerTitleUpload" style="display:none;" accept="image/*">
                                 </label>
@@ -229,8 +264,10 @@
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title">文案修改</div>
-                                <div class="input-group"><span>第一行 (最多6字):</span><input type="text" id="textLine1" value="教练问是不是" maxlength="6"></div>
-                                <div class="input-group"><span>第二行 (最多4字):</span><input type="text" id="textLine2" value="兑激素了" maxlength="4"></div>
+                                <div class="input-group"><span>第一行 (最多6字):</span><input type="text" id="textLine1"
+                                        value="教练问是不是" maxlength="6"></div>
+                                <div class="input-group"><span>第二行 (最多4字):</span><input type="text" id="textLine2"
+                                        value="兑激素了" maxlength="4"></div>
                             </div>
                         </div>
                     </div>
@@ -252,10 +289,14 @@
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title">文案修改</div>
-                                <div class="input-group"><span>胶囊文字:</span><input type="text" id="textCapsule" value="三个字" maxlength="3"></div>
-                                <div class="input-group"><span>大标题(最多9字):</span><input type="text" id="myPageTitle" value="主标题九个字" maxlength="9"></div>
-                                <div class="input-group"><span>高亮文字:</span><input type="text" id="myPageHighlight" value="九个" maxlength="9"></div>
-                                <div class="input-group"><span>副标题(最多8字):</span><input type="text" id="myPageSubtitle" value="副标题八个字" maxlength="8"></div>
+                                <div class="input-group"><span>胶囊文字:</span><input type="text" id="textCapsule"
+                                        value="三个字" maxlength="3"></div>
+                                <div class="input-group"><span>大标题(最多9字):</span><input type="text" id="myPageTitle"
+                                        value="主标题九个字" maxlength="9"></div>
+                                <div class="input-group"><span>高亮文字:</span><input type="text" id="myPageHighlight"
+                                        value="九个" maxlength="9"></div>
+                                <div class="input-group"><span>副标题(最多8字):</span><input type="text" id="myPageSubtitle"
+                                        value="副标题八个字" maxlength="8"></div>
                             </div>
                         </div>
                     </div>
@@ -275,46 +316,64 @@
                                 </div>
                                 <div id="feedBgModeImage">
                                     <label id="feedBgUploadDropZone" class="upload-drop-zone" for="feedBgImageUpload">
-                                        <img id="feedBgUploadPreviewImg" class="upload-preview-img" src="assets/home-feed-banner.png" alt="当前底板">
+                                        <img id="feedBgUploadPreviewImg" class="upload-preview-img"
+                                            src="assets/home-feed-banner.png" alt="当前底板">
                                         <span class="upload-text">点击或拖拽替换底板</span>
-                                        <input type="file" id="feedBgImageUpload" style="display:none;" accept="image/*">
+                                        <input type="file" id="feedBgImageUpload" style="display:none;"
+                                            accept="image/*">
                                     </label>
                                 </div>
                                 <div id="feedBgModeGradient" class="hidden">
-                                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
-                                            <div class="color-picker-wrap"><span>起始色</span><input type="color" id="feedGradColor1" value="#FFF099"></div>
-                                            <div class="color-picker-wrap"><span>终止色</span><input type="color" id="feedGradColor2" value="#F2F5F8"></div>
+                                    <div
+                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <div
+                                            style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div class="color-picker-wrap"><span>起始色</span><input type="color"
+                                                    id="feedGradColor1" value="#FFF099"></div>
+                                            <div class="color-picker-wrap"><span>终止色</span><input type="color"
+                                                    id="feedGradColor2" value="#F2F5F8"></div>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span style="font-size: 12px; color: #666; width: 36px;">角度</span>
-                                            <input type="range" id="feedGradAngle" min="0" max="360" value="180" style="flex: 1;">
-                                            <span id="feedGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">180°</span>
+                                            <input type="range" id="feedGradAngle" min="0" max="360" value="180"
+                                                style="flex: 1;">
+                                            <span id="feedGradAngleVal"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">180°</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div id="feedBgModeSolid" class="hidden">
-                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <span style="margin:0;">背景色:</span><input type="color" id="feedSolidColor" value="#FFFFFF" style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                    <div class="input-group"
+                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <span style="margin:0;">背景色:</span><input type="color" id="feedSolidColor"
+                                            value="#FFFFFF"
+                                            style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title">文案与颜色配置 (居中)</div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                        <span style="margin: 0;">主标题 (最多7字):</span><input type="color" id="feedTitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">主标题 (最多7字):</span><input type="color"
+                                            id="feedTitleColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="feedTitle" value="主标题7个字" maxlength="7">
                                 </div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                        <span style="margin: 0;">副标题 (最多10字):</span><input type="color" id="feedSubtitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题 (最多10字):</span><input type="color"
+                                            id="feedSubtitleColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="feedSubtitle" value="副标题字数最多10个字" maxlength="10">
                                 </div>
                                 <div class="input-group">
-                                    <span>按钮文案 (最多4字):</span><input type="text" id="feedBtnText" value="立即参加" maxlength="4">
+                                    <span>按钮文案 (最多4字):</span><input type="text" id="feedBtnText" value="立即参加"
+                                        maxlength="4">
                                 </div>
                             </div>
                         </div>
@@ -327,7 +386,8 @@
                         <div class="panel-group-header">搜索框 icon 配置</div>
                         <div class="panel-group-body">
                             <div style="font-size: 12px; color: #666; line-height: 1.6;">
-                                【A级资源】本资源位仅需一张配图。<br>👉 请在上方<b>【全局基础配图】</b>区域上传图片。<br>系统会自动在页面等比缩放为 128x128 预览，并生成 204x204 纯净切图导出。
+                                【A级资源】本资源位仅需一张配图。<br>👉 请在上方<b>【全局基础配图】</b>区域上传图片。<br>系统会自动在页面等比缩放为 128x128 预览，并生成
+                                204x204 纯净切图导出。
                             </div>
                         </div>
                     </div>
@@ -335,7 +395,8 @@
 
                 <!-- ================= 我的空间/扫描 Banner 参数 ================= -->
                 <div id="mySpaceControls" class="control-group">
-                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
                         👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
 
@@ -350,15 +411,22 @@
                                     <label><input type="radio" name="mySpaceBgMode" value="gradient"> 渐变色</label>
                                 </div>
                                 <div id="mySpaceBgModeSolid">
-                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <span style="margin:0;">背景色:</span><input type="color" id="mySpaceSolidColor" value="#FFFFFF" style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                    <div class="input-group"
+                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <span style="margin:0;">背景色:</span><input type="color" id="mySpaceSolidColor"
+                                            value="#FFFFFF"
+                                            style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                                 <div id="mySpaceBgModeGradient" class="hidden">
-                                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
-                                            <div class="color-picker-wrap"><span>起始</span><input type="color" id="mySpaceGradColor1" value="#E5F3FF"></div>
-                                            <div class="color-picker-wrap"><span>终止</span><input type="color" id="mySpaceGradColor2" value="#FFFFFF"></div>
+                                    <div
+                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <div
+                                            style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                    id="mySpaceGradColor1" value="#E5F3FF"></div>
+                                            <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                    id="mySpaceGradColor2" value="#FFFFFF"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -381,11 +449,15 @@
                                     <span style="margin-bottom: 4px; display: block;">按钮文案 (固定白色):</span>
                                     <input type="text" id="mySpaceBtnText" value="去查看">
                                 </div>
-                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
-                                    <span style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色 (用于填充SVG):</span>
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
+                                    <span style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色
+                                        (用于填充SVG):</span>
                                     <div style="display: flex; gap: 16px; align-items: center;">
-                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="mySpaceBtnGrad1" value="#06A7FF"></div>
-                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="mySpaceBtnGrad2" value="#0066FF"></div>
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                id="mySpaceBtnGrad1" value="#06A7FF"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                id="mySpaceBtnGrad2" value="#0066FF"></div>
                                     </div>
                                 </div>
                             </div>
@@ -403,15 +475,22 @@
                                     <label><input type="radio" name="simpleScanBgMode" value="gradient"> 渐变色</label>
                                 </div>
                                 <div id="simpleScanBgModeSolid">
-                                    <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <span style="margin:0;">背景色:</span><input type="color" id="simpleScanSolidColor" value="#FFFFFF" style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
+                                    <div class="input-group"
+                                        style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <span style="margin:0;">背景色:</span><input type="color" id="simpleScanSolidColor"
+                                            value="#FFFFFF"
+                                            style="width: 100%; height: 32px; border: none; padding: 0; cursor: pointer; border-radius: 4px;">
                                     </div>
                                 </div>
                                 <div id="simpleScanBgModeGradient" class="hidden">
-                                    <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                        <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
-                                            <div class="color-picker-wrap"><span>起始</span><input type="color" id="simpleScanGradColor1" value="#E5F3FF"></div>
-                                            <div class="color-picker-wrap"><span>终止</span><input type="color" id="simpleScanGradColor2" value="#FFFFFF"></div>
+                                    <div
+                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                        <div
+                                            style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
+                                            <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                    id="simpleScanGradColor1" value="#E5F3FF"></div>
+                                            <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                    id="simpleScanGradColor2" value="#FFFFFF"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -422,14 +501,18 @@
                                     <span style="margin-bottom: 4px; display: block;">主标题 (最多11字):</span>
                                     <input type="text" id="simpleScanTitle" value="简单扫描网页版重磅来袭" maxlength="11">
                                 </div>
-                                <div class="input-group" style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                <div class="input-group"
+                                    style="display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
                                     <div style="flex: 1;">
-                                        <span style="font-size: 11px; display: block; margin-bottom: 2px;">高亮词(支持变色):</span>
-                                        <input type="text" id="simpleScanHighlight" value="重磅来袭" style="margin-bottom: 0;">
+                                        <span
+                                            style="font-size: 11px; display: block; margin-bottom: 2px;">高亮词(支持变色):</span>
+                                        <input type="text" id="simpleScanHighlight" value="重磅来袭"
+                                            style="margin-bottom: 0;">
                                     </div>
                                     <div style="width: 50px;">
                                         <span style="font-size: 11px; display: block; margin-bottom: 2px;">颜色:</span>
-                                        <input type="color" id="simpleScanHighlightColor" value="#14B5FF" style="width: 100%; height: 28px; padding: 0; border: none;">
+                                        <input type="color" id="simpleScanHighlightColor" value="#14B5FF"
+                                            style="width: 100%; height: 28px; padding: 0; border: none;">
                                     </div>
                                 </div>
                                 <div class="input-group">
@@ -444,11 +527,15 @@
                                     <span style="margin-bottom: 4px; display: block;">按钮文案 (固定白色):</span>
                                     <input type="text" id="simpleScanBtnText" value="去查看">
                                 </div>
-                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
-                                    <span style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色 (用于填充SVG):</span>
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
+                                    <span style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色
+                                        (用于填充SVG):</span>
                                     <div style="display: flex; gap: 16px; align-items: center;">
-                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="simpleScanBtnGrad1" value="#06A7FF"></div>
-                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="simpleScanBtnGrad2" value="#0066FF"></div>
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                id="simpleScanBtnGrad1" value="#06A7FF"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                id="simpleScanBtnGrad2" value="#0066FF"></div>
                                     </div>
                                 </div>
                             </div>
@@ -458,7 +545,8 @@
 
                 <!-- ================= 活动中心 Banner 参数 ================= -->
                 <div id="myActivityControls" class="control-group">
-                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
                         👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
                     <div class="panel-group">
@@ -466,33 +554,42 @@
                         <div class="panel-group-body">
                             <div class="sidebar-section">
                                 <div class="section-title">渐变底板颜色 (670x320)</div>
-                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
                                     <div style="display: flex; gap: 16px; align-items: center;">
-                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color" id="myActivityGrad1" value="#9EED60"></div>
-                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color" id="myActivityGrad2" value="#FCFF70"></div>
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color"
+                                                id="myActivityGrad1" value="#9EED60"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color"
+                                                id="myActivityGrad2" value="#FCFF70"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">副标题/第一行 (最多8字):</span>
-                                        <input type="color" id="myActivitySubColor" value="#777777" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="myActivitySubColor" value="#777777"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="myActivitySub" value="甜粽小吃铺开业啦" maxlength="8">
                                 </div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
-                                        <input type="color" id="myActivityTitle1Color" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="myActivityTitle1Color" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="myActivityTitle1" value="包粽子免费得" maxlength="7">
                                 </div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
-                                        <input type="color" id="myActivityTitle2Color" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="myActivityTitle2Color" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="myActivityTitle2" value="iPhone" maxlength="7">
                                 </div>
@@ -501,9 +598,11 @@
                             <div class="sidebar-section">
                                 <div class="section-title">按钮配置</div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">按钮文案 (最多3字):</span>
-                                        <input type="color" id="myActivityBtnColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="myActivityBtnColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="myActivityBtnText" value="按钮字" maxlength="3">
                                 </div>
@@ -514,7 +613,8 @@
 
                 <!-- ================= 共享点对点 Banner 参数 ================= -->
                 <div id="peerSharingControls" class="control-group">
-                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
                         👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
                     <div class="panel-group">
@@ -522,33 +622,42 @@
                         <div class="panel-group-body">
                             <div class="sidebar-section">
                                 <div class="section-title">渐变底板颜色 (670x320)</div>
-                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
                                     <div style="display: flex; gap: 16px; align-items: center;">
-                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color" id="peerSharingGrad1" value="#D16FFF"></div>
-                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color" id="peerSharingGrad2" value="#5C6CFF"></div>
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color"
+                                                id="peerSharingGrad1" value="#D16FFF"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color"
+                                                id="peerSharingGrad2" value="#5C6CFF"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="sidebar-section">
                                 <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">副标题/第一行 (最多8字):</span>
-                                        <input type="color" id="peerSharingSubColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="peerSharingSubColor" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="peerSharingSub" value="甜粽小吃铺开业啦" maxlength="8">
                                 </div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
-                                        <input type="color" id="peerSharingTitle1Color" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="peerSharingTitle1Color" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="peerSharingTitle1" value="包粽子免费得" maxlength="7">
                                 </div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
-                                        <input type="color" id="peerSharingTitle2Color" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="peerSharingTitle2Color" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="peerSharingTitle2" value="iPhone" maxlength="7">
                                 </div>
@@ -557,9 +666,11 @@
                             <div class="sidebar-section">
                                 <div class="section-title">按钮配置</div>
                                 <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                                         <span style="margin: 0;">按钮文案 (最多3字):</span>
-                                        <input type="color" id="peerSharingBtnColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                        <input type="color" id="peerSharingBtnColor" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
                                     <input type="text" id="peerSharingBtnText" value="按钮字" maxlength="3">
                                 </div>
@@ -609,51 +720,79 @@
             <div class="export-modal-header">选择需要导出的资源</div>
             <div class="export-modal-body">
                 <div style="padding-bottom: 12px; border-bottom: 1px solid #e0e6ed; margin-bottom: 16px;">
-                    <label style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #258AFF;">
-                        <input type="checkbox" id="selectAllExport" checked style="cursor: pointer; width: 16px; height: 16px;"> 全选 / 取消全选
+                    <label
+                        style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #258AFF;">
+                        <input type="checkbox" id="selectAllExport" checked
+                            style="cursor: pointer; width: 16px; height: 16px;"> 全选 / 取消全选
                     </label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span class="export-badge ss">【SS级】</span></div>
-                    <label><input type="checkbox" id="chkTopHomePhone" class="export-item-chk" checked> 首页-大图状态预览</label>
-                    <label><input type="checkbox" id="chkTopHomeBanner" class="export-item-chk" checked> 首页-大图状态Banner</label>
+                    <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span
+                            class="export-badge ss">【SS级】</span></div>
+                    <label><input type="checkbox" id="chkTopHomePhone" class="export-item-chk" checked>
+                        首页-大图状态预览</label>
+                    <label><input type="checkbox" id="chkTopHomeBanner" class="export-item-chk" checked>
+                        首页-大图状态Banner</label>
                     <label><input type="checkbox" id="chkHomePhone" class="export-item-chk" checked> 首页-小图状态预览</label>
-                    <label><input type="checkbox" id="chkHomeBannerLight" class="export-item-chk" checked> 首页-小图状态Banner(日间)</label>
-                    <label><input type="checkbox" id="chkHomeBannerDark" class="export-item-chk" checked> 首页-小图状态Banner(夜间)</label>
-                    <label><input type="checkbox" id="chkHomeKV" class="export-item-chk" checked> 首页-独立切图 (420x282)</label>
+                    <label><input type="checkbox" id="chkHomeBannerLight" class="export-item-chk" checked>
+                        首页-小图状态Banner(日间)</label>
+                    <label><input type="checkbox" id="chkHomeBannerDark" class="export-item-chk" checked>
+                        首页-小图状态Banner(夜间)</label>
+                    <label><input type="checkbox" id="chkHomeKV" class="export-item-chk" checked> 首页-独立切图
+                        (420x282)</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span></div>
-                    <label><input type="checkbox" id="chkFeedBannerExport" class="export-item-chk" checked> 首页-Feed10出1banner</label>
-                    <label><input type="checkbox" id="chkFeedPhone" class="export-item-chk" checked> 首页-Feed10出1预览</label>
+                    <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span>
+                    </div>
+                    <label><input type="checkbox" id="chkFeedBannerExport" class="export-item-chk" checked>
+                        首页-Feed10出1banner</label>
+                    <label><input type="checkbox" id="chkFeedPhone" class="export-item-chk" checked>
+                        首页-Feed10出1预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span></div>
-                    <label><input type="checkbox" id="chkMyPageBannerLight" class="export-item-chk" checked> 我的-Banner(日间)</label>
-                    <label><input type="checkbox" id="chkMyPageBannerDark" class="export-item-chk" checked> 我的-Banner(夜间)</label>
+                    <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span>
+                    </div>
+                    <label><input type="checkbox" id="chkMyPageBannerLight" class="export-item-chk" checked>
+                        我的-Banner(日间)</label>
+                    <label><input type="checkbox" id="chkMyPageBannerDark" class="export-item-chk" checked>
+                        我的-Banner(夜间)</label>
                     <label><input type="checkbox" id="chkMyPagePhone" class="export-item-chk" checked> 我的-预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
-                    <label><input type="checkbox" id="chkSearchIconExport" class="export-item-chk" checked> 搜索框-独立切图 (204x204)</label>
-                    <label><input type="checkbox" id="chkSearchPageExport" class="export-item-chk" checked> 搜索框-页面预览</label>
+                    <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkSearchIconExport" class="export-item-chk" checked> 搜索框-独立切图
+                        (204x204)</label>
+                    <label><input type="checkbox" id="chkSearchPageExport" class="export-item-chk" checked>
+                        搜索框-页面预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.16 NA - 我的空间/简单扫描 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
-                    <label><input type="checkbox" id="chkMySpaceExport" class="export-item-chk" checked> 我的空间-独立切图 (1182x252)</label>
-                    <label><input type="checkbox" id="chkMySpacePageExport" class="export-item-chk" checked> 我的空间-页面预览</label>
-                    <label><input type="checkbox" id="chkSimpleScanExport" class="export-item-chk" checked> 简单扫描-独立切图 (1182x252)</label>
-                    <label><input type="checkbox" id="chkSimpleScanPageExport" class="export-item-chk" checked> 简单扫描-页面预览</label>
+                    <div class="export-group-title">A1.1.16 NA - 我的空间/简单扫描 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkMySpaceExport" class="export-item-chk" checked> 我的空间-独立切图
+                        (1182x252)</label>
+                    <label><input type="checkbox" id="chkMySpacePageExport" class="export-item-chk" checked>
+                        我的空间-页面预览</label>
+                    <label><input type="checkbox" id="chkSimpleScanExport" class="export-item-chk" checked> 简单扫描-独立切图
+                        (1182x252)</label>
+                    <label><input type="checkbox" id="chkSimpleScanPageExport" class="export-item-chk" checked>
+                        简单扫描-页面预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.17 NA - 活动中心 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
-                    <label><input type="checkbox" id="chkMyActivityExport" class="export-item-chk" checked> 活动中心-独立切图 (670x320)</label>
-                    <label><input type="checkbox" id="chkMyActivityPageExport" class="export-item-chk" checked> 活动中心-页面预览</label>
+                    <div class="export-group-title">A1.1.17 NA - 活动中心 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkMyActivityExport" class="export-item-chk" checked> 活动中心-独立切图
+                        (670x320)</label>
+                    <label><input type="checkbox" id="chkMyActivityPageExport" class="export-item-chk" checked>
+                        活动中心-页面预览</label>
                 </div>
                 <div class="export-group">
-                    <div class="export-group-title">A1.1.18 NA - 共享点对点 <span class="export-badge" style="color:#258AFF;">【A级】</span></div>
-                    <label><input type="checkbox" id="chkPeerSharingExport" class="export-item-chk" checked> 共享点对点-独立切图 (670x320)</label>
-                    <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked> 共享点对点-页面预览</label>
+                    <div class="export-group-title">A1.1.18 NA - 共享点对点 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkPeerSharingExport" class="export-item-chk" checked> 共享点对点-独立切图
+                        (670x320)</label>
+                    <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked>
+                        共享点对点-页面预览</label>
                 </div>
             </div>
             <div class="export-modal-footer">

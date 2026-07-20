@@ -85,9 +85,9 @@
 }
 
 @font-face {
-font-family: 'FZLanTingHeiS-R';
-src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-R-GB.ttf') format('truetype');
-font-weight: normal;
+    font-family: 'FZLanTingHeiS-R';
+    src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-R-GB.ttf') format('truetype');
+    font-weight: normal;
 }
 
 @font-face {
@@ -131,11 +131,11 @@ body {
     height: 100vh;
     overflow: hidden;
     margin: 0;
-    
     /* 👇 新增这两行，开启极限抗锯齿，让字体变细变清晰 */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 /* 头部 */
 .app-header {
     height: 50px;
@@ -811,4 +811,28 @@ input[type=range]:focus::-webkit-slider-thumb {
 
 .resource-item-text::-webkit-scrollbar {
     display: none;
+}
+
+/* ========================================================== */
+/* 覆盖 Pickr 插件样式，完美融入现有的 UI 布局 */
+/* ========================================================== */
+.pcr-button {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 4px !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+}
+
+/* 针对占满全宽的独立颜色选择器 (如：纯色底板) */
+.input-group .pcr-button {
+    width: 100% !important;
+    height: 28px !important;
+}
+
+/* 让弹出面板更有 Figma 的高级质感 */
+.pcr-app[data-theme="nano"] {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
