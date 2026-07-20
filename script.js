@@ -1322,3 +1322,478 @@ window.onload = async () => {
     await renderMyActivityCanvas();
     await renderPeerSharingCanvas();
 };
+
+(() => {
+  const STYLE_ID = 'ai-chat-style';
+  const ROOT_ID = 'ai-chat-root';
+  const ENDPOINT = window.AI_CHAT_ENDPOINT || '/api/chat';
+
+  const css = `
+#${ROOT_ID} {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.ai-launcher {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: #258AFF;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 24px rgba(37, 138, 255, 0.28);
+  cursor: pointer;
+}
+
+.ai-launcher:hover {
+  background: #1a73e8;
+}
+
+.ai-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 76px;
+  width: 380px;
+  height: min(560px, calc(100vh - 100px));
+  background: #fff;
+  border: 1px solid #e0e6ed;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  display: none;
+  overflow: hidden;
+}
+
+.ai-panel.open {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-head {
+  height: 48px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e0e6ed;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.ai-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.ai-head-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.ai-icon-btn {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.ai-icon-btn:hover {
+  background: #eef5ff;
+  color: #258AFF;
+}
+
+.ai-chip-row {
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #fff;
+  border-bottom: 1px solid #f0f2f5;
+  flex-shrink: 0;
+}
+
+.ai-chip {
+  border: 1px solid #dbe4ee;
+  background: #fff;
+  color: #446;
+  border-radius: 999px;
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ai-chip:hover {
+  border-color: #258AFF;
+  color: #258AFF;
+}
+
+.ai-messages {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.ai-msg {
+  max-width: 88%;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.ai-msg.user {
+  margin-left: auto;
+  background: #258AFF;
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.ai-msg.assistant {
+  background: #fff;
+  color: #222;
+  border: 1px solid #e6edf5;
+  border-bottom-left-radius: 2px;
+}
+
+.ai-msg.meta {
+  background: #f1f5f9;
+  color: #666;
+  border: 1px dashed #d9e2ec;
+  max-width: 100%;
+}
+
+.ai-msg.ai-thinking {
+  opacity: 0.7;
+}
+
+.ai-compose {
+  padding: 10px;
+  border-top: 1px solid #e0e6ed;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ai-textarea {
+  width: 100%;
+  min-height: 72px;
+  max-height: 180px;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+}
+
+.ai-textarea:focus {
+  border-color: #258AFF;
+  box-shadow: 0 0 0 3px rgba(37, 138, 255, 0.10);
+}
+
+.ai-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ai-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ai-btn.primary {
+  background: #258AFF;
+  color: #fff;
+}
+
+.ai-btn.primary:hover {
+  background: #1a73e8;
+}
+
+.ai-btn.secondary {
+  background: #f0f2f5;
+  color: #333;
+}
+
+.ai-btn.secondary:hover {
+  background: #e4e7ea;
+}
+
+@media (max-width: 520px) {
+  .ai-panel {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+
+  #${ROOT_ID} {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+`;
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+
+  function getActiveResource() {
+    const el = document.querySelector('.resource-item.active');
+    if (!el) return '';
+    return (el.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function svgIcon(path) {
+    return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"></path></svg>`;
+  }
+
+  function createShell() {
+    if (document.getElementById(ROOT_ID)) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = ROOT_ID;
+    wrap.innerHTML = `
+      <button class="ai-launcher" id="ai-launcher" type="button" title="AI">
+        ${svgIcon('M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z')}
+      </button>
+
+      <section class="ai-panel" id="ai-panel" aria-hidden="true">
+        <header class="ai-head">
+          <div class="ai-title">
+            ${svgIcon('M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z')}
+            <span>AI 助手</span>
+          </div>
+          <div class="ai-head-actions">
+            <button class="ai-icon-btn" id="ai-clear" type="button" title="清空">
+              ${svgIcon('M3 6h18M8 6V4h8v2M10 11v6M14 11v6M6 6l1 14h10l1-14')}
+            </button>
+            <button class="ai-icon-btn" id="ai-close" type="button" title="关闭">
+              ${svgIcon('M18 6 6 18M6 6l12 12')}
+            </button>
+          </div>
+        </header>
+
+        <div class="ai-chip-row" id="ai-chips"></div>
+        <div class="ai-messages" id="ai-messages"></div>
+
+        <div class="ai-compose">
+          <textarea class="ai-textarea" id="ai-input" placeholder="输入你想让 AI 帮你处理的内容"></textarea>
+          <div class="ai-actions">
+            <button class="ai-btn secondary" id="ai-fill-demo" type="button">示例</button>
+            <button class="ai-btn primary" id="ai-send" type="button">发送</button>
+          </div>
+        </div>
+      </section>
+    `;
+
+    document.body.appendChild(wrap);
+  }
+
+  function appendMessage(messagesEl, role, text, cls) {
+    const div = document.createElement('div');
+    div.className = `ai-msg ${role}${cls ? ' ' + cls : ''}`;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return div;
+  }
+
+  function buildContext() {
+    return {
+      pageTitle: document.title || '',
+      activeResource: getActiveResource(),
+      url: location.href
+    };
+  }
+
+  async function callAi(messages) {
+    const payload = {
+      messages,
+      context: buildContext()
+    };
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (typeof data === 'string') return data;
+      if (data && data.reply) return data.reply;
+      if (data && data.content) return data.content;
+      if (data && data.message) return data.message;
+
+      return JSON.stringify(data, null, 2);
+    } catch (err) {
+      const last = messages[messages.length - 1]?.content || '';
+      const active = buildContext().activeResource || '未选择资源位';
+
+      return `已接到输入。\n当前资源位：${active}\n你后面把真实接口接到 ${ENDPOINT} 后，这里就会返回模型结果。\n\n你刚才说：${last}`;
+    }
+  }
+
+  function init() {
+    ensureStyle();
+    createShell();
+
+    const launcher = document.getElementById('ai-launcher');
+    const panel = document.getElementById('ai-panel');
+    const closeBtn = document.getElementById('ai-close');
+    const clearBtn = document.getElementById('ai-clear');
+    const sendBtn = document.getElementById('ai-send');
+    const input = document.getElementById('ai-input');
+    const messagesEl = document.getElementById('ai-messages');
+    const chipsEl = document.getElementById('ai-chips');
+    const demoBtn = document.getElementById('ai-fill-demo');
+
+    if (!launcher || !panel || !closeBtn || !clearBtn || !sendBtn || !input || !messagesEl || !chipsEl || !demoBtn) {
+      console.warn('AI assistant init failed: missing required DOM nodes.');
+      return;
+    }
+
+    const chips = [
+      '根据当前资源位生成文案',
+      '把这段文案压缩到更短',
+      '帮我写 3 个备选标题',
+      '按运营风格重写'
+    ];
+
+    chipsEl.innerHTML = chips
+      .map(text => `<button class="ai-chip" type="button">${text}</button>`)
+      .join('');
+
+    chipsEl.querySelectorAll('.ai-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        input.value = btn.textContent || '';
+        input.focus();
+      });
+    });
+
+    function openPanel() {
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+
+      if (!messagesEl.dataset.inited) {
+        appendMessage(messagesEl, 'assistant', '已就绪。');
+        appendMessage(messagesEl, 'meta', `当前资源位：${getActiveResource() || '未选择'}`);
+        messagesEl.dataset.inited = '1';
+      }
+
+      input.focus();
+    }
+
+    function closePanel() {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    async function send() {
+      const text = (input.value || '').trim();
+      if (!text) return;
+
+      appendMessage(messagesEl, 'user', text);
+      input.value = '';
+
+      const thinking = appendMessage(messagesEl, 'assistant', '处理中...', 'ai-thinking');
+
+      const history = [];
+      messagesEl.querySelectorAll('.ai-msg.user, .ai-msg.assistant').forEach(el => {
+        if (el === thinking) return;
+
+        const role = el.classList.contains('user') ? 'user' : 'assistant';
+        const content = el.textContent || '';
+
+        if (content && content !== '处理中...') {
+          history.push({ role, content });
+        }
+      });
+
+      const reply = await callAi(history);
+
+      thinking.remove();
+      appendMessage(messagesEl, 'assistant', reply);
+    }
+
+    launcher.addEventListener('click', () => {
+      if (panel.classList.contains('open')) {
+        closePanel();
+      } else {
+        openPanel();
+      }
+    });
+
+    closeBtn.addEventListener('click', closePanel);
+
+    clearBtn.addEventListener('click', () => {
+      messagesEl.innerHTML = '';
+      delete messagesEl.dataset.inited;
+      appendMessage(messagesEl, 'assistant', '已清空。');
+    });
+
+    sendBtn.addEventListener('click', send);
+
+    demoBtn.addEventListener('click', () => {
+      input.value = '根据当前资源位生成一版更短的运营文案';
+      input.focus();
+    });
+
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        send();
+      }
+
+      if (event.key === 'Escape') {
+        closePanel();
+      }
+    });
+
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && panel.classList.contains('open')) {
+        closePanel();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
