@@ -216,7 +216,6 @@ document.getElementById('zoomResetBtn').addEventListener('click', resetCanvasVie
 function toggleCanvasGroup(canvasId, isShow) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
-    // 尽量把带有边框阴影的包裹层一并隐藏，让界面更干净
     let parent = canvas.parentElement;
     if (parent && parent.id !== 'mySpaceView' && parent.tagName === 'DIV') { 
         parent.style.display = isShow ? '' : 'none';
@@ -240,7 +239,11 @@ function triggerThemeSwitch(themeId) {
     if (!matchedTheme) matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
 
     const colorMap = {
-        'topSolidColor': matchedTheme.solid, 'topGradColor1': matchedTheme.grad1, 'topGradColor2': matchedTheme.grad2,
+        'topSolidColor': matchedTheme.solid, 
+        // 🌟 重点修改：大图 Banner 颜色1设为纯白/极浅色，颜色2设为带主题的深一点的颜色
+        'topGradColor1': '#FFFFFF', 
+        'topGradColor2': matchedTheme.grad1, 
+        
         'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
         
         'mySpaceSolidColor': '#FFFFFF', 
@@ -291,7 +294,6 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
         let recognizedModules = new Set();
         let foundColor = false;
         
-        // ✨ 新增记录是否提到了这两个具体的模块
         let hasMySpace = false;
         let hasSimpleScan = false;
 
@@ -322,7 +324,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
                 currentContext = 'mypage'; lineIndex = 0; recognizedModules.add('na_mypage'); continue;
             } else if (line.includes('简单扫描')) {
                 currentContext = 'scan'; lineIndex = 0; recognizedModules.add('dev_1_1_16');
-                hasSimpleScan = true;  // 标记被点名
+                hasSimpleScan = true;  
                 currentSimpleScanBgMode = 'gradient';
                 document.querySelector('input[name="simpleScanBgMode"][value="gradient"]').checked = true;
                 document.getElementById('simpleScanBgModeSolid').classList.add('hidden');
@@ -330,7 +332,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
                 continue;
             } else if (line.includes('我的空间')) {
                 currentContext = 'myspace'; lineIndex = 0; recognizedModules.add('dev_1_1_16');
-                hasMySpace = true; // 标记被点名
+                hasMySpace = true; 
                 currentMySpaceBgMode = 'gradient';
                 document.querySelector('input[name="mySpaceBgMode"][value="gradient"]').checked = true;
                 document.getElementById('mySpaceBgModeSolid').classList.add('hidden');
@@ -416,7 +418,6 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
                 if(ctrlId) document.getElementById(ctrlId).classList.add('active');
             });
             
-            // ✨ 如果本次触发了 A1.1.16 且只提到了其中一个，精准屏蔽没提到的那个
             if (recognizedModules.has('dev_1_1_16')) {
                 if (hasMySpace && !hasSimpleScan) {
                     toggleCanvasGroup('simpleScanPageCanvas', false);
@@ -425,7 +426,6 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
                     toggleCanvasGroup('mySpacePageCanvas', false);
                     toggleCanvasGroup('simpleScanPageCanvas', true);
                 } else {
-                    // 如果都没提（被其他误判带出）或都提了，默认全展示
                     toggleCanvasGroup('mySpacePageCanvas', true);
                     toggleCanvasGroup('simpleScanPageCanvas', true);
                 }
@@ -433,11 +433,14 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 
             cvsScale = modules.length > 1 ? 0.6 : 1; cvsTranslateX = 0; cvsTranslateY = modules.length > 1 ? 100 : 0; 
             updateCanvasTransform();
+            
+            // 贴心小优化：AI生成后，自动滚动页面到中间的画板区域，让PM立刻看到结果
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        btn.innerText = `成功更新并生成 ${recognizedModules.size} 个画板！`;
+        btn.innerText = `成功生成 ${recognizedModules.size} 个画板！可以直接点上方导出了`;
         btn.classList.remove('ai-btn-active');
-        setTimeout(() => { btn.innerText = '一键解析并生成画板'; }, 2500);
+        setTimeout(() => { btn.innerText = '一键解析并生成画板'; }, 3000);
         
     }, 400); 
 });
@@ -1014,7 +1017,6 @@ async function switchResourceView(selected) {
     container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
     document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
 
-    // ✨ 恢复显示被 AI 精准隐藏的卡片
     toggleCanvasGroup('mySpacePageCanvas', true);
     toggleCanvasGroup('simpleScanPageCanvas', true);
 
@@ -1202,6 +1204,67 @@ bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewI
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
 
+// ==================== ✨ 智能勾选辅助函数 ====================
+function autoSelectExportItems() {
+    // 1. 先把所有复选框清空（取消打勾）
+    document.querySelectorAll('.export-item-chk').forEach(chk => chk.checked = false);
+
+    // 2. 检查屏幕上哪些画板是"激活"（显示）状态，自动勾选它们对应的导出项
+    if (document.getElementById('homeView')?.classList.contains('active')) {
+        ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('myPageView')?.classList.contains('active')) {
+        ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('feedView')?.classList.contains('active')) {
+        ['chkFeedBannerExport', 'chkFeedPhone'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('searchIconView')?.classList.contains('active')) {
+        ['chkSearchIconExport', 'chkSearchPageExport'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('mySpaceView')?.classList.contains('active')) {
+        const spaceCanvas = document.getElementById('mySpacePageCanvas');
+        const scanCanvas = document.getElementById('simpleScanPageCanvas');
+        // 我的空间
+        if (spaceCanvas && spaceCanvas.style.display !== 'none' && spaceCanvas.parentElement.style.display !== 'none') {
+            ['chkMySpaceExport', 'chkMySpacePageExport'].forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).checked = true;
+            });
+        }
+        // 简单扫描
+        if (scanCanvas && scanCanvas.style.display !== 'none' && scanCanvas.parentElement.style.display !== 'none') {
+            ['chkSimpleScanExport', 'chkSimpleScanPageExport'].forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).checked = true;
+            });
+        }
+    }
+    if (document.getElementById('myActivityView')?.classList.contains('active')) {
+        ['chkMyActivityExport', 'chkMyActivityPageExport'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('peerSharingView')?.classList.contains('active')) {
+        ['chkPeerSharingExport', 'chkPeerSharingPageExport'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+
+    // 3. 更新“全选”按钮的状态
+    const allChks = document.querySelectorAll('.export-item-chk');
+    const selectAllChk = document.getElementById('selectAllExport');
+    if (selectAllChk && allChks.length > 0) {
+        selectAllChk.checked = Array.from(allChks).every(c => c.checked);
+    }
+}
+
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 function initExportModal() {
@@ -1212,9 +1275,16 @@ function initExportModal() {
     const selectAllChk = document.getElementById('selectAllExport');
     const itemChks = document.querySelectorAll('.export-item-chk');
     if (!exportModal || !openExportModalBtn) return;
-    openExportModalBtn.addEventListener('click', () => { exportModal.style.display = 'flex'; });
+    
+    // 打开导出弹窗时，立刻执行智能勾选！
+    openExportModalBtn.addEventListener('click', () => { 
+        autoSelectExportItems();
+        exportModal.style.display = 'flex'; 
+    });
+    
     cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; });
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
+    
     if (selectAllChk) {
         selectAllChk.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
