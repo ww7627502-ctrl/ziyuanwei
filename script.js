@@ -143,7 +143,7 @@ let currentMySpaceBgMode = 'solid'; let currentSimpleScanBgMode = 'solid';
 const globalImageCache = {}; const globalSvgTextCache = {};
 
 // ==================== ✨ A/B 测试核心状态库与字典映射 ====================
-window.abTestCopies = {}; 
+window.abTestCopies = {};
 window.abTestActiveIndex = {};
 
 const MODULE_INPUT_MAP = {
@@ -165,21 +165,21 @@ const MODULE_RENDER_FNS = {
 // ==================== ✨ 核心工具：智能半角统计、逗号转空格、打字实时渲染 ====================
 function formatAndLimitText(str, maxLen) {
     if (!str) return '';
-    str = str.replace(/。/g, ''); 
-    str = str.replace(/，/g, ' ').replace(/,/g, ' '); 
+    str = str.replace(/。/g, '');
+    str = str.replace(/，/g, ' ').replace(/,/g, ' ');
     str = str.replace(/！/g, '!').replace(/？/g, '?').replace(/：/g, ':').replace(/；/g, ';');
     str = str.replace(/\s+/g, ' ');
 
     let len = 0, res = '';
     for (let i = 0; i < str.length; i++) {
         let charCode = str.charCodeAt(i);
-        let charLen = 1; 
+        let charLen = 1;
         if (str[i] === ' ') {
-            charLen = 0; 
+            charLen = 0;
         } else if (charCode >= 0x0000 && charCode <= 0x00FF) {
-            charLen = 0.5; 
+            charLen = 0.5;
         }
-        
+
         if (len + charLen > maxLen) break;
         len += charLen;
         res += str[i];
@@ -190,8 +190,8 @@ function formatAndLimitText(str, maxLen) {
 function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
     const el = document.getElementById(inputId);
     if (!el) return;
-    el.removeAttribute('maxlength'); 
-    
+    el.removeAttribute('maxlength');
+
     let isComposing = false;
 
     // ✨ 核心机制：任何修改，立即同步数据并触发画布渲染！
@@ -216,7 +216,7 @@ function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
     });
 
     el.addEventListener('input', (e) => {
-        if (isComposing) return; 
+        if (isComposing) return;
         const formatted = formatAndLimitText(e.target.value, maxLen);
         if (e.target.value !== formatted) { e.target.value = formatted; }
         updateDataAndRender(formatted);
@@ -294,18 +294,18 @@ function triggerThemeSwitch(themeId) {
     let matchedTheme = BRAND_THEMES.find(t => t.id === themeId);
     if (themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
     if (!matchedTheme) matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
-    
+
     // ✨ 修正活动中心与共享点对点的默认配色逻辑
     const colorMap = {
         'topSolidColor': matchedTheme.solid, 'topGradColor1': '#FFFFFF', 'topGradColor2': matchedTheme.grad1,
         'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
         'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
         'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
-        
+
         // 活动中心：默认浅色背景，黑字
-        'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF', 
+        'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF',
         'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
-        
+
         // 共享点对点：默认深色/高亮背景，白字
         'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
         'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
@@ -353,7 +353,7 @@ function bindCanvasClickToControl() {
 // ==================== 🚀 4. 肖恩AI 智能大模型与多模态图片解析引擎 ====================
 const API_KEY = "sk-0CFsVd8SMJAZQAMQLfXHX3G4BJTo2zxY8my1o4BynCjesWS9";
 let currentImageBase64 = null;
-let currentRichTextContext = ""; 
+let currentRichTextContext = "";
 const aiPromptInput = document.getElementById('aiPromptInput');
 const aiInputContainer = document.getElementById('aiInputContainer');
 const aiImagePreview = document.getElementById('aiImagePreview');
@@ -459,9 +459,9 @@ function loadAiImage(file) {
             const canvas = document.createElement('canvas');
             canvas.width = width; canvas.height = height;
             canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-            
+
             // 核心压缩点：转为 50% 质量的低清 JPEG 喂给 AI
-            currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5); 
+            currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
             aiPreviewImg.src = currentImageBase64;
             aiImagePreview.style.display = 'block';
         };
@@ -483,12 +483,12 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
         switcherBox = document.createElement('div');
         switcherBox.className = 'ab-switcher-box';
         switcherBox.style.cssText = 'margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f0f4f8; padding: 10px 12px; border-radius: 8px; border: 1px dashed #cbd5e1;';
-        
+
         const label = document.createElement('span');
         label.style.cssText = 'font-size: 13px; color: #64748b; font-weight: bold; margin-right: 4px;';
         label.innerHTML = '✨ 识别到多套文案，请点击切换预览:';
         switcherBox.appendChild(label);
-        
+
         ctrl.insertBefore(switcherBox, ctrl.firstChild);
     } else {
         Array.from(switcherBox.querySelectorAll('.ab-btn')).forEach(el => el.remove());
@@ -503,7 +503,7 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
         btn.className = 'ab-btn';
         btn.innerText = `方案 ${index + 1}`;
         btn.style.cssText = `padding: 4px 14px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; border: 1px solid #258AFF; transition: all 0.2s ease; outline: none;`;
-        
+
         if (index === window.abTestActiveIndex[moduleKey]) {
             btn.style.background = '#258AFF';
             btn.style.color = '#fff';
@@ -515,8 +515,8 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
         }
 
         btn.onclick = () => {
-            window.abTestActiveIndex[moduleKey] = index; 
-            
+            window.abTestActiveIndex[moduleKey] = index;
+
             switcherBox.querySelectorAll('.ab-btn').forEach((b, i) => {
                 b.style.background = i === index ? '#258AFF' : '#fff';
                 b.style.color = i === index ? '#fff' : '#258AFF';
@@ -532,13 +532,13 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
                         if (val !== undefined) {
                             el.value = formatAndLimitText(ref.id === 'textCapsule' ? (val || '宝宝专属') : val, ref.limit || 99);
                         } else {
-                            el.value = ''; 
+                            el.value = '';
                         }
                         // 这行不仅更新值，还让浏览器知道值变了
                         el.dispatchEvent(new Event('input'));
                     }
                 });
-                
+
                 // 确保强制刷新画布
                 if (MODULE_RENDER_FNS[moduleKey]) MODULE_RENDER_FNS[moduleKey]();
             }
@@ -550,15 +550,15 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
 document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
     const rawText = aiPromptInput.value.trim();
     const modelSelectVal = document.getElementById('apiModelSelect')?.value;
-    
+
     if (!rawText && !currentImageBase64 && !currentRichTextContext) { alert('请粘贴需求文案、PDF文件或需求截图！'); return; }
     if (API_KEY.includes('sk-xxxxx')) { alert('请先在 script.js 文件顶部填写你的 API Key！'); return; }
     if (!modelSelectVal) { alert('未能获取模型地址'); return; }
-    
+
     const [apiURL, selectedModel] = modelSelectVal.split('|');
     const btn = document.getElementById('aiGenerateBtn');
     const originalText = btn.innerText;
-    
+
     btn.innerText = '⚡ AI 视觉与多方案矩阵解析中...';
     btn.style.opacity = '0.8';
     btn.disabled = true;
@@ -569,23 +569,40 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 
     let userContent = [];
     let textPayload = `【任务指令】: 请仔细查看我提供的图片截图或底层文本。这是一个UI设计需求文档。请提取其中的文案，并匹配到对应的画板模块。\n`;
-    if (rawText && !rawText.includes('[正在') && !rawText.includes('[已成功读取')) { textPayload += `【用户手动输入的附加说明】:\n${rawText}\n\n`; }
-    if (currentRichTextContext) { textPayload += `【系统自动提取的底层表格/PDF原本文本】:\n${currentRichTextContext}\n\n`; }
-    
+
+    // 💡 黑科技：一并过滤垃圾链接和偏旁部首错别字
+    const fixHeteronyms = (str) => str ? str.replace(/https?:\/\/[^\s]+/g, '[链接已过滤]').replace(/⼼/g, '心').replace(/⻚/g, '页').replace(/⽹/g, '网').replace(/⻛/g, '风').replace(/⾸/g, '首').replace(/⻔/g, '门') : '';
+
+    let cleanRawText = fixHeteronyms(rawText);
+    let cleanRichText = fixHeteronyms(currentRichTextContext);
+
+    if (cleanRawText && !cleanRawText.includes('[正在') && !cleanRawText.includes('[已成功读取')) {
+        textPayload += `【用户手动输入的附加说明】:\n${cleanRawText}\n\n`;
+    }
+    if (cleanRichText) {
+        textPayload += `【系统自动提取的底层表格/PDF原本文本】:\n${cleanRichText}\n\n`;
+    }
+
+    // ⚠️ 修复致命BUG：把组装好的文字装进 payload 里！
     userContent.push({ type: "text", text: textPayload });
-    if (currentImageBase64) { userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } }); }
+
+    // ⚡ 提速黑科技：如果已经成功提取了 PDF 的文字，就【绝对不要】再把图片发给 AI 看！极速秒出！
+    // 只有在没提取出文本（比如用户直接上传了一张死图片）时，才让 AI 去看图。
+    if (currentImageBase64 && !cleanRichText) {
+        userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } });
+    }
+
+    console.log("🚀 即将发给 AI 的文本体 (给AI减负后的纯净版):", textPayload);
 
     const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
-
-【映射关系】:
-- "首页banner" / "首页沉浸" -> "home"
-- "首页运营10出1" / "首页feed" -> "feed"
-- "我的页" / "我的页面banner" -> "mypage"
+【映射关系】(注意识别可能带有"-banner"或PDF提取错别字的情况):
+- "首页banner" / "⾸⻚banner" / "首页沉浸" -> "home"
+- "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
+- "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
 - "活动中心" -> "activity"
-- "任务中心" / "分享页" / "我的空间" -> "mySpace"
+- "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
 - "简单扫描" -> "simpleScan"
 - "共享点对点" / "点对点" -> "peerSharing"
-
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
 2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
@@ -595,7 +612,6 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
    -> 将剩下的那行短字（如“创建宝宝相簿”）直接填入 "sub"。
    -> 绝对禁止重复填词！提取过的字不要再填到其他字段。
 3. 【多套方案支持】：如果你在某模块（如"我的页面banner"）看到了多组不同的备选文案，请将它们作为数组的多个元素返回。如果没有明确写多套，切忌无中生有！有几套写几套。
-
 请只输出严格的JSON，不要解释。
 JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
 {
@@ -608,39 +624,38 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
     "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ]
 }`;
-
     try {
         const response = await fetch(apiURL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
             body: JSON.stringify({
                 model: selectedModel,
-                messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userContent } ],
-                temperature: 0.1 
+                messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userContent }],
+                temperature: 0.1
             })
         });
         if (!response.ok) throw new Error(`[${response.status}] 服务器报错: ${await response.text()}`);
-        
+
         const data = await response.json();
         let aiResult = data.choices[0].message.content.trim();
         console.log("💰 AI 返回的原始数据：\n", aiResult);
-        
+
         let jsonString = aiResult;
-        const jsonMatch = aiResult.match(/\{[\s\S]*\}/); 
-        if (jsonMatch) jsonString = jsonMatch[0]; 
+        const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
+        if (jsonMatch) jsonString = jsonMatch[0];
         const config = JSON.parse(jsonString);
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
-        
+
         if (config.theme) triggerThemeSwitch(config.theme);
-        
+
         if (config.home && config.home.length > 0) {
             recognizedModules.add('na_home');
             window.abTestCopies['home'] = config.home; window.abTestActiveIndex['home'] = 0;
             const first = config.home[0];
-            if(first.line1) document.getElementById('textLine1').value = formatAndLimitText(first.line1, 6);
-            if(first.line2) document.getElementById('textLine2').value = formatAndLimitText(first.line2, 4);
+            if (first.line1) document.getElementById('textLine1').value = formatAndLimitText(first.line1, 6);
+            if (first.line2) document.getElementById('textLine2').value = formatAndLimitText(first.line2, 4);
             currentTopBgMode = 'gradient'; document.querySelector('input[name="topBgMode"][value="gradient"]').checked = true;
             document.getElementById('topBgModeImage').classList.add('hidden'); document.getElementById('topBgModeSolid').classList.add('hidden'); document.getElementById('topBgModeGradient').classList.remove('hidden');
             renderABTestSwitcher('homeControls', 'home');
@@ -649,19 +664,19 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             recognizedModules.add('na_mypage');
             window.abTestCopies['myPage'] = config.mypage; window.abTestActiveIndex['myPage'] = 0;
             const first = config.mypage[0];
-            if(first.capsule && first.capsule !== "null") document.getElementById('textCapsule').value = formatAndLimitText(first.capsule, 4);
-            if(first.title) document.getElementById('myPageTitle').value = formatAndLimitText(first.title, 9);
-            if(first.highlight) document.getElementById('myPageHighlight').value = formatAndLimitText(first.highlight, 9);
-            if(first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 10);
+            if (first.capsule && first.capsule !== "null") document.getElementById('textCapsule').value = formatAndLimitText(first.capsule, 4);
+            if (first.title) document.getElementById('myPageTitle').value = formatAndLimitText(first.title, 9);
+            if (first.highlight) document.getElementById('myPageHighlight').value = formatAndLimitText(first.highlight, 9);
+            if (first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 10);
             renderABTestSwitcher('myPageControls', 'myPage');
         }
         if (config.feed && config.feed.length > 0) {
             recognizedModules.add('na_feed');
             window.abTestCopies['feed'] = config.feed; window.abTestActiveIndex['feed'] = 0;
             const first = config.feed[0];
-            if(first.title) document.getElementById('feedTitle').value = formatAndLimitText(first.title, 7);
-            if(first.sub) document.getElementById('feedSubtitle').value = formatAndLimitText(first.sub, 10);
-            if(first.btn) document.getElementById('feedBtnText').value = formatAndLimitText(first.btn, 4);
+            if (first.title) document.getElementById('feedTitle').value = formatAndLimitText(first.title, 7);
+            if (first.sub) document.getElementById('feedSubtitle').value = formatAndLimitText(first.sub, 10);
+            if (first.btn) document.getElementById('feedBtnText').value = formatAndLimitText(first.btn, 4);
             currentFeedBgMode = 'gradient'; document.querySelector('input[name="feedBgMode"][value="gradient"]').checked = true;
             document.getElementById('feedBgModeImage').classList.add('hidden'); document.getElementById('feedBgModeSolid').classList.add('hidden'); document.getElementById('feedBgModeGradient').classList.remove('hidden');
             renderABTestSwitcher('feedControls', 'feed');
@@ -671,9 +686,9 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             foundMySpace = true;
             window.abTestCopies['mySpace'] = config.mySpace; window.abTestActiveIndex['mySpace'] = 0;
             const first = config.mySpace[0];
-            if(first.title) document.getElementById('mySpaceTitle').value = formatAndLimitText(first.title, 11);
-            if(first.sub) document.getElementById('mySpaceSub').value = formatAndLimitText(first.sub, 8);
-            if(first.btn) document.getElementById('mySpaceBtnText').value = formatAndLimitText(first.btn, 4);
+            if (first.title) document.getElementById('mySpaceTitle').value = formatAndLimitText(first.title, 11);
+            if (first.sub) document.getElementById('mySpaceSub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('mySpaceBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('mySpaceControls', 'mySpace');
         }
         if (config.simpleScan && config.simpleScan.length > 0) {
@@ -681,37 +696,37 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             foundSimpleScan = true;
             window.abTestCopies['simpleScan'] = config.simpleScan; window.abTestActiveIndex['simpleScan'] = 0;
             const first = config.simpleScan[0];
-            if(first.title) document.getElementById('simpleScanTitle').value = formatAndLimitText(first.title, 11);
-            if(first.highlight) document.getElementById('simpleScanHighlight').value = formatAndLimitText(first.highlight, 6);
-            if(first.sub) document.getElementById('simpleScanSub').value = formatAndLimitText(first.sub, 8);
-            if(first.btn) document.getElementById('simpleScanBtnText').value = formatAndLimitText(first.btn, 4);
+            if (first.title) document.getElementById('simpleScanTitle').value = formatAndLimitText(first.title, 11);
+            if (first.highlight) document.getElementById('simpleScanHighlight').value = formatAndLimitText(first.highlight, 6);
+            if (first.sub) document.getElementById('simpleScanSub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('simpleScanBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('mySpaceControls', 'simpleScan');
         }
         if (config.activity && config.activity.length > 0) {
             recognizedModules.add('dev_1_1_17');
             window.abTestCopies['activity'] = config.activity; window.abTestActiveIndex['activity'] = 0;
             const first = config.activity[0];
-            if(first.title1) document.getElementById('myActivityTitle1').value = formatAndLimitText(first.title1, 7);
-            if(first.title2) document.getElementById('myActivityTitle2').value = formatAndLimitText(first.title2, 7);
-            if(first.sub) document.getElementById('myActivitySub').value = formatAndLimitText(first.sub, 8);
-            if(first.btn) document.getElementById('myActivityBtnText').value = formatAndLimitText(first.btn, 4);
+            if (first.title1) document.getElementById('myActivityTitle1').value = formatAndLimitText(first.title1, 7);
+            if (first.title2) document.getElementById('myActivityTitle2').value = formatAndLimitText(first.title2, 7);
+            if (first.sub) document.getElementById('myActivitySub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('myActivityBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('myActivityControls', 'activity');
         }
         if (config.peerSharing && config.peerSharing.length > 0) {
             recognizedModules.add('dev_1_1_18');
             window.abTestCopies['peerSharing'] = config.peerSharing; window.abTestActiveIndex['peerSharing'] = 0;
             const first = config.peerSharing[0];
-            if(first.title1) document.getElementById('peerSharingTitle1').value = formatAndLimitText(first.title1, 7);
-            if(first.title2) document.getElementById('peerSharingTitle2').value = formatAndLimitText(first.title2, 7);
-            if(first.sub) document.getElementById('peerSharingSub').value = formatAndLimitText(first.sub, 8);
-            if(first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
+            if (first.title1) document.getElementById('peerSharingTitle1').value = formatAndLimitText(first.title1, 7);
+            if (first.title2) document.getElementById('peerSharingTitle2').value = formatAndLimitText(first.title2, 7);
+            if (first.sub) document.getElementById('peerSharingSub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('peerSharingControls', 'peerSharing');
         }
-        
+
         await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
         await renderMySpaceCanvas(); await renderSimpleScanCanvas();
         await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-        
+
         if (recognizedModules.size > 0) {
             const modules = Array.from(recognizedModules);
             [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
@@ -719,7 +734,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
             const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
             if (firstEl) firstEl.classList.add('active');
-            
+
             const container = document.getElementById('canvasContainer');
             if (modules.length > 1) {
                 container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px';
@@ -728,7 +743,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
                 document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
             }
-            
+
             modules.forEach(mod => {
                 let viewId, ctrlId;
                 if (mod === 'na_home') { viewId = 'homeView'; ctrlId = 'homeControls'; }
@@ -737,22 +752,22 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 else if (mod === 'dev_1_1_13') { viewId = 'searchIconView'; ctrlId = 'searchIconControls'; }
                 else if (mod === 'dev_1_1_17') { viewId = 'myActivityView'; ctrlId = 'myActivityControls'; }
                 else if (mod === 'dev_1_1_18') { viewId = 'peerSharingView'; ctrlId = 'peerSharingControls'; }
-                else if (mod === 'dev_1_1_16') { 
-                    viewId = 'mySpaceView'; ctrlId = 'mySpaceControls'; 
+                else if (mod === 'dev_1_1_16') {
+                    viewId = 'mySpaceView'; ctrlId = 'mySpaceControls';
                     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
                     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
-                    if(spaceCard) spaceCard.style.display = foundMySpace ? '' : 'none';
-                    if(scanCard) scanCard.style.display = foundSimpleScan ? '' : 'none';
+                    if (spaceCard) spaceCard.style.display = foundMySpace ? '' : 'none';
+                    if (scanCard) scanCard.style.display = foundSimpleScan ? '' : 'none';
                 }
-                
+
                 if (viewId) document.getElementById(viewId).classList.add('active');
                 if (ctrlId) document.getElementById(ctrlId).classList.add('active');
             });
             cvsScale = modules.length > 1 ? 0.6 : 1; cvsTranslateX = 0; cvsTranslateY = modules.length > 1 ? 100 : 0;
             updateCanvasTransform();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
         btn.innerText = '🎉 解析成功，已生成多方案画板！';
         btn.style.background = '#10B981';
     } catch (error) {
@@ -867,7 +882,7 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     const line1Txt = textLine1Input?.value || ''; const line2Txt = textLine2Input?.value || '';
     ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 36px "PingFangSC-Medium", "Microsoft YaHei", sans-serif'; ctx.fillStyle = textColor1; ctx.fillText(line1Txt, Math.floor(306), Math.floor(166)); ctx.fillStyle = arrowColor; ctx.fillText(line2Txt, Math.floor(306), Math.floor(217));
     if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + ctx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + 18 - arrowImg.height / 2 + 2); ctx.drawImage(arrowImg, arrowX, arrowY); }
-    canvas._bannerBBox = { x: config.bannerX, y: config.bannerY, w: 556, h: 282 }; 
+    canvas._bannerBBox = { x: config.bannerX, y: config.bannerY, w: 556, h: 282 };
 }
 async function createFullBannerCanvas(isDark) {
     const bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
@@ -909,8 +924,9 @@ async function renderMyPageBanner() {
 }
 async function renderMyPageFullCanvas() {
     if (!myPageFullCanvas || !myPageFullCtx) return;
-    try { const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); } 
-    myPageFullCanvas._bannerBBox = { x: config.myPageX + 24, y: config.myPageY, w: myPageCanvas.width - 48, h: myPageCanvas.height };
+    try {
+        const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); }
+        myPageFullCanvas._bannerBBox = { x: config.myPageX + 24, y: config.myPageY, w: myPageCanvas.width - 48, h: myPageCanvas.height };
     } catch (e) { }
 }
 
@@ -933,8 +949,9 @@ async function renderFeedCanvas() {
     const fbCanvas = await createFeedBannerCanvas();
     if (feedBannerCanvas && feedBannerCtx) { feedBannerCanvas.width = fbCanvas.width; feedBannerCanvas.height = fbCanvas.height; setupHighQualityContext(feedBannerCtx); feedBannerCtx.clearRect(0, 0, feedBannerCanvas.width, feedBannerCanvas.height); feedBannerCtx.drawImage(fbCanvas, 0, 0); }
     if (!feedCanvas || !feedCtx) return;
-    try { const bgImg = await loadImage(config.feedBg); if (!bgImg || !bgImg.width) return; feedCanvas.width = bgImg.width; feedCanvas.height = bgImg.height; setupHighQualityContext(feedCtx); feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height); feedCtx.drawImage(bgImg, 0, 0); if (fbCanvas && fbCanvas.width) { feedCtx.save(); drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, fbCanvas.width, fbCanvas.height, 36); feedCtx.clip(); feedCtx.drawImage(fbCanvas, config.feedBannerX, config.feedBannerY); feedCtx.restore(); } 
-    feedCanvas._bannerBBox = { x: config.feedBannerX, y: config.feedBannerY, w: fbCanvas.width, h: fbCanvas.height };
+    try {
+        const bgImg = await loadImage(config.feedBg); if (!bgImg || !bgImg.width) return; feedCanvas.width = bgImg.width; feedCanvas.height = bgImg.height; setupHighQualityContext(feedCtx); feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height); feedCtx.drawImage(bgImg, 0, 0); if (fbCanvas && fbCanvas.width) { feedCtx.save(); drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, fbCanvas.width, fbCanvas.height, 36); feedCtx.clip(); feedCtx.drawImage(fbCanvas, config.feedBannerX, config.feedBannerY); feedCtx.restore(); }
+        feedCanvas._bannerBBox = { x: config.feedBannerX, y: config.feedBannerY, w: fbCanvas.width, h: fbCanvas.height };
     } catch (e) { console.error(e); }
 }
 
@@ -1149,7 +1166,7 @@ async function renderMyActivityCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-    
+
     exactGrad.addColorStop(0, myActivityGrad1?.value || '#E5F3FF');
     exactGrad.addColorStop(1, myActivityGrad2?.value || '#FFFFFF');
     ctx.fillStyle = exactGrad;
@@ -1159,19 +1176,19 @@ async function renderMyActivityCanvas() {
     ctx.fillStyle = myActivitySubColor?.value || '#777777';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
     ctx.fillText(myActivitySub?.value || '', 47.01, 47.67);
-    
+
     const titleColor = myActivityTitle1Color?.value || '#000000';
     ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
     ctx.fillText(myActivityTitle1?.value || '', 47.01, 87.5);
-    
+
     ctx.fillStyle = myActivityTitle2Color?.value || '#000000';
     ctx.fillText(myActivityTitle2?.value || '', 47.01, 146.92);
-    
+
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-    
-    const btnColor = titleColor; 
+
+    const btnColor = titleColor;
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
     drawRoundRect(
@@ -1248,7 +1265,7 @@ async function renderPeerSharingCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-    
+
     exactGrad.addColorStop(0, peerSharingGrad1?.value || '#06A7FF');
     exactGrad.addColorStop(1, peerSharingGrad2?.value || '#0052CC');
     ctx.fillStyle = exactGrad;
@@ -1258,19 +1275,19 @@ async function renderPeerSharingCanvas() {
     ctx.fillStyle = peerSharingSubColor?.value || '#FFFFFF';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
     ctx.fillText(peerSharingSub?.value || '', 47.01, 47.67);
-    
+
     const titleColor = peerSharingTitle1Color?.value || '#FFFFFF';
     ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
     ctx.fillText(peerSharingTitle1?.value || '', 47.01, 87.5);
-    
+
     ctx.fillStyle = peerSharingTitle2Color?.value || '#FFFFFF';
     ctx.fillText(peerSharingTitle2?.value || '', 47.01, 146.92);
-    
+
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-    
-    const btnColor = titleColor; 
+
+    const btnColor = titleColor;
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
     drawRoundRect(
@@ -1367,11 +1384,11 @@ async function switchResourceView(selected) {
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
     document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
-    
+
     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
-    if(spaceCard) spaceCard.style.display = '';
-    if(scanCard) scanCard.style.display = '';
+    if (spaceCard) spaceCard.style.display = '';
+    if (scanCard) scanCard.style.display = '';
 
     if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
@@ -1462,22 +1479,22 @@ function openDetailModal(targetType) {
 }
 
 document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
-    canvas.addEventListener('click', (e) => { 
+    canvas.addEventListener('click', (e) => {
         if (isDraggingCanvas) return;
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
         const clickX = (e.clientX - rect.left) * scaleX;
         const clickY = (e.clientY - rect.top) * scaleY;
-        
+
         const bbox = canvas._bannerBBox;
         if (bbox) {
             if (clickX >= bbox.x && clickX <= bbox.x + bbox.w && clickY >= bbox.y && clickY <= bbox.y + bbox.h) {
-                const targetType = canvas.getAttribute('data-target'); 
+                const targetType = canvas.getAttribute('data-target');
                 if (targetType) openDetailModal(targetType);
             }
         } else {
-            const targetType = canvas.getAttribute('data-target'); 
+            const targetType = canvas.getAttribute('data-target');
             if (targetType) openDetailModal(targetType);
         }
     });
@@ -1629,7 +1646,7 @@ async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, input
                     }
                 }
             });
-            await renderFn(); 
+            await renderFn();
             folder.file(`${baseName}-方案${i + 1}.png`, await canvasToBlob(canvas));
         }
         inputRefs.forEach((ref, idx) => { document.getElementById(ref.id).value = backups[idx]; });
@@ -1665,7 +1682,7 @@ function initExportModal() {
             chk.addEventListener('change', () => { selectAllChk.checked = Array.from(itemChks).every(c => c.checked); });
         });
     }
-    
+
     confirmExportBtn.addEventListener('click', async () => {
         if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络');
         const zip = new JSZip();
@@ -1673,24 +1690,24 @@ function initExportModal() {
         const bannerFolder = zip.folder("纯净Banner切图");
         let hasSelected = Array.from(document.querySelectorAll('.export-item-chk')).some(c => c.checked);
         if (!hasSelected) { alert('您没有勾选任何资源，请至少勾选一项！'); return; }
-        
+
         const originalText = confirmExportBtn.innerText;
         confirmExportBtn.innerText = '正在执行打包下载...';
         confirmExportBtn.disabled = true;
-        
+
         try {
             if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas));
             if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas));
-            
+
             let homeRefs = MODULE_INPUT_MAP['home'];
             await exportCanvasOrMulti('chkHomePhone', lightCanvas, `首页-小图状态预览-${homeColor}`, 'home', previewFolder, homeRefs, renderHomeCanvas);
             await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
             await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
-            
+
             let feedRefs = MODULE_INPUT_MAP['feed'];
             await exportCanvasOrMulti('chkFeedBannerExport', feedBannerCanvas, `首页-Feed10出1banner`, 'feed', bannerFolder, feedRefs, renderFeedCanvas);
             await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
-            
+
             let myPageRefs = MODULE_INPUT_MAP['myPage'];
             await exportCanvasOrMulti('chkMyPageBannerLight', myPageCanvas, `我的-Banner(日间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
             await exportCanvasOrMulti('chkMyPageBannerDark', myPageDarkCanvas, `我的-Banner(夜间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
@@ -1772,8 +1789,8 @@ window.onload = async () => {
     // ✨ 黑科技注入：无感添加【+】文件上传按钮
     const aiInputContainer = document.getElementById('aiInputContainer');
     if (aiInputContainer) {
-        aiInputContainer.style.position = 'relative'; 
-        
+        aiInputContainer.style.position = 'relative';
+
         // 创建隐藏的 input file
         const hiddenFileInput = document.createElement('input');
         hiddenFileInput.type = 'file';
@@ -1806,18 +1823,18 @@ window.onload = async () => {
             z-index: 10;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         `;
-        
-        addFileBtn.onmouseover = () => { 
-            addFileBtn.style.background = '#f1f5f9'; 
+
+        addFileBtn.onmouseover = () => {
+            addFileBtn.style.background = '#f1f5f9';
             addFileBtn.style.borderColor = '#cbd5e1';
             addFileBtn.style.transform = 'translateY(-1px)';
         };
-        addFileBtn.onmouseout = () => { 
-            addFileBtn.style.background = '#f8fafc'; 
+        addFileBtn.onmouseout = () => {
+            addFileBtn.style.background = '#f8fafc';
             addFileBtn.style.borderColor = '#e2e8f0';
             addFileBtn.style.transform = 'translateY(0)';
         };
-        
+
         // 点击按钮触发隐藏的 file input
         addFileBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // 防止冒泡
@@ -1842,12 +1859,12 @@ window.onload = async () => {
                 }
             }
             // 清空 value 允许重复选择同名文件
-            hiddenFileInput.value = ''; 
+            hiddenFileInput.value = '';
         });
 
         aiInputContainer.appendChild(addFileBtn);
     }
-    
+
     if ('fonts' in document) {
         try {
             await document.fonts.load('10px "FZLanTingHeiS-R-GB"');
@@ -1861,7 +1878,7 @@ window.onload = async () => {
             console.warn("字体加载报错:", e);
         }
     }
-    
+
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
     await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
 };
