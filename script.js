@@ -1,4 +1,4 @@
-// ==================== 1. 目录结构数据 ====================
+// ==================== 1. 目录结构数据与全局配置 ====================
 const PAGE_DIRECTORY = {
     'NA': [
         { value: 'dev_1_1_1', text: 'A1.1.1 NA - 开屏' },
@@ -39,7 +39,7 @@ const PAGE_DIRECTORY = {
     'Mac': [{ value: 'mac_link', text: 'A1.5.1 Mac - 首页文字链' }],
     'ipd': [{ value: 'ipd_dev', text: 'A1.6 ipd端配置项' }]
 };
-const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 3, myPageTitle: 9, myPageSubtitle: 8 };
+const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 10 };
 const config = {
     baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
     topHomePageUI: 'assets/top-of-the-home-page.png',
@@ -63,6 +63,7 @@ const config = {
 };
 const myPageColors = { blue: '#F0FBFF', green: '#F0FFF4', orange: '#FFFAF0', purple: '#F6F0FF' };
 const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B00', purple: '#4E1685' };
+
 // ==================== DOM 元素获取 ====================
 const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
@@ -134,12 +135,95 @@ const myActivityBtnText = document.getElementById('myActivityBtnText'); const my
 const peerSharingGrad1 = document.getElementById('peerSharingGrad1'); const peerSharingGrad2 = document.getElementById('peerSharingGrad2');
 const peerSharingSub = document.getElementById('peerSharingSub'); const peerSharingTitle1 = document.getElementById('peerSharingTitle1'); const peerSharingTitle2 = document.getElementById('peerSharingTitle2');
 const peerSharingBtnText = document.getElementById('peerSharingBtnText'); const peerSharingSubColor = document.getElementById('peerSharingSubColor'); const peerSharingTitle1Color = document.getElementById('peerSharingTitle1Color'); const peerSharingTitle2Color = document.getElementById('peerSharingTitle2Color'); const peerSharingBtnColor = document.getElementById('peerSharingBtnColor');
+
 let userImgObj = null; let feedBgBannerObj = null; let topBgBannerObj = null; let userTopBannerTitleObj = null;
 let currentTopBgMode = 'image'; let currentFeedBgMode = 'image';
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid'; let currentSimpleScanBgMode = 'solid';
 const globalImageCache = {}; const globalSvgTextCache = {};
-// ==================== 🛠️ 1. Figma 级拖拽与缩放功能 ====================
+
+// ==================== ✨ A/B 测试核心状态库与字典映射 ====================
+window.abTestCopies = {}; 
+window.abTestActiveIndex = {};
+
+const MODULE_INPUT_MAP = {
+    'home': [{ id: 'textLine1', key: 'line1', limit: 6 }, { id: 'textLine2', key: 'line2', limit: 4 }],
+    'myPage': [{ id: 'myPageTitle', key: 'title', limit: 9 }, { id: 'myPageSubtitle', key: 'sub', limit: 8 }, { id: 'textCapsule', key: 'capsule', limit: 4 }, { id: 'myPageHighlight', key: 'highlight', limit: 9 }],
+    'feed': [{ id: 'feedTitle', key: 'title', limit: 7 }, { id: 'feedSubtitle', key: 'sub', limit: 10 }, { id: 'feedBtnText', key: 'btn', limit: 4 }],
+    'mySpace': [{ id: 'mySpaceTitle', key: 'title', limit: 11 }, { id: 'mySpaceSub', key: 'sub', limit: 8 }, { id: 'mySpaceBtnText', key: 'btn', limit: 4 }],
+    'simpleScan': [{ id: 'simpleScanTitle', key: 'title', limit: 11 }, { id: 'simpleScanSub', key: 'sub', limit: 8 }, { id: 'simpleScanBtnText', key: 'btn', limit: 4 }, { id: 'simpleScanHighlight', key: 'highlight', limit: 6 }],
+    'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
+    'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }]
+};
+
+const MODULE_RENDER_FNS = {
+    'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
+    'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
+    'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas
+};
+
+// ==================== ✨ 核心工具：智能半角统计、逗号转空格、打字实时渲染 ====================
+function formatAndLimitText(str, maxLen) {
+    if (!str) return '';
+    str = str.replace(/。/g, ''); 
+    str = str.replace(/，/g, ' ').replace(/,/g, ' '); 
+    str = str.replace(/！/g, '!').replace(/？/g, '?').replace(/：/g, ':').replace(/；/g, ';');
+    str = str.replace(/\s+/g, ' ');
+
+    let len = 0, res = '';
+    for (let i = 0; i < str.length; i++) {
+        let charCode = str.charCodeAt(i);
+        let charLen = 1; 
+        if (str[i] === ' ') {
+            charLen = 0; 
+        } else if (charCode >= 0x0000 && charCode <= 0x00FF) {
+            charLen = 0.5; 
+        }
+        
+        if (len + charLen > maxLen) break;
+        len += charLen;
+        res += str[i];
+    }
+    return res.trim();
+}
+
+function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
+    const el = document.getElementById(inputId);
+    if (!el) return;
+    el.removeAttribute('maxlength'); 
+    
+    let isComposing = false;
+
+    // ✨ 核心机制：任何修改，立即同步数据并触发画布渲染！
+    const updateDataAndRender = (val) => {
+        // 1. 同步保存到 A/B 测试对应的方案数组中
+        if (moduleKey && dataKey && window.abTestCopies[moduleKey] && window.abTestCopies[moduleKey].length > 0) {
+            let activeIdx = window.abTestActiveIndex[moduleKey] || 0;
+            window.abTestCopies[moduleKey][activeIdx][dataKey] = val;
+        }
+        // 2. ✨ 立即触发当前模块的重绘画布函数！
+        if (moduleKey && MODULE_RENDER_FNS[moduleKey]) {
+            MODULE_RENDER_FNS[moduleKey]();
+        }
+    };
+
+    el.addEventListener('compositionstart', () => { isComposing = true; });
+    el.addEventListener('compositionend', (e) => {
+        isComposing = false;
+        const formatted = formatAndLimitText(e.target.value, maxLen);
+        if (e.target.value !== formatted) { e.target.value = formatted; }
+        updateDataAndRender(formatted);
+    });
+
+    el.addEventListener('input', (e) => {
+        if (isComposing) return; 
+        const formatted = formatAndLimitText(e.target.value, maxLen);
+        if (e.target.value !== formatted) { e.target.value = formatted; }
+        updateDataAndRender(formatted);
+    });
+}
+
+// ==================== 🛠️ 2. Figma 级拖拽与缩放功能 ====================
 let cvsScale = 1; let cvsTranslateX = 0; let cvsTranslateY = 0;
 let isDraggingCanvas = false; let startDragX, startDragY;
 const viewport = document.getElementById('viewport');
@@ -154,7 +238,7 @@ function resetCanvasView() {
     updateCanvasTransform();
 }
 viewport.addEventListener('wheel', (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
         const delta = -e.deltaY * 0.002;
         const newScale = Math.min(Math.max(0.1, cvsScale + delta), 5);
@@ -172,8 +256,8 @@ viewport.addEventListener('wheel', (e) => {
     }
 }, { passive: false });
 let isSpacePressed = false;
-window.addEventListener('keydown', e => { if (e.code === 'Space') { isSpacePressed = true; viewport.style.cursor = 'grab'; }});
-window.addEventListener('keyup', e => { if (e.code === 'Space') { isSpacePressed = false; viewport.style.cursor = 'default'; }});
+window.addEventListener('keydown', e => { if (e.code === 'Space') { isSpacePressed = true; viewport.style.cursor = 'grab'; } });
+window.addEventListener('keyup', e => { if (e.code === 'Space') { isSpacePressed = false; viewport.style.cursor = 'default'; } });
 viewport.addEventListener('mousedown', (e) => {
     if (e.button === 1 || (e.button === 0 && isSpacePressed)) {
         isDraggingCanvas = true;
@@ -196,58 +280,42 @@ window.addEventListener('mouseup', () => {
 document.getElementById('zoomInBtn').addEventListener('click', () => { cvsScale = Math.min(cvsScale + 0.1, 5); updateCanvasTransform(); });
 document.getElementById('zoomOutBtn').addEventListener('click', () => { cvsScale = Math.max(cvsScale - 0.1, 0.1); updateCanvasTransform(); });
 document.getElementById('zoomResetBtn').addEventListener('click', resetCanvasView);
-// ==================== 屏蔽无关画布的辅助函数 ====================
-function toggleCanvasGroup(canvasId, isShow) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    let parent = canvas.parentElement;
-    if (parent && parent.id !== 'mySpaceView' && parent.tagName === 'DIV') { 
-        parent.style.display = isShow ? '' : 'none';
-    } else {
-        canvas.style.display = isShow ? '' : 'none';
-    }
-}
-// ==================== ✨ 2. AI 懒人智能解析功能 ====================
+
+// ==================== 🎨 3. 颜色主题与工具函数 ====================
 const BRAND_THEMES = [
-    { id: 'red',    hue: 350, grad1: '#FFD9E2', grad2: '#FFF2F5', lightGrad: '#FFF0F3', solid: '#FFEAEF', btn1: '#FF5E7E', btn2: '#FF1A4B', textHighlight: '#FF1A4B', darkGrad1: '#FF3366', darkGrad2: '#D90036' },
-    { id: 'yellow', hue: 45,  grad1: '#FFF3B3', grad2: '#FFFCF0', lightGrad: '#FFFDF0', solid: '#FFF8DB', btn1: '#FFAA00', btn2: '#FF6600', textHighlight: '#FF6600', darkGrad1: '#FFAA00', darkGrad2: '#E65C00' },
-    { id: 'green',  hue: 130, grad1: '#D6F0D6', grad2: '#F0FFF0', lightGrad: '#F0FFF4', solid: '#EBF8E5', btn1: '#00D26A', btn2: '#00A344', textHighlight: '#00A344', darkGrad1: '#00D26A', darkGrad2: '#008A39' },
-    { id: 'blue',   hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
-    { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' } 
+    { id: 'red', hue: 350, grad1: '#FFD9E2', grad2: '#FFF2F5', lightGrad: '#FFF0F3', solid: '#FFEAEF', btn1: '#FF5E7E', btn2: '#FF1A4B', textHighlight: '#FF1A4B', darkGrad1: '#FF3366', darkGrad2: '#D90036' },
+    { id: 'yellow', hue: 45, grad1: '#FFF3B3', grad2: '#FFFCF0', lightGrad: '#FFFDF0', solid: '#FFF8DB', btn1: '#FFAA00', btn2: '#FF6600', textHighlight: '#FF6600', darkGrad1: '#FFAA00', darkGrad2: '#E65C00' },
+    { id: 'green', hue: 130, grad1: '#D6F0D6', grad2: '#F0FFF0', lightGrad: '#F0FFF4', solid: '#EBF8E5', btn1: '#00D26A', btn2: '#00A344', textHighlight: '#00A344', darkGrad1: '#00D26A', darkGrad2: '#008A39' },
+    { id: 'blue', hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
+    { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' }
 ];
+
 function triggerThemeSwitch(themeId) {
     let matchedTheme = BRAND_THEMES.find(t => t.id === themeId);
-    if(themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
+    if (themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
     if (!matchedTheme) matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
+    
+    // ✨ 修正活动中心与共享点对点的默认配色逻辑
     const colorMap = {
-        'topSolidColor': matchedTheme.solid, 
-        'topGradColor1': '#FFFFFF', 
-        'topGradColor2': matchedTheme.grad1, 
-        
+        'topSolidColor': matchedTheme.solid, 'topGradColor1': '#FFFFFF', 'topGradColor2': matchedTheme.grad1,
         'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
+        'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
+        'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
         
-        'mySpaceSolidColor': '#FFFFFF', 
-        'mySpaceGradColor1': matchedTheme.lightGrad, 
-        'mySpaceGradColor2': '#FFFFFF', 
-        'mySpaceBtnGrad1': matchedTheme.btn1, 
-        'mySpaceBtnGrad2': matchedTheme.btn2, 
+        // 活动中心：默认浅色背景，黑字
+        'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF', 
+        'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
         
-        'simpleScanSolidColor': '#FFFFFF', 
-        'simpleScanGradColor1': matchedTheme.lightGrad, 
-        'simpleScanGradColor2': '#FFFFFF', 
-        'simpleScanBtnGrad1': matchedTheme.btn1, 
-        'simpleScanBtnGrad2': matchedTheme.btn2, 
-        'simpleScanHighlightColor': matchedTheme.textHighlight,
-        
-        'myActivityGrad1': matchedTheme.grad1, 'myActivityGrad2': matchedTheme.grad2, 'myActivityBtnColor': matchedTheme.btn2,
-        'peerSharingGrad1': matchedTheme.darkGrad1, 'peerSharingGrad2': matchedTheme.darkGrad2,
+        // 共享点对点：默认深色/高亮背景，白字
+        'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
+        'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
     };
     Object.keys(colorMap).forEach(id => {
         const inputEl = document.getElementById(id);
         if (inputEl) {
-            inputEl.value = colorMap[id]; 
+            inputEl.value = colorMap[id];
             if (inputEl._pickrInstance) inputEl._pickrInstance.setColor(colorMap[id]);
-            inputEl.dispatchEvent(new Event('input')); 
+            inputEl.dispatchEvent(new Event('input'));
         }
     });
     let targetRadioId = themeId === 'yellow' ? 'orange' : themeId;
@@ -256,178 +324,452 @@ function triggerThemeSwitch(themeId) {
     const targetRadioMyPage = document.querySelector(`input[name="myPageColor"][value="${targetRadioId}"]`);
     if (targetRadioMyPage) { targetRadioMyPage.checked = true; myPageColor = targetRadioId; }
 }
-document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
-    const textStr = document.getElementById('aiPromptInput').value;
-    if(!textStr.trim()) { alert('请先粘贴运营文案哦~'); return; }
-    const btn = document.getElementById('aiGenerateBtn');
-    btn.innerText = '正在智能解析并生成...';
-    btn.classList.add('ai-btn-active');
-    setTimeout(async () => {
-        const lines = textStr.split('\n').map(l => l.trim()).filter(l => l);
-        let currentContext = null;
-        let lineIndex = 0;
-        let recognizedModules = new Set();
-        let foundColor = false;
-        
-        let hasMySpace = false;
-        let hasSimpleScan = false;
-        for(let line of lines) {
-            
-            // === 👇 强大的文案自动清洗机 👇 ===
-            // 清除掉运营特有的修饰词汇、以及前后的横杠符号
-            line = line.replace(/-?\s*AI\s*懒人\s*-?/gi, '')
-                       .replace(/-?\s*核心卖点\s*-?/gi, '') // 如果还有别的恶心词，继续加
-                       .replace(/^[-—]+\s*|\s*[-—]+$/g, '')
-                       .trim();
-                       
-            // 如果某一行清洗完之后变成空了，直接跳过这一行不解析，免得造成空白标题
-            if (!line) continue;
-            // === 👆 清洗结束 👆 ===
 
-            if(line.includes('红') || line.includes('粉')) { triggerThemeSwitch('red'); foundColor = true; }
-            if(line.includes('蓝')) { triggerThemeSwitch('blue'); foundColor = true; }
-            if(line.includes('绿')) { triggerThemeSwitch('green'); foundColor = true; }
-            if(line.includes('黄') || line.includes('橙')) { triggerThemeSwitch('orange'); foundColor = true; }
-            if(line.includes('紫')) { triggerThemeSwitch('purple'); foundColor = true; }
-            if(line.includes('首页顶部') || line.includes('沉浸')) {
-                currentContext = 'home'; lineIndex = 0; recognizedModules.add('na_home');
-                currentTopBgMode = 'gradient';
-                document.querySelector('input[name="topBgMode"][value="gradient"]').checked = true;
-                document.getElementById('topBgModeImage').classList.add('hidden');
-                document.getElementById('topBgModeSolid').classList.add('hidden');
-                document.getElementById('topBgModeGradient').classList.remove('hidden');
-                
-                // 🌟 重点修改：强制把渐变角度拨到 90度（代表水平方向：从左到右）
-                const topAngle = document.getElementById('topGradAngle');
-                if (topAngle) {
-                    topAngle.value = 90;
-                    document.getElementById('topGradAngleVal').innerText = '90°';
+function bindCanvasClickToControl() {
+    const mappings = {
+        'homeView': 'homeControls', 'myPageView': 'myPageControls', 'feedView': 'feedControls',
+        'searchIconView': 'searchIconControls', 'mySpaceView': 'mySpaceControls',
+        'myActivityView': 'myActivityControls', 'peerSharingView': 'peerSharingControls'
+    };
+    Object.keys(mappings).forEach(viewId => {
+        const viewEl = document.getElementById(viewId);
+        if (viewEl) {
+            viewEl.addEventListener('mousedown', (e) => {
+                if (isSpacePressed) return;
+                const ctrlEl = document.getElementById(mappings[viewId]);
+                const rightSidebar = document.querySelector('.right-sidebar');
+                if (ctrlEl && ctrlEl.classList.contains('active') && rightSidebar) {
+                    rightSidebar.scrollTo({ top: ctrlEl.offsetTop - 20, behavior: 'smooth' });
+                    ctrlEl.style.transition = 'all 0.3s ease';
+                    ctrlEl.style.boxShadow = '0 0 0 2px #258AFF, 0 8px 24px rgba(37,138,255,0.2)';
+                    ctrlEl.style.transform = 'scale(1.01)';
+                    setTimeout(() => { ctrlEl.style.boxShadow = 'none'; ctrlEl.style.transform = 'scale(1)'; }, 800);
                 }
-                continue;
-            } else if (line.includes('首页feed') || line.includes('10出1')) {
-                currentContext = 'feed'; lineIndex = 0; recognizedModules.add('na_feed');
-                currentFeedBgMode = 'gradient';
-                document.querySelector('input[name="feedBgMode"][value="gradient"]').checked = true;
-                document.getElementById('feedBgModeImage').classList.add('hidden');
-                document.getElementById('feedBgModeSolid').classList.add('hidden');
-                document.getElementById('feedBgModeGradient').classList.remove('hidden');
-                continue;
-            } else if (line.includes('我的界面') || line.includes('我的页面')) {
-                currentContext = 'mypage'; lineIndex = 0; recognizedModules.add('na_mypage'); continue;
-            } else if (line.includes('简单扫描')) {
-                currentContext = 'scan'; lineIndex = 0; recognizedModules.add('dev_1_1_16');
-                hasSimpleScan = true;  
-                currentSimpleScanBgMode = 'gradient';
-                document.querySelector('input[name="simpleScanBgMode"][value="gradient"]').checked = true;
-                document.getElementById('simpleScanBgModeSolid').classList.add('hidden');
-                document.getElementById('simpleScanBgModeGradient').classList.remove('hidden');
-                continue;
-            } else if (line.includes('我的空间')) {
-                currentContext = 'myspace'; lineIndex = 0; recognizedModules.add('dev_1_1_16');
-                hasMySpace = true; 
-                currentMySpaceBgMode = 'gradient';
-                document.querySelector('input[name="mySpaceBgMode"][value="gradient"]').checked = true;
-                document.getElementById('mySpaceBgModeSolid').classList.add('hidden');
-                document.getElementById('mySpaceBgModeGradient').classList.remove('hidden');
-                continue;
-            } else if (line.includes('活动中心')) {
-                currentContext = 'activity'; lineIndex = 0; recognizedModules.add('dev_1_1_17'); continue;
-            } else if (line.includes('共享点对点')) {
-                currentContext = 'peer'; lineIndex = 0; recognizedModules.add('dev_1_1_18'); continue;
-            }
-            // 填词
-            if(currentContext === 'home') {
-                if(lineIndex === 0) document.getElementById('textLine1').value = line.substring(0, 6);
-                if(lineIndex === 1) document.getElementById('textLine2').value = line.substring(0, 4);
-                lineIndex++;
-            } else if (currentContext === 'feed') {
-                if(lineIndex === 0) document.getElementById('feedTitle').value = line.substring(0, 7);
-                if(lineIndex === 1) document.getElementById('feedSubtitle').value = line.substring(0, 10);
-                if(lineIndex === 2) document.getElementById('feedBtnText').value = line.substring(0, 4);
-                lineIndex++;
-            } else if (currentContext === 'mypage') {
-                if(lineIndex === 0) document.getElementById('myPageTitle').value = line.substring(0, 9);
-                if(lineIndex === 1) document.getElementById('myPageSubtitle').value = line.substring(0, 8);
-                if(lineIndex === 2) document.getElementById('textCapsule').value = line.substring(0, 3);
-                lineIndex++;
-            } else if (currentContext === 'scan') {
-                if(lineIndex === 0) document.getElementById('simpleScanTitle').value = line.substring(0, 11);
-                if(lineIndex === 1) document.getElementById('simpleScanSub').value = line.substring(0, 8);
-                if(lineIndex === 2) document.getElementById('simpleScanBtnText').value = line.substring(0, 4);
-                lineIndex++;
-            } else if (currentContext === 'myspace') {
-                if(lineIndex === 0) document.getElementById('mySpaceTitle').value = line.substring(0, 11);
-                if(lineIndex === 1) document.getElementById('mySpaceSub').value = line.substring(0, 8);
-                if(lineIndex === 2) document.getElementById('mySpaceBtnText').value = line.substring(0, 4);
-                lineIndex++;
-            } else if (currentContext === 'activity') {
-                if(lineIndex === 0) document.getElementById('myActivitySub').value = line.substring(0, 8);
-                if(lineIndex === 1) document.getElementById('myActivityTitle1').value = line.substring(0, 7);
-                if(lineIndex === 2) document.getElementById('myActivityTitle2').value = line.substring(0, 7);
-                if(lineIndex === 3) document.getElementById('myActivityBtnText').value = line.substring(0, 4);
-                lineIndex++;
-            } else if (currentContext === 'peer') {
-                if(lineIndex === 0) document.getElementById('peerSharingSub').value = line.substring(0, 8);
-                if(lineIndex === 1) document.getElementById('peerSharingTitle1').value = line.substring(0, 7);
-                if(lineIndex === 2) document.getElementById('peerSharingTitle2').value = line.substring(0, 7);
-                if(lineIndex === 3) document.getElementById('peerSharingBtnText').value = line.substring(0, 4);
-                lineIndex++;
-            }
+            });
         }
-        await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); 
-        await renderMySpaceCanvas(); await renderSimpleScanCanvas(); 
+    });
+}
+
+// ==================== 🚀 4. 肖恩AI 智能大模型与多模态图片解析引擎 ====================
+const API_KEY = "sk-0CFsVd8SMJAZQAMQLfXHX3G4BJTo2zxY8my1o4BynCjesWS9";
+let currentImageBase64 = null;
+let currentRichTextContext = ""; 
+const aiPromptInput = document.getElementById('aiPromptInput');
+const aiInputContainer = document.getElementById('aiInputContainer');
+const aiImagePreview = document.getElementById('aiImagePreview');
+const aiPreviewImg = document.getElementById('aiPreviewImg');
+
+async function processPdfFile(file) {
+    aiPromptInput.value = `📄 [正在全力解析 PDF 中，请稍候...]`;
+    try {
+        if (!window.pdfjsLib) {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+            window.pdfjsLib = window['pdfjs-dist/build/pdf'];
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+        let fullText = "";
+        for (let i = 1; i <= Math.min(pdf.numPages, 3); i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const strings = textContent.items.map(item => item.str);
+            fullText += strings.join(" ") + "\n";
+        }
+        currentRichTextContext = fullText;
+        const page1 = await pdf.getPage(1);
+        const viewport = page1.getViewport({ scale: 1.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page1.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+        currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
+        aiPreviewImg.src = currentImageBase64;
+        aiImagePreview.style.display = 'block';
+        aiPromptInput.value = `📄 [已成功读取 PDF：${file.name}]\n(已自动提取文字 + 首页截图)，您可以直接点击解析按钮了！`;
+    } catch (e) {
+        console.error("PDF 解析失败:", e);
+        aiPromptInput.value = `❌ PDF 读取失败，请尝试直接复制表格文字粘贴。`;
+    }
+}
+aiPromptInput.addEventListener('paste', function (e) {
+    if (!e.clipboardData) return;
+    if (e.clipboardData.files.length > 0) {
+        const file = e.clipboardData.files[0];
+        if (file.type.startsWith('image/')) {
+            e.preventDefault();
+            loadAiImage(file);
+            return;
+        } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+            e.preventDefault();
+            processPdfFile(file);
+            return;
+        }
+    }
+    const htmlData = e.clipboardData.getData('text/html');
+    if (htmlData) {
+        currentRichTextContext = htmlData;
+    } else {
+        currentRichTextContext = "";
+    }
+});
+aiInputContainer.addEventListener('dragover', e => { e.preventDefault(); aiInputContainer.style.borderColor = '#641AFF'; });
+aiInputContainer.addEventListener('dragleave', e => { e.preventDefault(); aiInputContainer.style.borderColor = '#cbd5e1'; });
+aiInputContainer.addEventListener('drop', e => {
+    e.preventDefault();
+    aiInputContainer.style.borderColor = '#cbd5e1';
+    if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+            loadAiImage(file);
+        } else if (file.type === 'application/pdf' || file.name.match(/\.pdf$/i)) {
+            processPdfFile(file);
+        } else if (file.name.match(/\.(html|md|txt|csv)$/i)) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                currentRichTextContext = event.target.result;
+                aiPromptInput.value = `📄 [已成功读取需求文件：${file.name}]\n你可以直接点击解析，AI将读取底层文件内容。`;
+            };
+            reader.readAsText(file);
+        }
+    }
+});
+document.getElementById('aiRemoveImageBtn')?.addEventListener('click', () => {
+    currentImageBase64 = null; currentRichTextContext = ""; aiPromptInput.value = "";
+    aiImagePreview.style.display = 'none'; aiPreviewImg.src = '';
+});
+function loadAiImage(file) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const img = new Image();
+        img.onload = () => {
+            const MAX_SIZE = 1200; // 极限压缩长边
+            let width = img.width, height = img.height;
+            if (width > height && width > MAX_SIZE) {
+                height *= MAX_SIZE / width; width = MAX_SIZE;
+            } else if (height > MAX_SIZE) {
+                width *= MAX_SIZE / height; height = MAX_SIZE;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            
+            // 核心压缩点：转为 50% 质量的低清 JPEG 喂给 AI
+            currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5); 
+            aiPreviewImg.src = currentImageBase64;
+            aiImagePreview.style.display = 'block';
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// ✨ UI 组件：在控制面板渲染多方案切换 Tab
+function renderABTestSwitcher(ctrlId, moduleKey) {
+    const copies = window.abTestCopies[moduleKey];
+    if (!copies || copies.length <= 1) return;
+
+    const ctrl = document.getElementById(ctrlId);
+    if (!ctrl) return;
+
+    let switcherBox = ctrl.querySelector('.ab-switcher-box');
+    if (!switcherBox) {
+        switcherBox = document.createElement('div');
+        switcherBox.className = 'ab-switcher-box';
+        switcherBox.style.cssText = 'margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f0f4f8; padding: 10px 12px; border-radius: 8px; border: 1px dashed #cbd5e1;';
+        
+        const label = document.createElement('span');
+        label.style.cssText = 'font-size: 13px; color: #64748b; font-weight: bold; margin-right: 4px;';
+        label.innerHTML = '✨ 识别到多套文案，请点击切换预览:';
+        switcherBox.appendChild(label);
+        
+        ctrl.insertBefore(switcherBox, ctrl.firstChild);
+    } else {
+        Array.from(switcherBox.querySelectorAll('.ab-btn')).forEach(el => el.remove());
+    }
+
+    if (window.abTestActiveIndex[moduleKey] === undefined) {
+        window.abTestActiveIndex[moduleKey] = 0;
+    }
+
+    copies.forEach((copy, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'ab-btn';
+        btn.innerText = `方案 ${index + 1}`;
+        btn.style.cssText = `padding: 4px 14px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; border: 1px solid #258AFF; transition: all 0.2s ease; outline: none;`;
+        
+        if (index === window.abTestActiveIndex[moduleKey]) {
+            btn.style.background = '#258AFF';
+            btn.style.color = '#fff';
+            btn.style.boxShadow = '0 2px 6px rgba(37,138,255,0.3)';
+        } else {
+            btn.style.background = '#fff';
+            btn.style.color = '#258AFF';
+            btn.style.boxShadow = 'none';
+        }
+
+        btn.onclick = () => {
+            window.abTestActiveIndex[moduleKey] = index; 
+            
+            switcherBox.querySelectorAll('.ab-btn').forEach((b, i) => {
+                b.style.background = i === index ? '#258AFF' : '#fff';
+                b.style.color = i === index ? '#fff' : '#258AFF';
+                b.style.boxShadow = i === index ? '0 2px 6px rgba(37,138,255,0.3)' : 'none';
+            });
+
+            const map = MODULE_INPUT_MAP[moduleKey];
+            if (map) {
+                map.forEach(ref => {
+                    let val = copy[ref.key];
+                    const el = document.getElementById(ref.id);
+                    if (el) {
+                        if (val !== undefined) {
+                            el.value = formatAndLimitText(ref.id === 'textCapsule' ? (val || '宝宝专属') : val, ref.limit || 99);
+                        } else {
+                            el.value = ''; 
+                        }
+                        // 这行不仅更新值，还让浏览器知道值变了
+                        el.dispatchEvent(new Event('input'));
+                    }
+                });
+                
+                // 确保强制刷新画布
+                if (MODULE_RENDER_FNS[moduleKey]) MODULE_RENDER_FNS[moduleKey]();
+            }
+        };
+        switcherBox.appendChild(btn);
+    });
+}
+
+document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
+    const rawText = aiPromptInput.value.trim();
+    const modelSelectVal = document.getElementById('apiModelSelect')?.value;
+    
+    if (!rawText && !currentImageBase64 && !currentRichTextContext) { alert('请粘贴需求文案、PDF文件或需求截图！'); return; }
+    if (API_KEY.includes('sk-xxxxx')) { alert('请先在 script.js 文件顶部填写你的 API Key！'); return; }
+    if (!modelSelectVal) { alert('未能获取模型地址'); return; }
+    
+    const [apiURL, selectedModel] = modelSelectVal.split('|');
+    const btn = document.getElementById('aiGenerateBtn');
+    const originalText = btn.innerText;
+    
+    btn.innerText = '⚡ AI 视觉与多方案矩阵解析中...';
+    btn.style.opacity = '0.8';
+    btn.disabled = true;
+
+    document.querySelectorAll('.ab-switcher-box').forEach(el => el.remove());
+    window.abTestCopies = {};
+    window.abTestActiveIndex = {};
+
+    let userContent = [];
+    let textPayload = `【任务指令】: 请仔细查看我提供的图片截图或底层文本。这是一个UI设计需求文档。请提取其中的文案，并匹配到对应的画板模块。\n`;
+    if (rawText && !rawText.includes('[正在') && !rawText.includes('[已成功读取')) { textPayload += `【用户手动输入的附加说明】:\n${rawText}\n\n`; }
+    if (currentRichTextContext) { textPayload += `【系统自动提取的底层表格/PDF原本文本】:\n${currentRichTextContext}\n\n`; }
+    
+    userContent.push({ type: "text", text: textPayload });
+    if (currentImageBase64) { userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } }); }
+
+    const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
+
+【映射关系】:
+- "首页banner" / "首页沉浸" -> "home"
+- "首页运营10出1" / "首页feed" -> "feed"
+- "我的页" / "我的页面banner" -> "mypage"
+- "活动中心" -> "activity"
+- "任务中心" / "分享页" / "我的空间" -> "mySpace"
+- "简单扫描" -> "simpleScan"
+- "共享点对点" / "点对点" -> "peerSharing"
+
+【提取与拆分铁律】(绝对服从):
+1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
+2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
+   由于该卡片UI结构为：[最上方的副标题sub] + [中间特大主标题第一行title1] + [中间特大主标题第二行title2] + [底部按钮btn]。
+   当文档只提供两行字（例如第一行是“创建宝宝相簿”，第二行是“珍藏童年，全家共享”）时，请严格按以下逻辑拆分：
+   -> 寻找带有标点（逗号或空格）的那一行（如“珍藏童年，全家共享”），从标点处切断！前一半填入 "title1"，后一半填入 "title2"。绝不能把整句塞进一个字段！
+   -> 将剩下的那行短字（如“创建宝宝相簿”）直接填入 "sub"。
+   -> 绝对禁止重复填词！提取过的字不要再填到其他字段。
+3. 【多套方案支持】：如果你在某模块（如"我的页面banner"）看到了多组不同的备选文案，请将它们作为数组的多个元素返回。如果没有明确写多套，切忌无中生有！有几套写几套。
+
+请只输出严格的JSON，不要解释。
+JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
+{
+    "theme": "blue", 
+    "home": [ { "line1": "第一行主标题", "line2": "第二行按钮" } ],
+    "mypage": [ { "capsule": "胶囊词", "title": "主标题", "highlight": "需要高亮的词", "sub": "副标题" } ],
+    "feed": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
+    "mySpace": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
+    "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
+    "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
+    "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ]
+}`;
+
+    try {
+        const response = await fetch(apiURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+            body: JSON.stringify({
+                model: selectedModel,
+                messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userContent } ],
+                temperature: 0.1 
+            })
+        });
+        if (!response.ok) throw new Error(`[${response.status}] 服务器报错: ${await response.text()}`);
+        
+        const data = await response.json();
+        let aiResult = data.choices[0].message.content.trim();
+        console.log("💰 AI 返回的原始数据：\n", aiResult);
+        
+        let jsonString = aiResult;
+        const jsonMatch = aiResult.match(/\{[\s\S]*\}/); 
+        if (jsonMatch) jsonString = jsonMatch[0]; 
+        const config = JSON.parse(jsonString);
+        let recognizedModules = new Set();
+        let foundMySpace = false;
+        let foundSimpleScan = false;
+        
+        if (config.theme) triggerThemeSwitch(config.theme);
+        
+        if (config.home && config.home.length > 0) {
+            recognizedModules.add('na_home');
+            window.abTestCopies['home'] = config.home; window.abTestActiveIndex['home'] = 0;
+            const first = config.home[0];
+            if(first.line1) document.getElementById('textLine1').value = formatAndLimitText(first.line1, 6);
+            if(first.line2) document.getElementById('textLine2').value = formatAndLimitText(first.line2, 4);
+            currentTopBgMode = 'gradient'; document.querySelector('input[name="topBgMode"][value="gradient"]').checked = true;
+            document.getElementById('topBgModeImage').classList.add('hidden'); document.getElementById('topBgModeSolid').classList.add('hidden'); document.getElementById('topBgModeGradient').classList.remove('hidden');
+            renderABTestSwitcher('homeControls', 'home');
+        }
+        if (config.mypage && config.mypage.length > 0) {
+            recognizedModules.add('na_mypage');
+            window.abTestCopies['myPage'] = config.mypage; window.abTestActiveIndex['myPage'] = 0;
+            const first = config.mypage[0];
+            if(first.capsule && first.capsule !== "null") document.getElementById('textCapsule').value = formatAndLimitText(first.capsule, 4);
+            if(first.title) document.getElementById('myPageTitle').value = formatAndLimitText(first.title, 9);
+            if(first.highlight) document.getElementById('myPageHighlight').value = formatAndLimitText(first.highlight, 9);
+            if(first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 10);
+            renderABTestSwitcher('myPageControls', 'myPage');
+        }
+        if (config.feed && config.feed.length > 0) {
+            recognizedModules.add('na_feed');
+            window.abTestCopies['feed'] = config.feed; window.abTestActiveIndex['feed'] = 0;
+            const first = config.feed[0];
+            if(first.title) document.getElementById('feedTitle').value = formatAndLimitText(first.title, 7);
+            if(first.sub) document.getElementById('feedSubtitle').value = formatAndLimitText(first.sub, 10);
+            if(first.btn) document.getElementById('feedBtnText').value = formatAndLimitText(first.btn, 4);
+            currentFeedBgMode = 'gradient'; document.querySelector('input[name="feedBgMode"][value="gradient"]').checked = true;
+            document.getElementById('feedBgModeImage').classList.add('hidden'); document.getElementById('feedBgModeSolid').classList.add('hidden'); document.getElementById('feedBgModeGradient').classList.remove('hidden');
+            renderABTestSwitcher('feedControls', 'feed');
+        }
+        if (config.mySpace && config.mySpace.length > 0) {
+            recognizedModules.add('dev_1_1_16');
+            foundMySpace = true;
+            window.abTestCopies['mySpace'] = config.mySpace; window.abTestActiveIndex['mySpace'] = 0;
+            const first = config.mySpace[0];
+            if(first.title) document.getElementById('mySpaceTitle').value = formatAndLimitText(first.title, 11);
+            if(first.sub) document.getElementById('mySpaceSub').value = formatAndLimitText(first.sub, 8);
+            if(first.btn) document.getElementById('mySpaceBtnText').value = formatAndLimitText(first.btn, 4);
+            renderABTestSwitcher('mySpaceControls', 'mySpace');
+        }
+        if (config.simpleScan && config.simpleScan.length > 0) {
+            recognizedModules.add('dev_1_1_16');
+            foundSimpleScan = true;
+            window.abTestCopies['simpleScan'] = config.simpleScan; window.abTestActiveIndex['simpleScan'] = 0;
+            const first = config.simpleScan[0];
+            if(first.title) document.getElementById('simpleScanTitle').value = formatAndLimitText(first.title, 11);
+            if(first.highlight) document.getElementById('simpleScanHighlight').value = formatAndLimitText(first.highlight, 6);
+            if(first.sub) document.getElementById('simpleScanSub').value = formatAndLimitText(first.sub, 8);
+            if(first.btn) document.getElementById('simpleScanBtnText').value = formatAndLimitText(first.btn, 4);
+            renderABTestSwitcher('mySpaceControls', 'simpleScan');
+        }
+        if (config.activity && config.activity.length > 0) {
+            recognizedModules.add('dev_1_1_17');
+            window.abTestCopies['activity'] = config.activity; window.abTestActiveIndex['activity'] = 0;
+            const first = config.activity[0];
+            if(first.title1) document.getElementById('myActivityTitle1').value = formatAndLimitText(first.title1, 7);
+            if(first.title2) document.getElementById('myActivityTitle2').value = formatAndLimitText(first.title2, 7);
+            if(first.sub) document.getElementById('myActivitySub').value = formatAndLimitText(first.sub, 8);
+            if(first.btn) document.getElementById('myActivityBtnText').value = formatAndLimitText(first.btn, 4);
+            renderABTestSwitcher('myActivityControls', 'activity');
+        }
+        if (config.peerSharing && config.peerSharing.length > 0) {
+            recognizedModules.add('dev_1_1_18');
+            window.abTestCopies['peerSharing'] = config.peerSharing; window.abTestActiveIndex['peerSharing'] = 0;
+            const first = config.peerSharing[0];
+            if(first.title1) document.getElementById('peerSharingTitle1').value = formatAndLimitText(first.title1, 7);
+            if(first.title2) document.getElementById('peerSharingTitle2').value = formatAndLimitText(first.title2, 7);
+            if(first.sub) document.getElementById('peerSharingSub').value = formatAndLimitText(first.sub, 8);
+            if(first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
+            renderABTestSwitcher('peerSharingControls', 'peerSharing');
+        }
+        
+        await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
+        await renderMySpaceCanvas(); await renderSimpleScanCanvas();
         await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-        if(recognizedModules.size > 0) {
-            const modules = Array.from(recognizedModules); [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+        
+        if (recognizedModules.size > 0) {
+            const modules = Array.from(recognizedModules);
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
             developingPrompt.classList.add('hidden');
             document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
             const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
-            if(firstEl) firstEl.classList.add('active');
+            if (firstEl) firstEl.classList.add('active');
+            
             const container = document.getElementById('canvasContainer');
             if (modules.length > 1) {
-                container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px'; 
+                container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px';
                 document.querySelectorAll('.view-section').forEach(el => { el.style.width = 'auto'; el.style.flexShrink = '0'; });
             } else {
                 container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
                 document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
             }
+            
             modules.forEach(mod => {
                 let viewId, ctrlId;
                 if (mod === 'na_home') { viewId = 'homeView'; ctrlId = 'homeControls'; }
                 else if (mod === 'na_mypage') { viewId = 'myPageView'; ctrlId = 'myPageControls'; }
                 else if (mod === 'na_feed') { viewId = 'feedView'; ctrlId = 'feedControls'; }
                 else if (mod === 'dev_1_1_13') { viewId = 'searchIconView'; ctrlId = 'searchIconControls'; }
-                else if (mod === 'dev_1_1_16') { viewId = 'mySpaceView'; ctrlId = 'mySpaceControls'; }
                 else if (mod === 'dev_1_1_17') { viewId = 'myActivityView'; ctrlId = 'myActivityControls'; }
                 else if (mod === 'dev_1_1_18') { viewId = 'peerSharingView'; ctrlId = 'peerSharingControls'; }
-                if(viewId) document.getElementById(viewId).classList.add('active');
-                if(ctrlId) document.getElementById(ctrlId).classList.add('active');
-            });
-            
-            if (recognizedModules.has('dev_1_1_16')) {
-                if (hasMySpace && !hasSimpleScan) {
-                    toggleCanvasGroup('simpleScanPageCanvas', false);
-                    toggleCanvasGroup('mySpacePageCanvas', true);
-                } else if (!hasMySpace && hasSimpleScan) {
-                    toggleCanvasGroup('mySpacePageCanvas', false);
-                    toggleCanvasGroup('simpleScanPageCanvas', true);
-                } else {
-                    toggleCanvasGroup('mySpacePageCanvas', true);
-                    toggleCanvasGroup('simpleScanPageCanvas', true);
+                else if (mod === 'dev_1_1_16') { 
+                    viewId = 'mySpaceView'; ctrlId = 'mySpaceControls'; 
+                    const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
+                    const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
+                    if(spaceCard) spaceCard.style.display = foundMySpace ? '' : 'none';
+                    if(scanCard) scanCard.style.display = foundSimpleScan ? '' : 'none';
                 }
-            }
-            cvsScale = modules.length > 1 ? 0.6 : 1; cvsTranslateX = 0; cvsTranslateY = modules.length > 1 ? 100 : 0; 
+                
+                if (viewId) document.getElementById(viewId).classList.add('active');
+                if (ctrlId) document.getElementById(ctrlId).classList.add('active');
+            });
+            cvsScale = modules.length > 1 ? 0.6 : 1; cvsTranslateX = 0; cvsTranslateY = modules.length > 1 ? 100 : 0;
             updateCanvasTransform();
-            
-            // 贴心小优化：AI生成后，自动滚动页面到中间的画板区域，让PM立刻看到结果
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
-        btn.innerText = `成功生成 ${recognizedModules.size} 个画板！可以直接点上方导出了`;
-        btn.classList.remove('ai-btn-active');
-        setTimeout(() => { btn.innerText = '一键解析并生成画板'; }, 3000);
         
-    }, 400); 
+        btn.innerText = '🎉 解析成功，已生成多方案画板！';
+        btn.style.background = '#10B981';
+    } catch (error) {
+        console.error("AI解析失败详情:", error);
+        alert("AI解析出错啦！\n" + error.message);
+        btn.innerText = '解析失败，点击重试';
+        btn.style.background = '#FF014D';
+    } finally {
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = 'linear-gradient(90deg, #258AFF, #641AFF)';
+            btn.style.opacity = '1';
+            btn.disabled = false;
+        }, 3000);
+    }
 });
+
 // ==================== 渲染与绘图核心代码 ====================
 function setupHighQualityContext(ctx) { if (!ctx) return; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
 function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
@@ -472,6 +814,7 @@ function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highli
     const parts = fullText.split(highlightText); let currentX = fixedX;
     for (let i = 0; i < parts.length; i++) { ctx.fillStyle = baseColor; ctx.fillText(parts[i], currentX, fixedY); currentX += Math.floor(ctx.measureText(parts[i]).width); if (i < parts.length - 1) { ctx.fillStyle = highlightColor; ctx.fillText(highlightText, currentX, fixedY); currentX += Math.floor(ctx.measureText(highlightText).width); } }
 }
+
 // 首页大图状态 Banner
 async function createTopBannerCanvas(kvImg) {
     const defaultBanner = await loadImage(config.homeMainBanner);
@@ -511,7 +854,9 @@ async function drawTopHomePage(canvas, ctx, kvImg) {
     canvas.width = uiImg.width; canvas.height = uiImg.height; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height);
     const scale = canvas.width / bCanvas.width, drawW = canvas.width, drawH = bCanvas.height * scale;
     ctx.drawImage(bCanvas, 0, 0, drawW, drawH); ctx.drawImage(uiImg, 0, 0, canvas.width, canvas.height);
+    canvas._bannerBBox = { x: 0, y: 0, w: drawW, h: drawH };
 }
+
 // 小图状态 Banner 相关
 async function drawMode(isDark, canvas, ctx, kvImg) {
     const bgUrl = isDark ? config.baseUIDark : config.baseUI, bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
@@ -519,9 +864,10 @@ async function drawMode(isDark, canvas, ctx, kvImg) {
     canvas.width = baseUIImg.width || 1260; canvas.height = baseUIImg.height || 2652; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (baseUIImg.width) ctx.drawImage(baseUIImg, 0, 0, canvas.width, canvas.height); if (bannerBgImg && bannerBgImg.width) ctx.drawImage(bannerBgImg, Math.floor(config.bannerX), Math.floor(config.bannerY), bannerBgImg.width, bannerBgImg.height);
     if (kvImg && kvImg.width) { ctx.save(); ctx.beginPath(); ctx.rect(Math.floor(config.heroX), Math.floor(config.heroY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); ctx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(ctx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); ctx.restore(); }
-    const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1); const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
+    const line1Txt = textLine1Input?.value || ''; const line2Txt = textLine2Input?.value || '';
     ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 36px "PingFangSC-Medium", "Microsoft YaHei", sans-serif'; ctx.fillStyle = textColor1; ctx.fillText(line1Txt, Math.floor(306), Math.floor(166)); ctx.fillStyle = arrowColor; ctx.fillText(line2Txt, Math.floor(306), Math.floor(217));
     if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + ctx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + 18 - arrowImg.height / 2 + 2); ctx.drawImage(arrowImg, arrowX, arrowY); }
+    canvas._bannerBBox = { x: config.bannerX, y: config.bannerY, w: 556, h: 282 }; 
 }
 async function createFullBannerCanvas(isDark) {
     const bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
@@ -530,7 +876,7 @@ async function createFullBannerCanvas(isDark) {
     const fullCanvas = document.createElement('canvas'), fullCtx = fullCanvas.getContext('2d'); fullCanvas.width = right - left; fullCanvas.height = bottom - top; setupHighQualityContext(fullCtx);
     const offsetX = Math.floor(-left), offsetY = Math.floor(-top); if (bannerBgImg && bannerBgImg.width) fullCtx.drawImage(bannerBgImg, Math.floor(config.bannerX + offsetX), Math.floor(config.bannerY + offsetY));
     if (kvImg && kvImg.width) { fullCtx.save(); fullCtx.beginPath(); fullCtx.rect(Math.floor(config.heroX + offsetX), Math.floor(config.heroY + offsetY), Math.floor(config.heroWidth), Math.floor(config.heroHeight)); fullCtx.clip(); const kvScale = Math.min(config.heroWidth / kvImg.width, config.heroHeight / kvImg.height), kvDrawW = kvImg.width * kvScale, kvDrawH = kvImg.height * kvScale, drawX = config.heroX + offsetX + (config.heroWidth - kvDrawW) / 2, drawY = config.heroY + offsetY + (config.heroHeight - kvDrawH) / 2; drawSharpenedImage(fullCtx, kvImg, drawX, drawY, kvDrawW, kvDrawH, 0.3); fullCtx.restore(); }
-    const line1Txt = (textLine1Input?.value || '').slice(0, TEXT_LIMITS.homeLine1); const line2Txt = (textLine2Input?.value || '').slice(0, TEXT_LIMITS.homeLine2);
+    const line1Txt = textLine1Input?.value || ''; const line2Txt = textLine2Input?.value || '';
     fullCtx.textAlign = 'left'; fullCtx.textBaseline = 'top'; fullCtx.font = 'bold 36px "PingFangSC-Medium", "Microsoft YaHei", sans-serif'; fullCtx.fillStyle = textColor1; fullCtx.fillText(line1Txt, Math.floor(306 + offsetX), Math.floor(166 + offsetY)); fullCtx.fillStyle = arrowColor; fullCtx.fillText(line2Txt, Math.floor(306 + offsetX), Math.floor(217 + offsetY));
     if (arrowImg && arrowImg.width) { const arrowX = Math.floor(306 + offsetX + fullCtx.measureText(line2Txt).width + config.arrowPadding), arrowY = Math.floor(217 + offsetY + 18 - arrowImg.height / 2 + 2); fullCtx.drawImage(arrowImg, arrowX, arrowY); } return fullCanvas;
 }
@@ -542,6 +888,7 @@ async function renderHomeCanvas() {
     if (lightBannerCanvas && lightBannerCtx) { const lbCanvas = await createFullBannerCanvas(false); lightBannerCanvas.width = lbCanvas.width; lightBannerCanvas.height = lbCanvas.height; setupHighQualityContext(lightBannerCtx); lightBannerCtx.clearRect(0, 0, lightBannerCanvas.width, lightBannerCanvas.height); lightBannerCtx.drawImage(lbCanvas, 0, 0); }
     if (darkBannerCanvas && darkBannerCtx) { const dbCanvas = await createFullBannerCanvas(true); darkBannerCanvas.width = dbCanvas.width; darkBannerCanvas.height = dbCanvas.height; setupHighQualityContext(darkBannerCtx); darkBannerCtx.clearRect(0, 0, darkBannerCanvas.width, darkBannerCanvas.height); darkBannerCtx.drawImage(dbCanvas, 0, 0); }
 }
+
 // 我的页面相关
 async function renderMyPage() { await renderMyPageBanner(); await renderMyPageFullCanvas(); }
 async function renderMyPageBanner() {
@@ -551,7 +898,7 @@ async function renderMyPageBanner() {
         if (banner2Img && banner2Img.width) {
             canvas.width = banner2Img.width; canvas.height = banner2Img.height; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(banner2Img, 0, 0);
             if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
-            const capsuleTxt = (textCapsuleInput?.value || '').slice(0, TEXT_LIMITS.capsule); const titleTxt = (myPageTitle?.value || '').slice(0, TEXT_LIMITS.myPageTitle); const highlightTxt = myPageHighlight?.value || ''; const subtitleTxt = (myPageSubtitle?.value || '').slice(0, TEXT_LIMITS.myPageSubtitle);
+            const capsuleTxt = textCapsuleInput?.value || ''; const titleTxt = myPageTitle?.value || ''; const highlightTxt = myPageHighlight?.value || ''; const subtitleTxt = myPageSubtitle?.value || '';
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
             ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'normal 38px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
             ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 44px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
@@ -562,8 +909,11 @@ async function renderMyPageBanner() {
 }
 async function renderMyPageFullCanvas() {
     if (!myPageFullCanvas || !myPageFullCtx) return;
-    try { const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); } } catch (e) { }
+    try { const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); } 
+    myPageFullCanvas._bannerBBox = { x: config.myPageX + 24, y: config.myPageY, w: myPageCanvas.width - 48, h: myPageCanvas.height };
+    } catch (e) { }
 }
+
 // Feed 相关
 async function createFeedBannerCanvas() {
     const canvas = document.createElement('canvas'); canvas.width = 561; canvas.height = 750; const ctx = canvas.getContext('2d'); setupHighQualityContext(ctx);
@@ -573,18 +923,21 @@ async function createFeedBannerCanvas() {
     const defaultImg = await loadImage(config.feedExampleImage); const imgToDraw = userImgObj || defaultImg;
     if (imgToDraw && imgToDraw.width) { ctx.save(); const imgW = 412, imgH = 360, imgX = 74.5, imgY = 185; ctx.beginPath(); ctx.rect(imgX, imgY, imgW, imgH); ctx.clip(); const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height), drawW = imgToDraw.width * scale, drawH = imgToDraw.height * scale, drawX = imgX + (imgW - drawW) / 2, drawY = imgY + (imgH - drawH) / 2; drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3); ctx.restore(); }
     ctx.textAlign = 'center'; ctx.textBaseline = 'top'; const centerX = 280.5;
-    const titleTxt = (feedTitleInput?.value || '主标题7个字').slice(0, 7); ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif'; ctx.fillStyle = feedTitleColor?.value || '#000000'; ctx.fillText(titleTxt, centerX, 69);
-    const subtitleTxt = (feedSubtitleInput?.value || '副标题字数最多10个字').slice(0, 10); ctx.font = 'normal 36px "FZLTHK", sans-serif'; ctx.fillStyle = feedSubtitleColor?.value || '#000000'; ctx.fillText(subtitleTxt, centerX, 124);
+    const titleTxt = feedTitleInput?.value || ''; ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif'; ctx.fillStyle = feedTitleColor?.value || '#000000'; ctx.fillText(titleTxt, centerX, 69);
+    const subtitleTxt = feedSubtitleInput?.value || ''; ctx.font = 'normal 36px "FZLTHK", sans-serif'; ctx.fillStyle = feedSubtitleColor?.value || '#000000'; ctx.fillText(subtitleTxt, centerX, 124);
     ctx.fillStyle = '#000000'; drawRoundRect(ctx, 45, 557, 471, 108, 54); ctx.fill();
-    const btnTxt = (feedBtnTextInput?.value || '立即参加').slice(0, 4); ctx.font = 'normal 36px "FZLanTingHeiS-DB", sans-serif'; ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btnTxt, centerX, 611);
+    const btnTxt = feedBtnTextInput?.value || ''; ctx.font = 'normal 36px "FZLanTingHeiS-DB", sans-serif'; ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btnTxt, centerX, 611);
     return canvas;
 }
 async function renderFeedCanvas() {
     const fbCanvas = await createFeedBannerCanvas();
     if (feedBannerCanvas && feedBannerCtx) { feedBannerCanvas.width = fbCanvas.width; feedBannerCanvas.height = fbCanvas.height; setupHighQualityContext(feedBannerCtx); feedBannerCtx.clearRect(0, 0, feedBannerCanvas.width, feedBannerCanvas.height); feedBannerCtx.drawImage(fbCanvas, 0, 0); }
     if (!feedCanvas || !feedCtx) return;
-    try { const bgImg = await loadImage(config.feedBg); if (!bgImg || !bgImg.width) return; feedCanvas.width = bgImg.width; feedCanvas.height = bgImg.height; setupHighQualityContext(feedCtx); feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height); feedCtx.drawImage(bgImg, 0, 0); if (fbCanvas && fbCanvas.width) { feedCtx.save(); drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, fbCanvas.width, fbCanvas.height, 36); feedCtx.clip(); feedCtx.drawImage(fbCanvas, config.feedBannerX, config.feedBannerY); feedCtx.restore(); } } catch (e) { console.error(e); }
+    try { const bgImg = await loadImage(config.feedBg); if (!bgImg || !bgImg.width) return; feedCanvas.width = bgImg.width; feedCanvas.height = bgImg.height; setupHighQualityContext(feedCtx); feedCtx.clearRect(0, 0, feedCanvas.width, feedCanvas.height); feedCtx.drawImage(bgImg, 0, 0); if (fbCanvas && fbCanvas.width) { feedCtx.save(); drawRoundRect(feedCtx, config.feedBannerX, config.feedBannerY, fbCanvas.width, fbCanvas.height, 36); feedCtx.clip(); feedCtx.drawImage(fbCanvas, config.feedBannerX, config.feedBannerY); feedCtx.restore(); } 
+    feedCanvas._bannerBBox = { x: config.feedBannerX, y: config.feedBannerY, w: fbCanvas.width, h: fbCanvas.height };
+    } catch (e) { console.error(e); }
 }
+
 // 搜索框 Icon 相关
 async function renderSearchIcon() {
     if (!searchPageCanvas || !searchPageCtx) return;
@@ -607,6 +960,7 @@ async function renderSearchIcon() {
             drawSharpenedImage(searchPageCtx, iconImg, drawX, drawY, drawW, drawH, 0.3);
             searchPageCtx.restore();
         }
+        searchPageCanvas._bannerBBox = { x: 48, y: 359, w: 128, h: 128 };
     }
     if (searchIconExportCanvas && searchIconExportCtx) {
         searchIconExportCanvas.width = 204;
@@ -623,6 +977,7 @@ async function renderSearchIcon() {
         }
     }
 }
+
 // 1182x252 Banner 共用渲染逻辑
 async function build1182Banner(opts) {
     const canvas = document.createElement('canvas');
@@ -695,11 +1050,11 @@ async function renderMySpaceCanvas() {
         solidColor: mySpaceSolidColor?.value || '#FFFFFF',
         grad1: mySpaceGradColor1?.value || '#E5F3FF',
         grad2: mySpaceGradColor2?.value || '#FFFFFF',
-        title: (mySpaceTitleInput?.value || '主标题最多11个文字').slice(0, 11),
+        title: mySpaceTitleInput?.value || '',
         highlight: '',
         highlightColor: '#000000',
-        sub: (mySpaceSubInput?.value || '副标题最多8个字').slice(0, 8),
-        btnText: mySpaceBtnTextInput?.value || '去查看',
+        sub: mySpaceSubInput?.value || '',
+        btnText: mySpaceBtnTextInput?.value || '',
         btnGrad1: mySpaceBtnGrad1?.value || '#06A7FF',
         btnGrad2: mySpaceBtnGrad2?.value || '#0066FF',
         defaultImgSrc: config.mySpaceExampleImage
@@ -730,6 +1085,7 @@ async function renderMySpaceCanvas() {
             mySpacePageCtx.clip();
             mySpacePageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
             mySpacePageCtx.restore();
+            mySpacePageCanvas._bannerBBox = { x: drawX, y: drawY, w: targetW, h: targetH };
         }
     }
 }
@@ -739,11 +1095,11 @@ async function renderSimpleScanCanvas() {
         solidColor: simpleScanSolidColor?.value || '#FFFFFF',
         grad1: simpleScanGradColor1?.value || '#E5F3FF',
         grad2: simpleScanGradColor2?.value || '#FFFFFF',
-        title: (simpleScanTitleInput?.value || '简单扫描网页版重磅来袭').slice(0, 11),
-        highlight: simpleScanHighlightInput?.value || '重磅来袭',
+        title: simpleScanTitleInput?.value || '',
+        highlight: simpleScanHighlightInput?.value || '',
         highlightColor: simpleScanHighlightColor?.value || '#14B5FF',
-        sub: (simpleScanSubInput?.value || '支持批量格式转换').slice(0, 8),
-        btnText: simpleScanBtnTextInput?.value || '去查看',
+        sub: simpleScanSubInput?.value || '',
+        btnText: simpleScanBtnTextInput?.value || '',
         btnGrad1: simpleScanBtnGrad1?.value || '#06A7FF',
         btnGrad2: simpleScanBtnGrad2?.value || '#0066FF',
         defaultImgSrc: config.simpleScanExampleImage
@@ -774,6 +1130,7 @@ async function renderSimpleScanCanvas() {
             simpleScanPageCtx.clip();
             simpleScanPageCtx.drawImage(bannerCanvas, 0, 0, bannerCanvas.width, bannerCanvas.height, drawX, drawY, targetW, targetH);
             simpleScanPageCtx.restore();
+            simpleScanPageCanvas._bannerBBox = { x: drawX, y: drawY, w: targetW, h: targetH };
         }
     }
 }
@@ -792,23 +1149,29 @@ async function renderMyActivityCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-    exactGrad.addColorStop(0, myActivityGrad1?.value || '#9EED60');
-    exactGrad.addColorStop(1, myActivityGrad2?.value || '#FCFF70');
+    
+    exactGrad.addColorStop(0, myActivityGrad1?.value || '#E5F3FF');
+    exactGrad.addColorStop(1, myActivityGrad2?.value || '#FFFFFF');
     ctx.fillStyle = exactGrad;
     ctx.fillRect(0, 0, w, h);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillStyle = myActivitySubColor?.value || '#777777';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
-    ctx.fillText((myActivitySub?.value || '甜粽小吃铺开业啦').slice(0, 8), 47.01, 47.67);
-    ctx.fillStyle = myActivityTitle1Color?.value || '#000000';
+    ctx.fillText(myActivitySub?.value || '', 47.01, 47.67);
+    
+    const titleColor = myActivityTitle1Color?.value || '#000000';
+    ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText((myActivityTitle1?.value || '包粽子免费得').slice(0, 7), 47.01, 87.5);
+    ctx.fillText(myActivityTitle1?.value || '', 47.01, 87.5);
+    
     ctx.fillStyle = myActivityTitle2Color?.value || '#000000';
-    ctx.fillText((myActivityTitle2?.value || 'iPhone').slice(0, 7), 47.01, 146.92);
+    ctx.fillText(myActivityTitle2?.value || '', 47.01, 146.92);
+    
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-    const btnColor = myActivityBtnColor?.value || '#000000';
+    
+    const btnColor = titleColor; 
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
     drawRoundRect(
@@ -824,7 +1187,7 @@ async function renderMyActivityCanvas() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = 'normal 32px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText((myActivityBtnText?.value || '按钮字').slice(0, 3), btnX + btnW / 2, btnY + btnH / 2);
+    ctx.fillText(myActivityBtnText?.value || '', btnX + btnW / 2, btnY + btnH / 2);
     const defaultImg = await loadImage(config.feedExampleImage);
     const imgToDraw = userImgObj || defaultImg;
     if (imgToDraw && imgToDraw.width) {
@@ -866,6 +1229,7 @@ async function renderMyActivityCanvas() {
             myActivityPageCtx.clip();
             myActivityPageCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, drawX, drawY, targetW, targetH);
             myActivityPageCtx.restore();
+            myActivityPageCanvas._bannerBBox = { x: drawX, y: drawY, w: targetW, h: targetH };
         }
     }
 }
@@ -884,23 +1248,29 @@ async function renderPeerSharingCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-    exactGrad.addColorStop(0, peerSharingGrad1?.value || '#D16FFF');
-    exactGrad.addColorStop(1, peerSharingGrad2?.value || '#5C6CFF');
+    
+    exactGrad.addColorStop(0, peerSharingGrad1?.value || '#06A7FF');
+    exactGrad.addColorStop(1, peerSharingGrad2?.value || '#0052CC');
     ctx.fillStyle = exactGrad;
     ctx.fillRect(0, 0, w, h);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillStyle = peerSharingSubColor?.value || '#FFFFFF';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
-    ctx.fillText((peerSharingSub?.value || '甜粽小吃铺开业啦').slice(0, 8), 47.01, 47.67);
-    ctx.fillStyle = peerSharingTitle1Color?.value || '#FFFFFF';
+    ctx.fillText(peerSharingSub?.value || '', 47.01, 47.67);
+    
+    const titleColor = peerSharingTitle1Color?.value || '#FFFFFF';
+    ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText((peerSharingTitle1?.value || '包粽子免费得').slice(0, 7), 47.01, 87.5);
+    ctx.fillText(peerSharingTitle1?.value || '', 47.01, 87.5);
+    
     ctx.fillStyle = peerSharingTitle2Color?.value || '#FFFFFF';
-    ctx.fillText((peerSharingTitle2?.value || 'iPhone').slice(0, 7), 47.01, 146.92);
+    ctx.fillText(peerSharingTitle2?.value || '', 47.01, 146.92);
+    
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-    const btnColor = peerSharingBtnColor?.value || '#FFFFFF';
+    
+    const btnColor = titleColor; 
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
     drawRoundRect(
@@ -916,7 +1286,7 @@ async function renderPeerSharingCanvas() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = 'normal 32px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText((peerSharingBtnText?.value || '按钮字').slice(0, 3), btnX + btnW / 2, btnY + btnH / 2);
+    ctx.fillText(peerSharingBtnText?.value || '', btnX + btnW / 2, btnY + btnH / 2);
     const defaultImg = await loadImage(config.peerSharingExampleImage);
     const imgToDraw = userImgObj || defaultImg;
     if (imgToDraw && imgToDraw.width) {
@@ -958,9 +1328,11 @@ async function renderPeerSharingCanvas() {
             peerSharingPageCtx.clip();
             peerSharingPageCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, drawX, drawY, targetW, targetH);
             peerSharingPageCtx.restore();
+            peerSharingPageCanvas._bannerBBox = { x: drawX, y: drawY, w: targetW, h: targetH };
         }
     }
 }
+
 // ==================== 界面交互事件 ====================
 function updateResourceDropdown(terminalId) {
     const resourceList = document.getElementById('resourceList');
@@ -995,14 +1367,17 @@ async function switchResourceView(selected) {
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
     document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
-    toggleCanvasGroup('mySpacePageCanvas', true);
-    toggleCanvasGroup('simpleScanPageCanvas', true);
+    
+    const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
+    const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
+    if(spaceCard) spaceCard.style.display = '';
+    if(scanCard) scanCard.style.display = '';
+
     if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
     }
-    
     if (selected === 'na_home') {
         homeControls.classList.add('active'); homeView.classList.add('active');
         if (!renderedPages.home) { await renderHomeCanvas(); renderedPages.home = true; }
@@ -1038,7 +1413,7 @@ buBtns.forEach(btn => {
             updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
         } else {
             document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF');
-            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden'); [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
         }
     });
 });
@@ -1085,16 +1460,35 @@ function openDetailModal(targetType) {
     }
     detailModal.style.display = 'flex';
 }
+
 document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
-    canvas.addEventListener('click', (e) => { const targetType = e.target.getAttribute('data-target'); if (targetType) openDetailModal(targetType); });
+    canvas.addEventListener('click', (e) => { 
+        if (isDraggingCanvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const clickX = (e.clientX - rect.left) * scaleX;
+        const clickY = (e.clientY - rect.top) * scaleY;
+        
+        const bbox = canvas._bannerBBox;
+        if (bbox) {
+            if (clickX >= bbox.x && clickX <= bbox.x + bbox.w && clickY >= bbox.y && clickY <= bbox.y + bbox.h) {
+                const targetType = canvas.getAttribute('data-target'); 
+                if (targetType) openDetailModal(targetType);
+            }
+        } else {
+            const targetType = canvas.getAttribute('data-target'); 
+            if (targetType) openDetailModal(targetType);
+        }
+    });
 });
 document.querySelector('.close-detail-modal')?.addEventListener('click', () => { detailModal.style.display = 'none'; });
 detailModal?.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.style.display = 'none'; });
+
 // ==================== 参数输入监听 ====================
 homeColorRadios.forEach(r => r.addEventListener('change', async e => { homeColor = e.target.value; await renderHomeCanvas(); }));
-textLine1Input?.addEventListener('input', renderHomeCanvas); textLine2Input?.addEventListener('input', renderHomeCanvas);
 myPageColorRadios.forEach(r => r.addEventListener('change', async e => { myPageColor = e.target.value; await renderMyPage(); }));
-textCapsuleInput?.addEventListener('input', renderMyPage); myPageTitle?.addEventListener('input', renderMyPage); myPageSubtitle?.addEventListener('input', renderMyPage); myPageHighlight?.addEventListener('input', renderMyPage);
+myPageHighlight?.addEventListener('input', renderMyPage);
 topBgModeRadios.forEach(r => r.addEventListener('change', async e => {
     currentTopBgMode = e.target.value; topBgModeImage.classList.add('hidden'); topBgModeGradient.classList.add('hidden'); topBgModeSolid.classList.add('hidden');
     if (currentTopBgMode === 'image') topBgModeImage.classList.remove('hidden'); else if (currentTopBgMode === 'gradient') topBgModeGradient.classList.remove('hidden'); else if (currentTopBgMode === 'solid') topBgModeSolid.classList.remove('hidden');
@@ -1109,28 +1503,26 @@ feedBgModeRadios.forEach(r => r.addEventListener('change', async e => {
 }));
 feedGradColor1?.addEventListener('input', renderFeedCanvas); feedGradColor2?.addEventListener('input', renderFeedCanvas); feedSolidColor?.addEventListener('input', renderFeedCanvas);
 feedGradAngle?.addEventListener('input', (e) => { feedGradAngleVal.innerText = e.target.value + '°'; renderFeedCanvas(); });
-feedTitleInput?.addEventListener('input', renderFeedCanvas); feedTitleColor?.addEventListener('input', renderFeedCanvas); feedSubtitleInput?.addEventListener('input', renderFeedCanvas); feedSubtitleColor?.addEventListener('input', renderFeedCanvas); feedBtnTextInput?.addEventListener('input', renderFeedCanvas);
+feedTitleColor?.addEventListener('input', renderFeedCanvas); feedSubtitleColor?.addEventListener('input', renderFeedCanvas);
 mySpaceBgModeRadios.forEach(r => r.addEventListener('change', async e => {
     currentMySpaceBgMode = e.target.value; mySpaceBgModeSolid.classList.add('hidden'); mySpaceBgModeGradient.classList.add('hidden');
     if (currentMySpaceBgMode === 'solid') mySpaceBgModeSolid.classList.remove('hidden'); else mySpaceBgModeGradient.classList.remove('hidden');
     await renderMySpaceCanvas();
 }));
 mySpaceSolidColor?.addEventListener('input', renderMySpaceCanvas); mySpaceGradColor1?.addEventListener('input', renderMySpaceCanvas); mySpaceGradColor2?.addEventListener('input', renderMySpaceCanvas);
-mySpaceTitleInput?.addEventListener('input', renderMySpaceCanvas); mySpaceSubInput?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnTextInput?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad1?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad2?.addEventListener('input', renderMySpaceCanvas);
+mySpaceBtnGrad1?.addEventListener('input', renderMySpaceCanvas); mySpaceBtnGrad2?.addEventListener('input', renderMySpaceCanvas);
 simpleScanBgModeRadios.forEach(r => r.addEventListener('change', async e => {
     currentSimpleScanBgMode = e.target.value; simpleScanBgModeSolid.classList.add('hidden'); simpleScanBgModeGradient.classList.add('hidden');
     if (currentSimpleScanBgMode === 'solid') simpleScanBgModeSolid.classList.remove('hidden'); else simpleScanBgModeGradient.classList.remove('hidden');
     await renderSimpleScanCanvas();
 }));
 simpleScanSolidColor?.addEventListener('input', renderSimpleScanCanvas); simpleScanGradColor1?.addEventListener('input', renderSimpleScanCanvas); simpleScanGradColor2?.addEventListener('input', renderSimpleScanCanvas);
-simpleScanTitleInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanHighlightInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanHighlightColor?.addEventListener('input', renderSimpleScanCanvas);
-simpleScanSubInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnTextInput?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad1?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad2?.addEventListener('input', renderSimpleScanCanvas);
-myActivityGrad1?.addEventListener('input', renderMyActivityCanvas); myActivityGrad2?.addEventListener('input', renderMyActivityCanvas); myActivitySub?.addEventListener('input', renderMyActivityCanvas);
-myActivityTitle1?.addEventListener('input', renderMyActivityCanvas); myActivityTitle2?.addEventListener('input', renderMyActivityCanvas); myActivityBtnText?.addEventListener('input', renderMyActivityCanvas);
+simpleScanHighlightColor?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad1?.addEventListener('input', renderSimpleScanCanvas); simpleScanBtnGrad2?.addEventListener('input', renderSimpleScanCanvas);
+myActivityGrad1?.addEventListener('input', renderMyActivityCanvas); myActivityGrad2?.addEventListener('input', renderMyActivityCanvas);
 myActivitySubColor?.addEventListener('input', renderMyActivityCanvas); myActivityTitle1Color?.addEventListener('input', renderMyActivityCanvas); myActivityTitle2Color?.addEventListener('input', renderMyActivityCanvas); myActivityBtnColor?.addEventListener('input', renderMyActivityCanvas);
-peerSharingGrad1?.addEventListener('input', renderPeerSharingCanvas); peerSharingGrad2?.addEventListener('input', renderPeerSharingCanvas); peerSharingSub?.addEventListener('input', renderPeerSharingCanvas);
-peerSharingTitle1?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle2?.addEventListener('input', renderPeerSharingCanvas); peerSharingBtnText?.addEventListener('input', renderPeerSharingCanvas);
+peerSharingGrad1?.addEventListener('input', renderPeerSharingCanvas); peerSharingGrad2?.addEventListener('input', renderPeerSharingCanvas);
 peerSharingSubColor?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle1Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle2Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingBtnColor?.addEventListener('input', renderPeerSharingCanvas);
+
 // ==================== 文件上传与取色 ====================
 function handleFileUpload(file, callback) {
     if (!file || !file.type.startsWith('image/')) return;
@@ -1144,17 +1536,17 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
         dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); if (e.dataTransfer.files.length > 0) handleFileUpload(e.dataTransfer.files[0], async src => { if (prev) prev.src = src; await processFn(src); }); });
     }
 }
-function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;let max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max==min){h=s=0;}else{let d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}return [h*360,s,l];}
+function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max == min) { h = s = 0; } else { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }h /= 6; } return [h * 360, s, l]; }
 bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => {
     userImgObj = await loadImage(src);
     if (userImgObj) {
         const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const w = canvas.width = Math.min(userImgObj.width, 100); const h = canvas.height = Math.min(userImgObj.height, 100);
-        ctx.drawImage(userImgObj, 0, 0, w, h); let data; try { data = ctx.getImageData(0, 0, w, h).data; } catch(e){}
-        if(data){
-            let r=0,g=0,b=0,count=0; for(let i=0;i<data.length;i+=16){if(data[i+3]<128)continue;r+=data[i];g+=data[i+1];b+=data[i+2];count++;}
-            if(count>0) {
+        ctx.drawImage(userImgObj, 0, 0, w, h); let data; try { data = ctx.getImageData(0, 0, w, h).data; } catch (e) { }
+        if (data) {
+            let r = 0, g = 0, b = 0, count = 0; for (let i = 0; i < data.length; i += 16) { if (data[i + 3] < 128) continue; r += data[i]; g += data[i + 1]; b += data[i + 2]; count++; }
+            if (count > 0) {
                 let matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
-                let [h_val, s_val, l_val] = rgbToHsl(Math.floor(r/count), Math.floor(g/count), Math.floor(b/count));
+                let [h_val, s_val, l_val] = rgbToHsl(Math.floor(r / count), Math.floor(g / count), Math.floor(b / count));
                 if (s_val > 0.1 && l_val > 0.1 && l_val < 0.95) {
                     let minDiff = Infinity;
                     for (let theme of BRAND_THEMES) {
@@ -1172,66 +1564,85 @@ bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src 
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
+
 // ==================== ✨ 智能勾选辅助函数 ====================
 function autoSelectExportItems() {
-    // 1. 先把所有复选框清空（取消打勾）
     document.querySelectorAll('.export-item-chk').forEach(chk => chk.checked = false);
-    // 2. 检查屏幕上哪些画板是"激活"（显示）状态，自动勾选它们对应的导出项
     if (document.getElementById('homeView')?.classList.contains('active')) {
         ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
     if (document.getElementById('myPageView')?.classList.contains('active')) {
         ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
     if (document.getElementById('feedView')?.classList.contains('active')) {
         ['chkFeedBannerExport', 'chkFeedPhone'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
     if (document.getElementById('searchIconView')?.classList.contains('active')) {
         ['chkSearchIconExport', 'chkSearchPageExport'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
     if (document.getElementById('mySpaceView')?.classList.contains('active')) {
         const spaceCanvas = document.getElementById('mySpacePageCanvas');
         const scanCanvas = document.getElementById('simpleScanPageCanvas');
-        // 我的空间
-        if (spaceCanvas && spaceCanvas.style.display !== 'none' && spaceCanvas.parentElement.style.display !== 'none') {
-            ['chkMySpaceExport', 'chkMySpacePageExport'].forEach(id => {
-                if(document.getElementById(id)) document.getElementById(id).checked = true;
-            });
+        if (spaceCanvas && spaceCanvas.closest('.preview-card').style.display !== 'none') {
+            ['chkMySpaceExport', 'chkMySpacePageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
         }
-        // 简单扫描
-        if (scanCanvas && scanCanvas.style.display !== 'none' && scanCanvas.parentElement.style.display !== 'none') {
-            ['chkSimpleScanExport', 'chkSimpleScanPageExport'].forEach(id => {
-                if(document.getElementById(id)) document.getElementById(id).checked = true;
-            });
+        if (scanCanvas && scanCanvas.closest('.preview-card').style.display !== 'none') {
+            ['chkSimpleScanExport', 'chkSimpleScanPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
         }
     }
     if (document.getElementById('myActivityView')?.classList.contains('active')) {
-        ['chkMyActivityExport', 'chkMyActivityPageExport'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
-        });
+        ['chkMyActivityExport', 'chkMyActivityPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
     if (document.getElementById('peerSharingView')?.classList.contains('active')) {
-        ['chkPeerSharingExport', 'chkPeerSharingPageExport'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).checked = true;
-        });
+        ['chkPeerSharingExport', 'chkPeerSharingPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
-    // 3. 更新“全选”按钮的状态
     const allChks = document.querySelectorAll('.export-item-chk');
     const selectAllChk = document.getElementById('selectAllExport');
-    if (selectAllChk && allChks.length > 0) {
-        selectAllChk.checked = Array.from(allChks).every(c => c.checked);
-    }
+    if (selectAllChk && allChks.length > 0) { selectAllChk.checked = Array.from(allChks).every(c => c.checked); }
 }
+
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
+
+async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn) {
+    if (!document.getElementById(chkId)?.checked || !canvas) return;
+    let chunks = window.abTestCopies ? window.abTestCopies[testKey] : null;
+    if (chunks && chunks.length > 1) {
+        let backups = inputRefs.map(ref => document.getElementById(ref.id).value);
+        for (let i = 0; i < chunks.length; i++) {
+            let chunk = chunks[i];
+            inputRefs.forEach(ref => {
+                let val = chunk[ref.key];
+                if (val !== undefined) {
+                    if (ref.id === 'textCapsule') {
+                        document.getElementById(ref.id).value = formatAndLimitText(val || '去查看', 4);
+                    } else {
+                        document.getElementById(ref.id).value = formatAndLimitText(val, ref.limit || 99);
+                    }
+                }
+            });
+            await renderFn(); 
+            folder.file(`${baseName}-方案${i + 1}.png`, await canvasToBlob(canvas));
+        }
+        inputRefs.forEach((ref, idx) => { document.getElementById(ref.id).value = backups[idx]; });
+        await renderFn();
+    } else {
+        folder.file(`${baseName}.png`, await canvasToBlob(canvas));
+    }
+}
+
+async function exportCanvasOrMulti(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn) {
+    await exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn);
+}
+
 function initExportModal() {
     const exportModal = document.getElementById('exportModal');
     const openExportModalBtn = document.getElementById('openExportModalBtn');
@@ -1240,93 +1651,91 @@ function initExportModal() {
     const selectAllChk = document.getElementById('selectAllExport');
     const itemChks = document.querySelectorAll('.export-item-chk');
     if (!exportModal || !openExportModalBtn) return;
-    
-    // 打开导出弹窗时，立刻执行智能勾选！
-    openExportModalBtn.addEventListener('click', () => { 
+    openExportModalBtn.addEventListener('click', () => {
         autoSelectExportItems();
-        exportModal.style.display = 'flex'; 
+        exportModal.style.display = 'flex';
     });
-    
     cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; });
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
-    
     if (selectAllChk) {
         selectAllChk.addEventListener('change', (e) => {
-            const isChecked = e.target.checked;
-            itemChks.forEach(chk => chk.checked = isChecked);
+            itemChks.forEach(chk => chk.checked = e.target.checked);
         });
         itemChks.forEach(chk => {
-            chk.addEventListener('change', () => {
-                const allChecked = Array.from(itemChks).every(c => c.checked);
-                selectAllChk.checked = allChecked;
-            });
+            chk.addEventListener('change', () => { selectAllChk.checked = Array.from(itemChks).every(c => c.checked); });
         });
     }
+    
     confirmExportBtn.addEventListener('click', async () => {
         if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络');
         const zip = new JSZip();
         const previewFolder = zip.folder("带壳预览图");
         const bannerFolder = zip.folder("纯净Banner切图");
-        let selectedCount = 0;
+        let hasSelected = Array.from(document.querySelectorAll('.export-item-chk')).some(c => c.checked);
+        if (!hasSelected) { alert('您没有勾选任何资源，请至少勾选一项！'); return; }
         
         const originalText = confirmExportBtn.innerText;
-        confirmExportBtn.innerText = '正在极速打包中...';
+        confirmExportBtn.innerText = '正在执行打包下载...';
         confirmExportBtn.disabled = true;
+        
         try {
-            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) { previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas)); selectedCount++; }
-            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) { bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomePhone')?.checked && lightCanvas) { previewFolder.file(`首页-小图状态预览-${homeColor}.png`, await canvasToBlob(lightCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomeBannerLight')?.checked && lightBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(日间)-${homeColor}.png`, await canvasToBlob(lightBannerCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomeBannerDark')?.checked && darkBannerCanvas) { bannerFolder.file(`首页-小图状态Banner(夜间)-${homeColor}.png`, await canvasToBlob(darkBannerCanvas)); selectedCount++; }
-            if (document.getElementById('chkHomeKV')?.checked) {
-                const kvCanvas = document.createElement('canvas'); const kvCtx = kvCanvas.getContext('2d');
-                kvCanvas.width = 420; kvCanvas.height = 282; setupHighQualityContext(kvCtx);
-                const heroImg = await loadImage(config.heroImage); const kvImg = userImgObj || heroImg;
-                if (kvImg && kvImg.width) {
-                    const scale = Math.min(420 / kvImg.width, 282 / kvImg.height);
-                    const drawW = kvImg.width * scale, drawH = kvImg.height * scale;
-                    const drawX = (420 - drawW) / 2, drawY = (282 - drawH) / 2;
-                    drawSharpenedImage(kvCtx, kvImg, drawX, drawY, drawW, drawH, 0.3);
-                }
-                bannerFolder.file(`首页-独立切图.png`, await canvasToBlob(kvCanvas)); selectedCount++;
-            }
-            if (document.getElementById('chkFeedBannerExport')?.checked && feedBannerCanvas) { bannerFolder.file(`首页-Feed10出1banner.png`, await canvasToBlob(feedBannerCanvas)); selectedCount++; }
-            if (document.getElementById('chkFeedPhone')?.checked && feedCanvas) { previewFolder.file(`首页-Feed10出1预览.png`, await canvasToBlob(feedCanvas)); selectedCount++; }
-            if (document.getElementById('chkMyPageBannerLight')?.checked && myPageCanvas) { bannerFolder.file(`我的-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas)); selectedCount++; }
-            if (document.getElementById('chkMyPageBannerDark')?.checked && myPageDarkCanvas) { bannerFolder.file(`我的-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas)); selectedCount++; }
-            if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) { previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas)); selectedCount++; }
-            if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) { bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas)); selectedCount++; }
-            if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) { previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas)); selectedCount++; }
-            if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas) { bannerFolder.file(`我的空间-独立切图(1182x252).png`, await canvasToBlob(mySpaceExportCanvas)); selectedCount++; }
-            if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas) { previewFolder.file(`我的空间-页面预览.png`, await canvasToBlob(mySpacePageCanvas)); selectedCount++; }
-            if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas) { bannerFolder.file(`简单扫描-独立切图(1182x252).png`, await canvasToBlob(simpleScanExportCanvas)); selectedCount++; }
-            if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas) { previewFolder.file(`简单扫描-页面预览.png`, await canvasToBlob(simpleScanPageCanvas)); selectedCount++; }
-            if (document.getElementById('chkMyActivityExport')?.checked && myActivityExportCanvas) { bannerFolder.file(`活动中心-独立切图(670x320).png`, await canvasToBlob(myActivityExportCanvas)); selectedCount++; }
-            if (document.getElementById('chkMyActivityPageExport')?.checked && myActivityPageCanvas) { previewFolder.file(`活动中心-页面预览.png`, await canvasToBlob(myActivityPageCanvas)); selectedCount++; }
-            if (document.getElementById('chkPeerSharingExport')?.checked && peerSharingExportCanvas) { bannerFolder.file(`共享点对点-独立切图(670x320).png`, await canvasToBlob(peerSharingExportCanvas)); selectedCount++; }
-            if (document.getElementById('chkPeerSharingPageExport')?.checked && peerSharingPageCanvas) { previewFolder.file(`共享点对点-页面预览.png`, await canvasToBlob(peerSharingPageCanvas)); selectedCount++; }
+            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas));
+            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas));
             
-            if (selectedCount === 0) { alert('您没有勾选任何资源，请至少勾选一项！'); confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; return; }
+            let homeRefs = MODULE_INPUT_MAP['home'];
+            await exportCanvasOrMulti('chkHomePhone', lightCanvas, `首页-小图状态预览-${homeColor}`, 'home', previewFolder, homeRefs, renderHomeCanvas);
+            await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
+            await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
             
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            const link = document.createElement('a');
-            link.download = `按需导出切图集合.zip`;
-            link.href = URL.createObjectURL(zipBlob);
-            link.click();
+            let feedRefs = MODULE_INPUT_MAP['feed'];
+            await exportCanvasOrMulti('chkFeedBannerExport', feedBannerCanvas, `首页-Feed10出1banner`, 'feed', bannerFolder, feedRefs, renderFeedCanvas);
+            await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
+            
+            let myPageRefs = MODULE_INPUT_MAP['myPage'];
+            await exportCanvasOrMulti('chkMyPageBannerLight', myPageCanvas, `我的-Banner(日间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
+            await exportCanvasOrMulti('chkMyPageBannerDark', myPageDarkCanvas, `我的-Banner(夜间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
+            if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas));
+
+            if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas));
+            if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas));
+
+            let mySpaceRefs = MODULE_INPUT_MAP['mySpace'];
+            if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpaceExport', mySpaceExportCanvas, `我的空间-独立切图(1182x252)`, 'mySpace', bannerFolder, mySpaceRefs, renderMySpaceCanvas);
+            if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpacePageExport', mySpacePageCanvas, `我的空间-页面预览`, 'mySpace', previewFolder, mySpaceRefs, renderMySpaceCanvas);
+
+            let simpleScanRefs = MODULE_INPUT_MAP['simpleScan'];
+            if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas && simpleScanPageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkSimpleScanExport', simpleScanExportCanvas, `简单扫描-独立切图(1182x252)`, 'simpleScan', bannerFolder, simpleScanRefs, renderSimpleScanCanvas);
+            if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas && simpleScanPageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkSimpleScanPageExport', simpleScanPageCanvas, `简单扫描-页面预览`, 'simpleScan', previewFolder, simpleScanRefs, renderSimpleScanCanvas);
+
+            let myActivityRefs = MODULE_INPUT_MAP['activity'];
+            await exportCanvasOrMulti('chkMyActivityExport', myActivityExportCanvas, `活动中心-独立切图(670x320)`, 'activity', bannerFolder, myActivityRefs, renderMyActivityCanvas);
+            await exportCanvasOrMulti('chkMyActivityPageExport', myActivityPageCanvas, `活动中心-页面预览`, 'activity', previewFolder, myActivityRefs, renderMyActivityCanvas);
+
+            let peerSharingRefs = MODULE_INPUT_MAP['peerSharing'];
+            await exportCanvasOrMulti('chkPeerSharingExport', peerSharingExportCanvas, `共享点对点-独立切图(670x320)`, 'peerSharing', bannerFolder, peerSharingRefs, renderPeerSharingCanvas);
+            await exportCanvasOrMulti('chkPeerSharingPageExport', peerSharingPageCanvas, `共享点对点-页面预览`, 'peerSharing', previewFolder, peerSharingRefs, renderPeerSharingCanvas);
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = `设计资源打包_${new Date().getTime()}.zip`;
+            a.click();
             exportModal.style.display = 'none';
+
         } catch (e) {
-            alert("【导出报错】\n\n原因: " + e.message);
+            alert('导出出错，可能是图片跨域污染或内存不足：\n' + e);
         } finally {
             confirmExportBtn.innerText = originalText;
             confirmExportBtn.disabled = false;
         }
     });
 }
+
 function upgradeToFigmaColorPickers() {
     const colorInputs = document.querySelectorAll('input[type="color"]');
     colorInputs.forEach(input => {
         const defaultValue = input.value;
-        input.type = 'text'; 
+        input.type = 'text';
         input.style.display = 'none';
         const pickrEl = document.createElement('div');
         input.parentNode.insertBefore(pickrEl, input);
@@ -1334,21 +1743,111 @@ function upgradeToFigmaColorPickers() {
             el: pickrEl,
             theme: 'nano',
             default: defaultValue,
-            swatches: [ '#258AFF', '#079C04', '#FF5E00', '#FF014D', '#641AFF', '#FFFFFF', '#000000', 'rgba(0, 0, 0, 0.4)', 'rgba(255, 255, 255, 0.8)' ],
+            swatches: ['#258AFF', '#079C04', '#FF5E00', '#FF014D', '#641AFF', '#FFFFFF', '#000000', 'rgba(0, 0, 0, 0.4)', 'rgba(255, 255, 255, 0.8)'],
             components: { preview: true, opacity: true, hue: true, interaction: { hex: true, rgba: true, input: true, save: false } }
         });
         input._pickrInstance = pickr;
         pickr.on('change', (color) => {
             const rgbaColor = color.toRGBA().toString(0);
             input.value = rgbaColor;
-            input.dispatchEvent(new Event('input')); 
+            input.dispatchEvent(new Event('input'));
         });
     });
 }
+
+// 灵魂启动：全量渲染与字体加载
 window.onload = async () => {
+    // 绑定映射字典，自动挂载事件
+    Object.keys(MODULE_INPUT_MAP).forEach(moduleKey => {
+        MODULE_INPUT_MAP[moduleKey].forEach(ref => {
+            bindFormatter(ref.id, ref.limit, moduleKey, ref.key);
+        });
+    });
+
     upgradeToFigmaColorPickers();
     updateResourceDropdown('NA');
     initExportModal();
+    bindCanvasClickToControl();
+
+    // ✨ 黑科技注入：无感添加【+】文件上传按钮
+    const aiInputContainer = document.getElementById('aiInputContainer');
+    if (aiInputContainer) {
+        aiInputContainer.style.position = 'relative'; 
+        
+        // 创建隐藏的 input file
+        const hiddenFileInput = document.createElement('input');
+        hiddenFileInput.type = 'file';
+        hiddenFileInput.style.display = 'none';
+        hiddenFileInput.accept = 'image/*,.pdf,.txt,.csv,.md,.html';
+        document.body.appendChild(hiddenFileInput);
+
+        // 创建悬浮的 + 号按钮
+        const addFileBtn = document.createElement('div');
+        addFileBtn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span style="font-size: 13px; margin-left: 4px; font-weight: 500;">添加文件</span>
+        `;
+        addFileBtn.style.cssText = `
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            color: #641AFF;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        `;
+        
+        addFileBtn.onmouseover = () => { 
+            addFileBtn.style.background = '#f1f5f9'; 
+            addFileBtn.style.borderColor = '#cbd5e1';
+            addFileBtn.style.transform = 'translateY(-1px)';
+        };
+        addFileBtn.onmouseout = () => { 
+            addFileBtn.style.background = '#f8fafc'; 
+            addFileBtn.style.borderColor = '#e2e8f0';
+            addFileBtn.style.transform = 'translateY(0)';
+        };
+        
+        // 点击按钮触发隐藏的 file input
+        addFileBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // 防止冒泡
+            hiddenFileInput.click();
+        });
+
+        // 监听文件选择事件
+        hiddenFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                if (file.type.startsWith('image/')) {
+                    loadAiImage(file);
+                } else if (file.type === 'application/pdf' || file.name.match(/\.pdf$/i)) {
+                    processPdfFile(file);
+                } else if (file.name.match(/\.(html|md|txt|csv)$/i)) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        currentRichTextContext = event.target.result;
+                        aiPromptInput.value = `📄 [已成功读取需求文件：${file.name}]\n你可以直接点击解析，AI将读取底层文件内容。`;
+                    };
+                    reader.readAsText(file);
+                }
+            }
+            // 清空 value 允许重复选择同名文件
+            hiddenFileInput.value = ''; 
+        });
+
+        aiInputContainer.appendChild(addFileBtn);
+    }
+    
     if ('fonts' in document) {
         try {
             await document.fonts.load('10px "FZLanTingHeiS-R-GB"');
@@ -1362,12 +1861,7 @@ window.onload = async () => {
             console.warn("字体加载报错:", e);
         }
     }
-    await renderHomeCanvas();
-    await renderMyPage();
-    await renderFeedCanvas();
-    await renderSearchIcon();
-    await renderMySpaceCanvas();
-    await renderSimpleScanCanvas();
-    await renderMyActivityCanvas();
-    await renderPeerSharingCanvas();
+    
+    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
+    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
 };

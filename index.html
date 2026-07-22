@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-
 <head>
     <meta charset="UTF-8">
     <title>配置中心</title>
@@ -13,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 </head>
 
-
 <body>
     <svg width="0" height="0" style="position:absolute; width:0; height:0;">
         <filter id="lightBlueTint">
@@ -21,14 +19,12 @@
         </filter>
     </svg>
 
-
     <header class="app-header">
         <div class="header-title">配置中心</div>
         <div class="header-actions">
             <button class="btn primary-btn" id="openExportModalBtn">选择并导出资源...</button>
         </div>
     </header>
-
 
     <div class="main-layout">
         <!-- ==================== 左侧：业务及页面导航 ==================== -->
@@ -43,11 +39,9 @@
                 </div>
             </div>
 
-
             <div id="emptyWorkspace" class="hidden">
                 <p style="color: #999; font-size: 14px; text-align: center; margin-top: 40px;">当前业务线暂无配置项</p>
             </div>
-
 
             <div id="wangpanWorkspace">
                 <div class="sidebar-section">
@@ -69,8 +63,7 @@
             </div>
         </aside>
 
-
-        <!-- ==================== 中间：纯净的带壳预览区 (加入Figma画板缩放) ==================== -->
+        <!-- ==================== 中间：纯净的带壳预览区 ==================== -->
         <main class="preview-area center-workspace" id="viewport">
             <div class="canvas-help-tip">🖱️ 空格+左键(或中键) 拖拽平移 | Ctrl+滚轮 缩放</div>
             <div class="zoom-controls">
@@ -80,7 +73,6 @@
                 <button id="zoomResetBtn" title="恢复居中">⛶</button>
             </div>
 
-
             <div id="canvasContainer">
                 <div id="viewDevelopingPrompt" class="view-section prompt-view">
                     <img src="assets/hero-banner.png"
@@ -88,8 +80,7 @@
                     <h2 style="font-weight: normal; font-size: 20px; color: #888;">当前页面的视觉预览正在接入中...</h2>
                 </div>
 
-
-                <!-- 1. 13.14首页顶部沉浸banner -->
+                <!-- 各个模块视图保留原样不动 -->
                 <div id="homeView" class="view-section active">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图中的banner可查看纯净版大图</div>
@@ -107,8 +98,6 @@
                     </div>
                 </div>
 
-
-                <!-- 2. 我的页面 banner -->
                 <div id="myPageView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图中的banner可查看纯净版大图</div>
@@ -121,8 +110,6 @@
                     </div>
                 </div>
 
-
-                <!-- 3. 首页 feed 10出1 -->
                 <div id="feedView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图中的banner可查看纯净版大图</div>
@@ -134,8 +121,6 @@
                     </div>
                 </div>
 
-
-                <!-- 4. 搜索框 icon -->
                 <div id="searchIconView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图</div>
@@ -148,8 +133,6 @@
                     </div>
                 </div>
 
-
-                <!-- 5. 我的空间/简单扫描banner -->
                 <div id="mySpaceView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看导出的1182大尺寸切图</div>
@@ -167,8 +150,6 @@
                     </div>
                 </div>
 
-
-                <!-- 6. 活动中心 -->
                 <div id="myActivityView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
@@ -181,8 +162,6 @@
                     </div>
                 </div>
 
-
-                <!-- 7. 共享点对点 -->
                 <div id="peerSharingView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图 (670x320)</div>
@@ -197,28 +176,63 @@
             </div>
         </main>
 
-
         <!-- ==================== 右侧：参数控制面板 ==================== -->
         <aside class="sidebar right-sidebar">
             <div id="dynamicControlsArea">
 
-
-                <!-- 💡核心功能：AI 智能生成面板 -->
+                <!-- 💡核心功能：AI 智能生成面板 (肖恩AI强化版) -->
                 <div id="aiPromptArea" class="sidebar-section"
                     style="background: linear-gradient(135deg, #f0f7ff, #f9f4ff); padding: 14px; border-radius: 10px; border: 1px solid #dcd6ff; margin-bottom: 16px;">
+
                     <div class="section-title"
                         style="color: #641AFF; display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="#641AFF" />
                         </svg>
-                        AI 智能一键配置
+                        AI 智能一键配置引擎
                     </div>
-                    <textarea id="aiPromptInput" placeholder="直接粘贴运营文案，例如：&#10;1、首页顶部沉浸 banner&#10;蒋依依邀你&#10;热闹开场"
-                        style="width: 100%; height: 90px; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 12px; resize: none; margin-bottom: 10px; font-family: inherit; line-height: 1.5; color: #333; outline: none;"></textarea>
-                    <button id="aiGenerateBtn" class="btn primary-btn"
-                        style="width: 100%; background: linear-gradient(90deg, #258AFF, #641AFF); border: none; font-weight: bold; font-size: 14px; padding: 10px 0;">一键解析并生成画板</button>
-                </div>
 
+                    <select id="apiModelSelect"
+                        style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; color: #333;">
+
+                        <!-- 对应你截图里的通图强模型 -->
+                        <option value="https://speed.toter.me/v1/chat/completions|claude-sonnet-4-5">Claude Sonnet
+                            4-5 (最强推荐)</option>
+
+                        <!-- 对应你截图里的旗舰模型 -->
+                        <option value="https://speed.toter.me/v1/chat/completions|gemini-3.1-pro">Gemini 3.1 Pro
+                            (旗舰备选)</option>
+
+                        <!-- 对应你截图里的质量稳定模型 -->
+                        <option value="https://speed.toter.me/v1/chat/completions|gemini-2.5-pro">Gemini 2.5 Pro
+                            (稳定备选)</option>
+
+                        <!-- 对应你截图里的国产大模型 -->
+                        <option value="https://speed.toter.me/v1/chat/completions|deepseek-v4">DeepSeek V4 (仅文字推荐)
+                        </option>
+
+                    </select>
+
+                    <!-- 支持拖拽和粘贴的输入区 -->
+                    <div id="aiInputContainer"
+                        style="position: relative; width: 100%; border: 2px dashed #cbd5e1; border-radius: 6px; background: #fff; transition: all 0.3s; margin-bottom: 10px;">
+                        <textarea id="aiPromptInput"
+                            placeholder="1、直接粘贴运营需求文案...&#10;2、也支持将导出的pdf表格文件拖拽到这个框里"
+                            style="width: 100%; height: 90px; padding: 10px; border: none; border-radius: 6px; font-size: 12px; resize: none; font-family: inherit; line-height: 1.5; color: #333; outline: none; background: transparent;"></textarea>
+
+                        <!-- 图片预览悬浮层 -->
+                        <div id="aiImagePreview"
+                            style="display: none; position: absolute; bottom: 5px; right: 5px; width: 60px; height: 60px; border-radius: 6px; border: 2px solid #258AFF; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;">
+                            <img id="aiPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div id="aiRemoveImageBtn"
+                                style="position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; width: 16px; height: 16px; text-align: center; line-height: 16px; cursor: pointer; border-bottom-left-radius: 4px;">
+                                X</div>
+                        </div>
+                    </div>
+
+                    <button id="aiGenerateBtn" class="btn primary-btn"
+                        style="width: 100%; background: linear-gradient(90deg, #258AFF, #641AFF); border: none; font-weight: bold; font-size: 14px; padding: 10px 0; box-shadow: 0 4px 12px rgba(100,26,255,0.3); transition: all 0.3s;">一键解析并生成画板</button>
+                </div>
 
                 <div id="baseGlobalPicArea" class="sidebar-section">
                     <div class="section-title"
@@ -230,8 +244,7 @@
                     </label>
                 </div>
 
-
-                <!-- ================= 首页参数 ================= -->
+                <!-- 以下控件区完全保持原样不动 -->
                 <div id="homeControls" class="control-group active">
                     <div class="panel-group">
                         <div class="panel-group-header">大图状态Banner 配置</div>
@@ -317,8 +330,6 @@
                     </div>
                 </div>
 
-
-                <!-- ================= 我的页面参数 ================= -->
                 <div id="myPageControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">我的页面Banner 配置</div>
@@ -347,8 +358,6 @@
                     </div>
                 </div>
 
-
-                <!-- ================= Feed页面参数 ================= -->
                 <div id="feedControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">Feed 卡片配置</div>
@@ -426,8 +435,6 @@
                     </div>
                 </div>
 
-
-                <!-- ================= 搜索框 icon 参数 ================= -->
                 <div id="searchIconControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">搜索框 icon 配置</div>
@@ -440,15 +447,11 @@
                     </div>
                 </div>
 
-
-                <!-- ================= 我的空间/扫描 Banner 参数 ================= -->
                 <div id="mySpaceControls" class="control-group">
                     <div
                         style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
                         👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
-
-
                     <div class="panel-group">
                         <div class="panel-group-header">我的空间 Banner 配置</div>
                         <div class="panel-group-body">
@@ -510,7 +513,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="panel-group" style="margin-top: 24px;">
                         <div class="panel-group-header">简单扫描 Banner 配置</div>
@@ -586,158 +588,149 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-
-                    <!-- ================= 活动中心 Banner 参数 ================= -->
-                    <div id="myActivityControls" class="control-group">
-                        <div
-                            style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
-                            👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
-                        </div>
-                        <div class="panel-group">
-                            <div class="panel-group-header">活动中心 Banner 配置</div>
-                            <div class="panel-group-body">
-                                <div class="sidebar-section">
-                                    <div class="section-title">渐变底板颜色 (670x320)</div>
+                <div id="myActivityControls" class="control-group">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">活动中心 Banner 配置</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">渐变底板颜色 (670x320)</div>
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color"
+                                                id="myActivityGrad1" value="#9EED60"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color"
+                                                id="myActivityGrad2" value="#FCFF70"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
                                     <div
-                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                        <div style="display: flex; gap: 16px; align-items: center;">
-                                            <div class="color-picker-wrap"><span>左上起始</span><input type="color"
-                                                    id="myActivityGrad1" value="#9EED60"></div>
-                                            <div class="color-picker-wrap"><span>右下终止</span><input type="color"
-                                                    id="myActivityGrad2" value="#FCFF70"></div>
-                                        </div>
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题/第一行 (最多8字):</span>
+                                        <input type="color" id="myActivitySubColor" value="#777777"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
+                                    <input type="text" id="myActivitySub" value="甜粽小吃铺开业啦" maxlength="8">
                                 </div>
-                                <div class="sidebar-section">
-                                    <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">副标题/第一行 (最多8字):</span>
-                                            <input type="color" id="myActivitySubColor" value="#777777"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="myActivitySub" value="甜粽小吃铺开业啦" maxlength="8">
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
+                                        <input type="color" id="myActivityTitle1Color" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
-                                            <input type="color" id="myActivityTitle1Color" value="#000000"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="myActivityTitle1" value="包粽子免费得" maxlength="7">
-                                    </div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
-                                            <input type="color" id="myActivityTitle2Color" value="#000000"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="myActivityTitle2" value="iPhone" maxlength="7">
-                                    </div>
+                                    <input type="text" id="myActivityTitle1" value="包粽子免费得" maxlength="7">
                                 </div>
-
-
-                                <div class="sidebar-section">
-                                    <div class="section-title">按钮配置</div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">按钮文案 (最多3字):</span>
-                                            <input type="color" id="myActivityBtnColor" value="#000000"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="myActivityBtnText" value="按钮字" maxlength="3">
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
+                                        <input type="color" id="myActivityTitle2Color" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
+                                    <input type="text" id="myActivityTitle2" value="iPhone" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮配置</div>
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮文案 (最多3字):</span>
+                                        <input type="color" id="myActivityBtnColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="myActivityBtnText" value="按钮字" maxlength="3">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-
-                    <!-- ================= 共享点对点 Banner 参数 ================= -->
-                    <div id="peerSharingControls" class="control-group">
-                        <div
-                            style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
-                            👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
-                        </div>
-                        <div class="panel-group">
-                            <div class="panel-group-header">共享点对点 Banner 配置</div>
-                            <div class="panel-group-body">
-                                <div class="sidebar-section">
-                                    <div class="section-title">渐变底板颜色 (670x320)</div>
+                <div id="peerSharingControls" class="control-group">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">共享点对点 Banner 配置</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">渐变底板颜色 (670x320)</div>
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>左上起始</span><input type="color"
+                                                id="peerSharingGrad1" value="#D16FFF"></div>
+                                        <div class="color-picker-wrap"><span>右下终止</span><input type="color"
+                                                id="peerSharingGrad2" value="#5C6CFF"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
                                     <div
-                                        style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                        <div style="display: flex; gap: 16px; align-items: center;">
-                                            <div class="color-picker-wrap"><span>左上起始</span><input type="color"
-                                                    id="peerSharingGrad1" value="#D16FFF"></div>
-                                            <div class="color-picker-wrap"><span>右下终止</span><input type="color"
-                                                    id="peerSharingGrad2" value="#5C6CFF"></div>
-                                        </div>
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题/第一行 (最多8字):</span>
+                                        <input type="color" id="peerSharingSubColor" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
+                                    <input type="text" id="peerSharingSub" value="甜粽小吃铺开业啦" maxlength="8">
                                 </div>
-                                <div class="sidebar-section">
-                                    <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">副标题/第一行 (最多8字):</span>
-                                            <input type="color" id="peerSharingSubColor" value="#FFFFFF"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="peerSharingSub" value="甜粽小吃铺开业啦" maxlength="8">
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
+                                        <input type="color" id="peerSharingTitle1Color" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">大标题1/第二行 (最多7字):</span>
-                                            <input type="color" id="peerSharingTitle1Color" value="#FFFFFF"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="peerSharingTitle1" value="包粽子免费得" maxlength="7">
-                                    </div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
-                                            <input type="color" id="peerSharingTitle2Color" value="#FFFFFF"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="peerSharingTitle2" value="iPhone" maxlength="7">
-                                    </div>
+                                    <input type="text" id="peerSharingTitle1" value="包粽子免费得" maxlength="7">
                                 </div>
-
-
-                                <div class="sidebar-section">
-                                    <div class="section-title">按钮配置</div>
-                                    <div class="input-group">
-                                        <div
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                            <span style="margin: 0;">按钮文案 (最多3字):</span>
-                                            <input type="color" id="peerSharingBtnColor" value="#FFFFFF"
-                                                style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
-                                        </div>
-                                        <input type="text" id="peerSharingBtnText" value="按钮字" maxlength="3">
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">大标题2/第三行 (最多7字):</span>
+                                        <input type="color" id="peerSharingTitle2Color" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
                                     </div>
+                                    <input type="text" id="peerSharingTitle2" value="iPhone" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮配置</div>
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮文案 (最多3字):</span>
+                                        <input type="color" id="peerSharingBtnColor" value="#FFFFFF"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="peerSharingBtnText" value="按钮字" maxlength="3">
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
+            </div>
 
-
-                <div id="developingPrompt" class="developing-prompt hidden">
-                    <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
-                    <div>该配置面板正在开发中，敬请期待...</div>
-                </div>
+            <div id="developingPrompt" class="developing-prompt hidden">
+                <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
+                <div>该配置面板正在开发中，敬请期待...</div>
+            </div>
         </aside>
     </div>
-
 
     <!-- ==================== 隐藏用于生成纯切图和导出的 Canvas ==================== -->
     <div style="display: none;">
@@ -754,7 +747,6 @@
         <canvas id="peerSharingExportCanvas"></canvas>
     </div>
 
-
     <!-- ==================== 大图详情 Modal ==================== -->
     <div id="detailModal" class="modal">
         <div class="detail-modal-panel">
@@ -765,7 +757,6 @@
             <div class="detail-modal-body" id="detailImagesBox"></div>
         </div>
     </div>
-
 
     <!-- ==================== 导出资源 Modal ==================== -->
     <div id="exportModal" class="modal">
@@ -855,9 +846,7 @@
         </div>
     </div>
 
-
     <script src="script.js"></script>
 </body>
-
 
 </html>
