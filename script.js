@@ -351,7 +351,7 @@ function bindCanvasClickToControl() {
 }
 
 // ==================== 🚀 4. 肖恩AI 智能大模型与多模态图片解析引擎 ====================
-const API_KEY = "sk-0CFsVd8SMJAZQAMQLfXHX3G4BJTo2zxY8my1o4BynCjesWS9";
+const API_KEY = "sk-J8qfNDBaclZUYadIA5Dc2b975257460495D2E9B36fD0Bc65";
 let currentImageBase64 = null;
 let currentRichTextContext = "";
 const aiPromptInput = document.getElementById('aiPromptInput');
