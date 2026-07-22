@@ -995,7 +995,7 @@ async function renderSearchIcon() {
     }
 }
 
-// 1182x252 Banner 共用渲染逻辑
+// 1182x252 Banner 共用渲染逻
 async function build1182Banner(opts) {
     const canvas = document.createElement('canvas');
     canvas.width = 1182; canvas.height = 252;
