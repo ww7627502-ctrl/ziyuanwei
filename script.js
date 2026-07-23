@@ -275,7 +275,7 @@ const AI_RESOURCE_MATCHERS = [
     { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/, /561\s*[×x*]\s*750/] },
     { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i, /我的(页面|页).*1182\s*[×x*]\s*(225|252)/] },
     { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索词\s*icon/i, /搜索\s*icon/i, /204\s*[×x*]\s*204/] },
-    { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间/简单扫描banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /简单扫描/i, /分享页\s*\/\s*任务中心/i] },
+    { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /分享页\s*\/\s*任务中心/i, /任务中心\s*-?\s*banner/i, /简单扫描/i] },
     { resource: 'dev_1_1_17', bu: 'wangpan', label: 'A1.1.17 NA - 活动中心', patterns: [/A\s*1\.1\.17/i, /活动中心/i, /670\s*[×x*]\s*320/] },
     { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i, /1023\s*[×x*]\s*488/] },
     { resource: 'yike_4', bu: 'yike', label: 'B1.1.4 NA - 首页banner', patterns: [/B\s*1\.1\.4/i, /一刻.*首页\s*banner/i, /一刻相册.*首页/i] },
@@ -355,8 +355,125 @@ function pickFirstTextMatch(text, patterns) {
     }
     return [];
 }
+function pickFirstTextMatchWithIndex(text, patterns) {
+    for (let i = 0; i < patterns.length; i++) {
+        const match = text.match(patterns[i]);
+        if (match) {
+            return {
+                index: i,
+                groups: match.slice(1).filter(Boolean).map(item => String(item).trim())
+            };
+        }
+    }
+    return { index: -1, groups: [] };
+}
 function cleanFallbackCopy(str = '', limit = 20) {
-    return formatAndLimitText(String(str).replace(/[“”"'<>【】]/g, '').replace(/ios[:：]?.*$/i, '').trim(), limit);
+    return formatAndLimitText(normalizeRecognizedCopyText(String(str).replace(/[“”"'<>【】]/g, '').replace(/ios[:：]?.*$/i, '').trim()), limit);
+}
+function compactCopyForRole(str = '') {
+    return String(str).replace(/[\s，,。；;:："'“”【】]/g, '').trim();
+}
+function isActionButtonCopy(str = '') {
+    const text = compactCopyForRole(str);
+    if (!text) return false;
+    return /^(去创建|立即创建|去参与|立即参与|去查看|查看详情|了解更多|马上查看|去领取|立即领取|去开通|立即开通|去体验|立即体验|马上体验|去使用|立即使用|去看看)$/.test(text)
+        || /^去.{1,3}$/.test(text)
+        || /^立即.{1,3}$/.test(text)
+        || /^马上.{1,3}$/.test(text);
+}
+function isNonContentNoiseCopy(str = '') {
+    const text = compactCopyForRole(str);
+    if (!text) return true;
+    if (/^\d+(\.\d+)?\s*[KMG]?B$/i.test(text)) return true;
+    if (/^[A-Za-z]{1,4}$/.test(text)) return true;
+    if (/^[\d./_-]+$/.test(text)) return true;
+    return false;
+}
+function normalizeRecognizedCopyText(str = '') {
+    const text = String(str).replace(/[“”"'<>【】]/g, '').trim();
+    return isNonContentNoiseCopy(text) ? '' : text;
+}
+function normalizeTextBannerCopy(item) {
+    if (!item) return item;
+    item.title = normalizeRecognizedCopyText(item.title);
+    item.sub = normalizeRecognizedCopyText(item.sub);
+    item.btn = normalizeRecognizedCopyText(item.btn);
+    const titleIsAction = isActionButtonCopy(item.title);
+    const subIsAction = isActionButtonCopy(item.sub);
+    const btnIsAction = isActionButtonCopy(item.btn);
+    if (titleIsAction && !btnIsAction) {
+        const originalBtn = item.btn;
+        item.btn = item.title;
+        item.title = !subIsAction && item.sub ? item.sub : (!isNonContentNoiseCopy(originalBtn) && !btnIsAction ? originalBtn : '');
+        item.sub = '';
+        return item;
+    }
+    if (subIsAction && !btnIsAction) {
+        item.btn = item.sub;
+        item.sub = '';
+    }
+    return item;
+}
+function normalizeSquareBannerCopy(item) {
+    if (!item) return item;
+    item.title1 = normalizeRecognizedCopyText(item.title1);
+    item.title2 = normalizeRecognizedCopyText(item.title2);
+    item.sub = normalizeRecognizedCopyText(item.sub);
+    item.btn = normalizeRecognizedCopyText(item.btn);
+    const title1IsAction = isActionButtonCopy(item.title1);
+    const title2IsAction = isActionButtonCopy(item.title2);
+    const subIsAction = isActionButtonCopy(item.sub);
+    const btnIsAction = isActionButtonCopy(item.btn);
+    if (title1IsAction && !btnIsAction) {
+        const originalTitle2 = item.title2;
+        const originalSub = item.sub;
+        item.btn = item.title1;
+        item.title1 = !title2IsAction && originalTitle2 ? originalTitle2 : (!subIsAction && originalSub ? originalSub : '');
+        item.title2 = !title2IsAction && originalTitle2 && !subIsAction && originalSub ? originalSub : '';
+        item.sub = '';
+        return item;
+    }
+    if (title2IsAction && !btnIsAction) {
+        item.btn = item.title2;
+        item.title2 = '';
+    }
+    if (subIsAction && !btnIsAction) {
+        item.btn = item.sub;
+        item.sub = '';
+    }
+    return item;
+}
+function normalizeHomeCopies(config) {
+    if (!Array.isArray(config.home)) return;
+    config.home = config.home
+        .map(item => {
+            if (!item) return item;
+            item.line1 = normalizeRecognizedCopyText(item.line1);
+            item.line2 = normalizeRecognizedCopyText(item.line2);
+            if (isActionButtonCopy(item.line1) && !isActionButtonCopy(item.line2)) {
+                const line1 = item.line1;
+                item.line1 = item.line2;
+                item.line2 = line1;
+            }
+            return item;
+        })
+        .filter(item => item && (item.line1 || item.line2));
+    const actionItems = config.home.filter(item => isActionButtonCopy(item?.line2));
+    if (actionItems.length > 0) {
+        config.home = actionItems;
+        return;
+    }
+    config.home = config.home.filter(item => !/大图|弹窗/.test(`${item?.line1 || ''}${item?.line2 || ''}`));
+}
+function normalizeRecognizedConfig(config) {
+    normalizeHomeCopies(config);
+    ['feed', 'mypage', 'myPage', 'mySpace', 'simpleScan', 'yikeEquip'].forEach(key => {
+        if (Array.isArray(config[key])) config[key].forEach(normalizeTextBannerCopy);
+    });
+    ['activity', 'peerSharing'].forEach(key => {
+        if (Array.isArray(config[key])) config[key].forEach(normalizeSquareBannerCopy);
+    });
+    return config;
 }
 function splitFallbackTitlePair(text = '') {
     const normalized = String(text).replace(/[，,、]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -371,13 +488,19 @@ function ensureArrayConfig(config, key, fallbackItems) {
     config[key] = fallbackItems;
     return true;
 }
+function stripHomeLargeTitleBlock(text = '') {
+    return String(text)
+        .replace(/大图(?:主)?标题[:：]?[\s\S]{0,80}?(?=大图副标题|按钮|$)/g, ' ')
+        .replace(/大图副标题[:：]?[\s\S]{0,80}?(?=按钮|$)/g, ' ');
+}
 function buildLocalFallbackConfigFromDemand(text, inferredResources) {
     const normalized = compactDemandTextForMatch(text);
     const fallback = {};
     if (!normalized) return fallback;
 
     if (inferredResources.includes('na_home')) {
-        let [line1, line2] = pickFirstTextMatch(normalized, [
+        const homeText = stripHomeLargeTitleBlock(normalized);
+        let [line1, line2] = pickFirstTextMatch(homeText, [
             /首页\s*banner[\s\S]{0,220}主标题[“\"]?([^“”\"，,。；;\s]{2,12})[”\"]?[\s\S]{0,80}按钮[“\"]?([^“”\"，,。；;\s]{2,6})/i,
             /主标题[“\"]([^“”\"]{2,12})[”\"][\s\S]{0,80}按钮[“\"]([^“”\"]{2,6})[”\"]/i,
             /首页\s*banner[\s\S]{0,120}(宝宝相簿|宝宝相册)[\s\S]{0,120}(去创建|立即创建)/i
@@ -402,27 +525,29 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
     }
 
     if (inferredResources.includes('dev_1_1_16')) {
-        let [title, btn, sub] = pickFirstTextMatch(normalized, [
-            /分享页\s*\/\s*任务中心[\s\S]{0,160}(创建宝宝相簿|创建宝宝相册|疯狂点点乐)[\s\S]{0,40}(立即创建|去创建|去参与)[\s\S]{0,80}(珍藏童年[，,]全家共享|解压释放\s*好礼相随|珍藏成長[，,]定格美好)/i,
-            /任务中心[\s\S]{0,160}主标题[:：]?([^，,。；;\n]{2,16})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮(?:文案)?[:：]?([^，,。；;\s]{2,6})/i
-        ]);
-        if (title || sub) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub || btn, 8), btn: cleanFallbackCopy((sub && btn) || '去创建', 4) }];
+        const mySpacePatterns = [
+            /(?:分享页\s*\/\s*任务中心|任务中心|我的空间)[\s\S]{0,260}(创建宝宝相簿|创建宝宝相册|留存宝宝记忆|点点解压赢积分|疯狂点点乐)[\s\S]{0,80}((?:去创建|立即创建|去参与|去查看|查看详情|了解更多|马上查看))[\s\S]{0,120}((?:珍藏童年[，,]全家共享|高清原图[，,]全家共享|告别内耗赢取好礼|珍藏成长[，,]定格美好|AI\s*智能整理[，,]轻松留存童真|无需费心排版[，,]仪式感轻松拉满|留住不可逆成长[，,]让美好永不褪色))/i,
+            /(?:分享页\s*\/\s*任务中心|任务中心|我的空间)[\s\S]{0,260}(创建宝宝相簿|创建宝宝相册|留存宝宝记忆|点点解压赢积分|疯狂点点乐)[\s\S]{0,120}((?:珍藏童年[，,]全家共享|高清原图[，,]全家共享|告别内耗赢取好礼|珍藏成长[，,]定格美好|AI\s*智能整理[，,]轻松留存童真|无需费心排版[，,]仪式感轻松拉满|留住不可逆成长[，,]让美好永不褪色))[\s\S]{0,80}((?:去创建|立即创建|去参与|去查看|查看详情|了解更多|马上查看))/i
+        ];
+        const { index: mySpacePatternIndex, groups: mySpaceGroups } = pickFirstTextMatchWithIndex(normalized, mySpacePatterns);
+        let title = '', sub = '', btn = '';
+        if (mySpacePatternIndex === 0) {
+            [title, btn, sub] = mySpaceGroups;
+        } else if (mySpacePatternIndex === 1) {
+            [title, sub, btn] = mySpaceGroups;
+        }
+        if (title || sub || btn) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || '去创建', 4) }];
     }
 
     const fillSquareBanner = (resource, key) => {
         if (!inferredResources.includes(resource)) return;
         let title = '', sub = '', btn = '';
-        if (key === 'peerSharing') {
-            [title, sub, btn] = pickFirstTextMatch(normalized, [
-                /点对点[\s\S]{0,220}主标题[:：]?([^\n。；;]{4,24})[\s\S]{0,80}副标题[:：]?([^\n。；;]{2,20})[\s\S]{0,80}(立即创建|去创建|去参与)?/i
-            ]);
-        } else {
-            const [shortSub, titlePhrase, actionText] = pickFirstTextMatch(normalized, [
-                /活动中心[\s\S]{0,120}(创建宝宝相簿|创建宝宝相册|疯狂点点乐)[\s\S]{0,80}(珍藏童年[，,]全家共享|解压释放\s*好礼相随|珍藏成長[，,]定格美好)[\s\S]{0,40}(立即创建|去创建|去参与)?/i
-            ]);
-            title = titlePhrase;
-            sub = shortSub;
-            btn = actionText;
+        const patterns = [
+            /(?:活动中心|共享点对点|点对点)[\s\S]{0,260}([^\r\n。；;，,\s]{2,16})[\s\S]{0,120}((?:[^\r\n。；;，,\s]{2,12}(?:[，,、\s][^\r\n。；;，,\s]{2,12})+))[\s\S]{0,120}((?:去创建|立即创建|去参与|去查看|查看详情|了解更多|马上查看))/i
+        ];
+        const match = pickFirstTextMatch(normalized, patterns);
+        if (match.length >= 3) {
+            [sub, title, btn] = match;
         }
         if (!title && !sub) return;
         const [title1, title2] = splitFallbackTitlePair(title);
@@ -432,7 +557,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
     fillSquareBanner('dev_1_1_18', 'peerSharing');
 
     if (inferredResources.includes('dev_1_1_13')) fallback.searchIcon = [{ matched: true }];
-    return fallback;
+    return normalizeRecognizedConfig(fallback);
 }
 function applyLocalFallbackConfig(config, fallback) {
     ensureArrayConfig(config, 'home', fallback.home);
@@ -448,6 +573,13 @@ function setLimitedInputValue(inputId, value, limit) {
     const el = document.getElementById(inputId);
     if (el) el.value = formatAndLimitText(value, limit);
 }
+function safeRenderABTestSwitcher(ctrlId, moduleKey) {
+    try {
+        renderABTestSwitcher(ctrlId, moduleKey);
+    } catch (e) {
+        console.warn(`AB方案切换器渲染失败: ${moduleKey}`, e);
+    }
+}
 async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, demandText) {
     const modules = [...new Set(inferredResources)].filter(resource => RESOURCE_VIEW_MAP[resource]);
     if (modules.length === 0) return false;
@@ -458,7 +590,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         window.abTestActiveIndex.home = 0;
         setLimitedInputValue('textLine1', first.line1, 6);
         setLimitedInputValue('textLine2', first.line2, 4);
-        renderABTestSwitcher('homeControls', 'home');
+        safeRenderABTestSwitcher('homeControls', 'home');
     }
     if (fallbackConfig.feed?.length) {
         const first = fallbackConfig.feed[0];
@@ -467,7 +599,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('feedTitle', first.title, 7);
         setLimitedInputValue('feedSubtitle', first.sub, 10);
         setLimitedInputValue('feedBtnText', first.btn, 4);
-        renderABTestSwitcher('feedControls', 'feed');
+        safeRenderABTestSwitcher('feedControls', 'feed');
     }
     if (fallbackConfig.mypage?.length) {
         const first = fallbackConfig.mypage[0];
@@ -477,7 +609,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('myPageSubtitle', first.sub, 8);
         setLimitedInputValue('textCapsule', first.capsule, 4);
         setLimitedInputValue('myPageHighlight', first.highlight, 9);
-        renderABTestSwitcher('myPageControls', 'myPage');
+        safeRenderABTestSwitcher('myPageControls', 'myPage');
     }
     if (fallbackConfig.mySpace?.length) {
         const first = fallbackConfig.mySpace[0];
@@ -486,7 +618,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('mySpaceTitle', first.title, 11);
         setLimitedInputValue('mySpaceSub', first.sub, 8);
         setLimitedInputValue('mySpaceBtnText', first.btn, 4);
-        renderABTestSwitcher('mySpaceControls', 'mySpace');
+        safeRenderABTestSwitcher('mySpaceControls', 'mySpace');
     }
     if (fallbackConfig.activity?.length) {
         const first = fallbackConfig.activity[0];
@@ -496,7 +628,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('myActivityTitle2', first.title2, 7);
         setLimitedInputValue('myActivitySub', first.sub, 8);
         setLimitedInputValue('myActivityBtnText', first.btn, 4);
-        renderABTestSwitcher('myActivityControls', 'activity');
+        safeRenderABTestSwitcher('myActivityControls', 'activity');
     }
     if (fallbackConfig.peerSharing?.length) {
         const first = fallbackConfig.peerSharing[0];
@@ -506,7 +638,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('peerSharingTitle2', first.title2, 7);
         setLimitedInputValue('peerSharingSub', first.sub, 8);
         setLimitedInputValue('peerSharingBtnText', first.btn, 4);
-        renderABTestSwitcher('peerSharingControls', 'peerSharing');
+        safeRenderABTestSwitcher('peerSharingControls', 'peerSharing');
     }
 
     const targetBU = getDominantBusinessFromResources(modules);
@@ -514,6 +646,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
     const visibleModules = modules.filter(resource => getBusinessForResource(resource) === currentBU);
     const inferredDemandText = compactDemandTextForMatch(demandText);
     await showAiRecognizedPreview(visibleModules.length ? visibleModules : modules, {
+        homeSmallOnly: true,
         foundMySpace: /任务中心|我的空间|分享页/.test(inferredDemandText),
         foundSimpleScan: /简单扫描/.test(inferredDemandText)
     });
@@ -730,12 +863,26 @@ function markResourceListActive(resource) {
 function getVisibleAiModulesForCurrentBusiness() {
     return lastAiRecognizedModules.filter(resource => getBusinessForResource(resource) === getActiveBusinessLineKey());
 }
+function setHomeAiPreviewCards(options = {}) {
+    const topCard = document.getElementById('topHomePageCanvas')?.closest('.preview-card');
+    const smallCard = document.getElementById('lightCanvas')?.closest('.preview-card');
+    if (topCard) topCard.style.display = options.homeSmallOnly ? 'none' : '';
+    if (smallCard) smallCard.style.display = '';
+}
+function resetConditionalPreviewCards() {
+    setHomeAiPreviewCards({ homeSmallOnly: false });
+    const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
+    const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
+    if (spaceCard) spaceCard.style.display = '';
+    if (scanCard) scanCard.style.display = '';
+}
 function clearAiResultPreviewState() {
     isAiResultPreviewMode = false;
     lastAiRecognizedModules = [];
     lastAiRenderOptions = {};
     const canvasContainer = document.getElementById('canvasContainer');
     canvasContainer?.classList.remove('ai-result-preview-mode');
+    resetConditionalPreviewCards();
     getManagedViewElements().forEach(view => view.classList.remove('ai-preview-selected'));
 }
 function focusResourceControl(resource, options = {}) {
@@ -785,6 +932,7 @@ async function showAiRecognizedPreview(resources, options = {}) {
     modules.forEach(resource => {
         const viewEl = document.getElementById(RESOURCE_VIEW_MAP[resource]);
         if (viewEl) viewEl.classList.add('active');
+        if (resource === 'na_home') setHomeAiPreviewCards({ homeSmallOnly: options.homeSmallOnly !== false });
         if (resource === 'dev_1_1_16') {
             const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
             const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
@@ -1034,13 +1182,19 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
         userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } });
     }
     if (inferredResources.length > 0) {
-        hasFastLocalPreview = await applyFastLocalFallbackPreview(localFallbackConfig, inferredResources, demandTextForMatch);
-        if (hasFastLocalPreview) btn.innerText = '✅ 本地识别已生成，AI继续优化中...';
+        try {
+            hasFastLocalPreview = await applyFastLocalFallbackPreview(localFallbackConfig, inferredResources, demandTextForMatch);
+            if (hasFastLocalPreview) btn.innerText = '✅ 本地识别已生成，AI继续优化中...';
+        } catch (e) {
+            console.warn('本地快速识别预览失败，继续走AI模型解析:', e);
+            hasFastLocalPreview = false;
+        }
     }
     console.log("🚀 即将发给 AI 的文本体 (给AI减负后的纯净版):", textPayload);
     const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
 【映射关系】(资源编号优先级最高，注意识别可能带有"-banner"或PDF提取错别字的情况):
 - "A1.1.3" / "13.14首页顶部沉浸banner" / "首页沉浸" / "首页banner" / "420×282" -> "home"
+  说明：home 只表示普通帧/小图状态；大图主标题、大图副标题、标题图替换素材不要拆成另一套 home 文案，也不要拿来覆盖 home 的 line1/line2。
 - "A1.1.4" / "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
 - "A1.1.5" / "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
 - "A1.1.13" / "搜索框icon" / "搜索词icon" / "搜索icon" / "204×204" -> "searchIcon"
@@ -1053,7 +1207,10 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 - "B1.1.7" / "收银台banner" / "收银台" -> "yikeCash"
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
-2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
+2. 首页banner如果同时出现“主标题/按钮”和“大图主标题/大图副标题”：只提取“主标题 + 按钮”作为 home 的唯一小图方案；“大图主标题/大图副标题”对应外部导入的标题图素材，当前系统已通过标题图上传处理，JSON 中不要输出它。
+3. 2-4个字的动作词通常是按钮，尤其是“去创建 / 立即创建 / 去查看 / 去参与 / 查看详情 / 了解更多”。这些词绝不能放进 title/sub；如果你发现 sub/title 只有这类短动作词，必须放到 btn。像 KB、MB、GB、尺寸、文件名这类短噪声也不要当正文。
+4. 分享页/任务中心/我的空间这类横向 banner：中间大字一般不会只有3个字；“去创建”这种三个字一定是按钮。若文本顺序像“珍藏童年，不负美好时光 去创建 创建宝宝相簿”，应输出 title="创建宝宝相簿", sub="珍藏童年，不负美好时光", btn="去创建".
+5. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
    由于该卡片UI结构为：[最上方的副标题sub] + [中间特大主标题第一行title1] + [中间特大主标题第二行title2] + [底部按钮btn]。
    当文档只提供两行字（例如第一行是“创建宝宝相簿”，第二行是“珍藏童年，全家共享”）时，请严格按以下逻辑拆分：
    -> 寻找带有标点（逗号或空格）的那一行（如“珍藏童年，全家共享”），从标点处切断！前一半填入 "title1"，后一半填入 "title2"。绝不能把整句塞进一个字段！
@@ -1077,28 +1234,42 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "yikeCash": [ { "title": "主标题", "highlight": "高亮词", "titleColor": "#000000", "highlightColor": "#EE3A31", "grad1": "#FFFAEF", "grad2": "#FEEFBA" } ]
 }`;
     try {
-        const controller = new AbortController();
-        const aiTimeoutMs = hasFastLocalPreview ? 18000 : 45000;
-        const aiTimeout = setTimeout(() => controller.abort(), aiTimeoutMs);
-        const response = await fetch(apiURL, {
-            method: 'POST',
-            signal: controller.signal,
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-            body: JSON.stringify({
-                model: selectedModel,
-                messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userContent }],
-                temperature: 0.1
-            })
-        });
-        clearTimeout(aiTimeout);
-        if (!response.ok) throw new Error(`[${response.status}] 服务器报错: ${await response.text()}`);
-        const data = await response.json();
+        const requestAiData = async (modelName, timeoutMs) => {
+            const controller = new AbortController();
+            const aiTimeout = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(apiURL, {
+                    method: 'POST',
+                    signal: controller.signal,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userContent }],
+                        temperature: 0.1
+                    })
+                });
+                if (!response.ok) throw new Error(`[${response.status}] ${modelName} 服务器报错: ${await response.text()}`);
+                return await response.json();
+            } finally {
+                clearTimeout(aiTimeout);
+            }
+        };
+        let data;
+        try {
+            data = await requestAiData(selectedModel, hasFastLocalPreview ? 18000 : 45000);
+        } catch (firstError) {
+            if (selectedModel === 'auto-内部') throw firstError;
+            console.warn(`${selectedModel} 请求失败，自动降级到 auto-内部 重试`, firstError);
+            btn.innerText = hasFastLocalPreview ? '✅ 本地识别已生成，AI自动降级优化中...' : 'AI自动降级解析中...';
+            data = await requestAiData('auto-内部', hasFastLocalPreview ? 12000 : 30000);
+        }
         let aiResult = data.choices[0].message.content.trim();
         let jsonString = aiResult;
         const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
         if (jsonMatch) jsonString = jsonMatch[0];
-        const config = JSON.parse(jsonString);
+        const config = normalizeRecognizedConfig(JSON.parse(jsonString));
         applyLocalFallbackConfig(config, localFallbackConfig);
+        normalizeRecognizedConfig(config);
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
@@ -1120,7 +1291,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.line2) document.getElementById('textLine2').value = formatAndLimitText(first.line2, 4);
             currentTopBgMode = 'gradient'; document.querySelector('input[name="topBgMode"][value="gradient"]').checked = true;
             document.getElementById('topBgModeImage').classList.add('hidden'); document.getElementById('topBgModeSolid').classList.add('hidden'); document.getElementById('topBgModeGradient').classList.remove('hidden');
-            renderABTestSwitcher('homeControls', 'home');
+            safeRenderABTestSwitcher('homeControls', 'home');
         }
         if (config.mypage && config.mypage.length > 0) {
             recognizedModules.add('na_mypage');
@@ -1130,7 +1301,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.title) document.getElementById('myPageTitle').value = formatAndLimitText(first.title, 9);
             if (first.highlight) document.getElementById('myPageHighlight').value = formatAndLimitText(first.highlight, 9);
             if (first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 8);
-            renderABTestSwitcher('myPageControls', 'myPage');
+            safeRenderABTestSwitcher('myPageControls', 'myPage');
         }
         if (config.feed && config.feed.length > 0) {
             recognizedModules.add('na_feed');
@@ -1141,7 +1312,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.btn) document.getElementById('feedBtnText').value = formatAndLimitText(first.btn, 4);
             currentFeedBgMode = 'gradient'; document.querySelector('input[name="feedBgMode"][value="gradient"]').checked = true;
             document.getElementById('feedBgModeImage').classList.add('hidden'); document.getElementById('feedBgModeSolid').classList.add('hidden'); document.getElementById('feedBgModeGradient').classList.remove('hidden');
-            renderABTestSwitcher('feedControls', 'feed');
+            safeRenderABTestSwitcher('feedControls', 'feed');
         }
         if (config.mySpace && config.mySpace.length > 0) {
             recognizedModules.add('dev_1_1_16'); foundMySpace = true;
@@ -1150,7 +1321,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.title) document.getElementById('mySpaceTitle').value = formatAndLimitText(first.title, 11);
             if (first.sub) document.getElementById('mySpaceSub').value = formatAndLimitText(first.sub, 8);
             if (first.btn) document.getElementById('mySpaceBtnText').value = formatAndLimitText(first.btn, 4);
-            renderABTestSwitcher('mySpaceControls', 'mySpace');
+            safeRenderABTestSwitcher('mySpaceControls', 'mySpace');
         }
         if (config.simpleScan && config.simpleScan.length > 0) {
             recognizedModules.add('dev_1_1_16'); foundSimpleScan = true;
@@ -1160,7 +1331,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.highlight) document.getElementById('simpleScanHighlight').value = formatAndLimitText(first.highlight, 6);
             if (first.sub) document.getElementById('simpleScanSub').value = formatAndLimitText(first.sub, 8);
             if (first.btn) document.getElementById('simpleScanBtnText').value = formatAndLimitText(first.btn, 4);
-            renderABTestSwitcher('mySpaceControls', 'simpleScan');
+            safeRenderABTestSwitcher('mySpaceControls', 'simpleScan');
         }
         if (config.activity && config.activity.length > 0) {
             recognizedModules.add('dev_1_1_17');
@@ -1170,7 +1341,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.title2) document.getElementById('myActivityTitle2').value = formatAndLimitText(first.title2, 7);
             if (first.sub) document.getElementById('myActivitySub').value = formatAndLimitText(first.sub, 8);
             if (first.btn) document.getElementById('myActivityBtnText').value = formatAndLimitText(first.btn, 4);
-            renderABTestSwitcher('myActivityControls', 'activity');
+            safeRenderABTestSwitcher('myActivityControls', 'activity');
         }
         if (config.peerSharing && config.peerSharing.length > 0) {
             recognizedModules.add('dev_1_1_18');
@@ -1180,7 +1351,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.title2) document.getElementById('peerSharingTitle2').value = formatAndLimitText(first.title2, 7);
             if (first.sub) document.getElementById('peerSharingSub').value = formatAndLimitText(first.sub, 8);
             if (first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
-            renderABTestSwitcher('peerSharingControls', 'peerSharing');
+            safeRenderABTestSwitcher('peerSharingControls', 'peerSharing');
         }
         if (config.yikeHome && config.yikeHome.length > 0) {
             recognizedModules.add('yike_4');
@@ -1192,7 +1363,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.titleColor) document.getElementById('yikeHomeTitleColor').value = first.titleColor;
             if (first.subColor) document.getElementById('yikeHomeSubColor').value = first.subColor;
             if (first.highlightColor) document.getElementById('yikeHomeSubHighlightColor').value = first.highlightColor;
-            renderABTestSwitcher('yikeHomeControls', 'yikeHome');
+            safeRenderABTestSwitcher('yikeHomeControls', 'yikeHome');
         }
         if (config.yikeEquip && config.yikeEquip.length > 0) {
             recognizedModules.add('yike_5');
@@ -1201,7 +1372,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.title) document.getElementById('yikeEquipTitle').value = formatAndLimitText(first.title, 9);
             if (first.sub) document.getElementById('yikeEquipSub').value = formatAndLimitText(first.sub, 12);
             if (first.btn) document.getElementById('yikeEquipBtnText').value = formatAndLimitText(first.btn, 4);
-            renderABTestSwitcher('yikeEquipControls', 'yikeEquip');
+            safeRenderABTestSwitcher('yikeEquipControls', 'yikeEquip');
             // 注意：这里已经删除了自动跳转业务线的代码
         }
         if (config.yikeCash && config.yikeCash.length > 0) {
@@ -1214,7 +1385,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.highlightColor) document.getElementById('yikeCashHighlightColor').value = first.highlightColor;
             if (first.grad1) document.getElementById('yikeCashGrad1').value = first.grad1;
             if (first.grad2) document.getElementById('yikeCashGrad2').value = first.grad2;
-            renderABTestSwitcher('yikeCashControls', 'yikeCash');
+            safeRenderABTestSwitcher('yikeCashControls', 'yikeCash');
         }
         if (recognizedModules.size > 0) {
             const allModules = Array.from(recognizedModules).filter(mod => RESOURCE_VIEW_MAP[mod]);
@@ -1224,7 +1395,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             }
             const sameBusinessModules = allModules.filter(mod => getBusinessForResource(mod) === currentBU);
             const modules = sameBusinessModules.length > 0 ? sameBusinessModules : allModules;
-            await showAiRecognizedPreview(modules, { foundMySpace, foundSimpleScan });
+            await showAiRecognizedPreview(modules, { homeSmallOnly: true, foundMySpace, foundSimpleScan });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         btn.innerText = '🎉 解析成功，已生成多方案画板！';
@@ -2267,6 +2438,12 @@ function checkExportIds(ids) {
 }
 function selectExportChecksForResources(resources, options = {}) {
     resources.forEach(resource => {
+        if (resource === 'na_home') {
+            const homeSmallOnly = options.homeSmallOnly !== false;
+            if (homeSmallOnly) checkExportIds(['chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV']);
+            else checkExportIds(RESOURCE_EXPORT_CHECKS[resource] || []);
+            return;
+        }
         if (resource === 'dev_1_1_16') {
             const showBoth = !options.foundMySpace && !options.foundSimpleScan;
             if (showBoth || options.foundMySpace) checkExportIds(['chkMySpaceExport', 'chkMySpacePageExport']);
