@@ -39,6 +39,43 @@ const PAGE_DIRECTORY = {
     'Mac': [{ value: 'mac_link', text: 'A1.5.1 Mac - 首页文字链' }],
     'ipd': [{ value: 'ipd_dev', text: 'A1.6 ipd端配置项' }]
 };
+// 记录当前所在的业务线
+let currentBU = 'wangpan';
+// 新增：一刻相册专属目录结构
+const YIKE_PAGE_DIRECTORY = {
+    'NA': [
+        { value: 'yike_1', text: 'B1.1.1 NA - 开屏' },
+        { value: 'yike_2', text: 'B1.1.2 NA - 弹窗' },
+        { value: 'yike_3', text: 'B1.1.3 NA - 角标' },
+        { value: 'yike_4', text: 'B1.1.4 NA - 首页banner' },
+        { value: 'yike_5', text: '【SS级】B1.1.5 NA - 设备banner' },
+        { value: 'yike_6', text: 'B1.1.6 NA - 九宫格' },
+        { value: 'yike_7', text: 'B1.1.7 NA - 收银台banner' },
+        { value: 'yike_8', text: 'B1.1.8 NA - 创意banner' },
+        { value: 'yike_9', text: 'B1.1.9 NA - 搜索banner' },
+        { value: 'yike_10', text: 'B1.1.10 NA - 网盘相册-弹窗' },
+        { value: 'yike_11', text: 'B1.1.11 NA - 网盘相册-工具banner' },
+        { value: 'yike_12', text: 'B1.1.12 NA - 网盘相册-头部广告banner' },
+        { value: 'yike_13', text: 'B1.1.13 NA - 网盘相册-找图banner' },
+        { value: 'yike_14', text: 'B1.1.14 NA - 网盘相册-空间管理入口' },
+        { value: 'yike_15', text: 'B1.1.15 NA - 小程序工具banner' },
+        { value: 'yike_16', text: 'B1.1.16 NA - 看见banner' },
+        { value: 'yike_17', text: 'B1.1.17 NA - 相册banner' }
+    ],
+    'PC': [], 'Web': [], 'Wap': [], 'Mac': [], 'ipd': []
+};
+// 新增：出海方向专属目录结构
+const CHUHAI_PAGE_DIRECTORY = {
+    'NA': [
+        { value: 'chuhai_1', text: 'C1.1.1 NA - 首页弹窗（大）' },
+        { value: 'chuhai_2', text: 'C1.1.2 NA - 首页弹窗（小）' },
+        { value: 'chuhai_3', text: 'C1.1.3 NA - 侧位悬浮' },
+        { value: 'chuhai_4', text: 'C1.1.4 NA - 福利中心大曝光运营位' },
+        { value: 'chuhai_5', text: 'C1.1.5 NA - 福利中心banner运营位' },
+        { value: 'chuhai_6', text: 'C1.1.6 NA - 福利中心单元素图' }
+    ],
+    'PC': [], 'Web': [], 'Wap': [], 'Mac': [], 'ipd': []
+};
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 10 };
 const config = {
     baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
@@ -55,6 +92,8 @@ const config = {
     mySpaceExampleImage: 'assets/search-banner-image.png', simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
     myActivityPage: 'assets/my-activity-enter-banner.png', peerSharingPage: 'assets/peer-to-peer-sharing.png',
     peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png',
+    yikeEquipPage: 'assets/photo-equipment-page.png',
+    yikeEquipExampleImage: 'assets/photo-equipment-image.png',
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
     colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' },
@@ -63,7 +102,6 @@ const config = {
 };
 const myPageColors = { blue: '#F0FBFF', green: '#F0FFF4', orange: '#FFFAF0', purple: '#F6F0FF' };
 const myPageElementColors = { blue: '#0090FF', green: '#0E8B36', orange: '#FF7B00', purple: '#4E1685' };
-
 // ==================== DOM 元素获取 ====================
 const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
@@ -135,17 +173,24 @@ const myActivityBtnText = document.getElementById('myActivityBtnText'); const my
 const peerSharingGrad1 = document.getElementById('peerSharingGrad1'); const peerSharingGrad2 = document.getElementById('peerSharingGrad2');
 const peerSharingSub = document.getElementById('peerSharingSub'); const peerSharingTitle1 = document.getElementById('peerSharingTitle1'); const peerSharingTitle2 = document.getElementById('peerSharingTitle2');
 const peerSharingBtnText = document.getElementById('peerSharingBtnText'); const peerSharingSubColor = document.getElementById('peerSharingSubColor'); const peerSharingTitle1Color = document.getElementById('peerSharingTitle1Color'); const peerSharingTitle2Color = document.getElementById('peerSharingTitle2Color'); const peerSharingBtnColor = document.getElementById('peerSharingBtnColor');
-
+const yikeEquipView = document.getElementById('yikeEquipView');
+const yikeEquipControls = document.getElementById('yikeEquipControls');
+const yikeEquipPageCanvas = document.getElementById('yikeEquipPageCanvas');
+const yikeEquipPageCtx = yikeEquipPageCanvas?.getContext('2d');
+const yikeEquipExportCanvas = document.getElementById('yikeEquipExportCanvas');
+const yikeEquipExportCtx = yikeEquipExportCanvas?.getContext('2d');
+const yikeEquipTitle = document.getElementById('yikeEquipTitle'); const yikeEquipTitleColor = document.getElementById('yikeEquipTitleColor');
+const yikeEquipSub = document.getElementById('yikeEquipSub'); const yikeEquipSubColor = document.getElementById('yikeEquipSubColor');
+const yikeEquipBtnText = document.getElementById('yikeEquipBtnText'); const yikeEquipBtnBgColor = document.getElementById('yikeEquipBtnBgColor'); const yikeEquipBtnTextColor = document.getElementById('yikeEquipBtnTextColor');
+const yikeEquipGrad1 = document.getElementById('yikeEquipGrad1'); const yikeEquipGrad2 = document.getElementById('yikeEquipGrad2');
 let userImgObj = null; let feedBgBannerObj = null; let topBgBannerObj = null; let userTopBannerTitleObj = null;
 let currentTopBgMode = 'image'; let currentFeedBgMode = 'image';
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid'; let currentSimpleScanBgMode = 'solid';
 const globalImageCache = {}; const globalSvgTextCache = {};
-
 // ==================== ✨ A/B 测试核心状态库与字典映射 ====================
 window.abTestCopies = {};
 window.abTestActiveIndex = {};
-
 const MODULE_INPUT_MAP = {
     'home': [{ id: 'textLine1', key: 'line1', limit: 6 }, { id: 'textLine2', key: 'line2', limit: 4 }],
     'myPage': [{ id: 'myPageTitle', key: 'title', limit: 9 }, { id: 'myPageSubtitle', key: 'sub', limit: 8 }, { id: 'textCapsule', key: 'capsule', limit: 4 }, { id: 'myPageHighlight', key: 'highlight', limit: 9 }],
@@ -153,15 +198,15 @@ const MODULE_INPUT_MAP = {
     'mySpace': [{ id: 'mySpaceTitle', key: 'title', limit: 11 }, { id: 'mySpaceSub', key: 'sub', limit: 8 }, { id: 'mySpaceBtnText', key: 'btn', limit: 4 }],
     'simpleScan': [{ id: 'simpleScanTitle', key: 'title', limit: 11 }, { id: 'simpleScanSub', key: 'sub', limit: 8 }, { id: 'simpleScanBtnText', key: 'btn', limit: 4 }, { id: 'simpleScanHighlight', key: 'highlight', limit: 6 }],
     'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
-    'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }]
+    'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }],
+    'yikeEquip': [{ id: 'yikeEquipTitle', key: 'title', limit: 9 }, { id: 'yikeEquipSub', key: 'sub', limit: 12 }, { id: 'yikeEquipBtnText', key: 'btn', limit: 4 }],
 };
-
 const MODULE_RENDER_FNS = {
     'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
-    'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas
+    'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
+    'yikeEquip': renderYikeEquipCanvas
 };
-
 // ==================== ✨ 核心工具：智能半角统计、逗号转空格、打字实时渲染 ====================
 function formatAndLimitText(str, maxLen) {
     if (!str) return '';
@@ -169,7 +214,6 @@ function formatAndLimitText(str, maxLen) {
     str = str.replace(/，/g, ' ').replace(/,/g, ' ');
     str = str.replace(/！/g, '!').replace(/？/g, '?').replace(/：/g, ':').replace(/；/g, ';');
     str = str.replace(/\s+/g, ' ');
-
     let len = 0, res = '';
     for (let i = 0; i < str.length; i++) {
         let charCode = str.charCodeAt(i);
@@ -179,34 +223,26 @@ function formatAndLimitText(str, maxLen) {
         } else if (charCode >= 0x0000 && charCode <= 0x00FF) {
             charLen = 0.5;
         }
-
         if (len + charLen > maxLen) break;
         len += charLen;
         res += str[i];
     }
     return res.trim();
 }
-
 function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
     const el = document.getElementById(inputId);
     if (!el) return;
     el.removeAttribute('maxlength');
-
     let isComposing = false;
-
-    // ✨ 核心机制：任何修改，立即同步数据并触发画布渲染！
     const updateDataAndRender = (val) => {
-        // 1. 同步保存到 A/B 测试对应的方案数组中
         if (moduleKey && dataKey && window.abTestCopies[moduleKey] && window.abTestCopies[moduleKey].length > 0) {
             let activeIdx = window.abTestActiveIndex[moduleKey] || 0;
             window.abTestCopies[moduleKey][activeIdx][dataKey] = val;
         }
-        // 2. ✨ 立即触发当前模块的重绘画布函数！
         if (moduleKey && MODULE_RENDER_FNS[moduleKey]) {
             MODULE_RENDER_FNS[moduleKey]();
         }
     };
-
     el.addEventListener('compositionstart', () => { isComposing = true; });
     el.addEventListener('compositionend', (e) => {
         isComposing = false;
@@ -214,7 +250,6 @@ function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
         if (e.target.value !== formatted) { e.target.value = formatted; }
         updateDataAndRender(formatted);
     });
-
     el.addEventListener('input', (e) => {
         if (isComposing) return;
         const formatted = formatAndLimitText(e.target.value, maxLen);
@@ -222,7 +257,6 @@ function bindFormatter(inputId, maxLen, moduleKey = null, dataKey = null) {
         updateDataAndRender(formatted);
     });
 }
-
 // ==================== 🛠️ 2. Figma 级拖拽与缩放功能 ====================
 let cvsScale = 1; let cvsTranslateX = 0; let cvsTranslateY = 0;
 let isDraggingCanvas = false; let startDragX, startDragY;
@@ -280,7 +314,6 @@ window.addEventListener('mouseup', () => {
 document.getElementById('zoomInBtn').addEventListener('click', () => { cvsScale = Math.min(cvsScale + 0.1, 5); updateCanvasTransform(); });
 document.getElementById('zoomOutBtn').addEventListener('click', () => { cvsScale = Math.max(cvsScale - 0.1, 0.1); updateCanvasTransform(); });
 document.getElementById('zoomResetBtn').addEventListener('click', resetCanvasView);
-
 // ==================== 🎨 3. 颜色主题与工具函数 ====================
 const BRAND_THEMES = [
     { id: 'red', hue: 350, grad1: '#FFD9E2', grad2: '#FFF2F5', lightGrad: '#FFF0F3', solid: '#FFEAEF', btn1: '#FF5E7E', btn2: '#FF1A4B', textHighlight: '#FF1A4B', darkGrad1: '#FF3366', darkGrad2: '#D90036' },
@@ -289,24 +322,17 @@ const BRAND_THEMES = [
     { id: 'blue', hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
     { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' }
 ];
-
 function triggerThemeSwitch(themeId) {
     let matchedTheme = BRAND_THEMES.find(t => t.id === themeId);
     if (themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
     if (!matchedTheme) matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
-
-    // ✨ 修正活动中心与共享点对点的默认配色逻辑
     const colorMap = {
         'topSolidColor': matchedTheme.solid, 'topGradColor1': '#FFFFFF', 'topGradColor2': matchedTheme.grad1,
         'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
         'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
         'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
-
-        // 活动中心：默认浅色背景，黑字
         'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF',
         'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
-
-        // 共享点对点：默认深色/高亮背景，白字
         'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
         'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
     };
@@ -324,12 +350,12 @@ function triggerThemeSwitch(themeId) {
     const targetRadioMyPage = document.querySelector(`input[name="myPageColor"][value="${targetRadioId}"]`);
     if (targetRadioMyPage) { targetRadioMyPage.checked = true; myPageColor = targetRadioId; }
 }
-
 function bindCanvasClickToControl() {
     const mappings = {
         'homeView': 'homeControls', 'myPageView': 'myPageControls', 'feedView': 'feedControls',
         'searchIconView': 'searchIconControls', 'mySpaceView': 'mySpaceControls',
-        'myActivityView': 'myActivityControls', 'peerSharingView': 'peerSharingControls'
+        'myActivityView': 'myActivityControls', 'peerSharingView': 'peerSharingControls',
+        'yikeEquipView': 'yikeEquipControls'
     };
     Object.keys(mappings).forEach(viewId => {
         const viewEl = document.getElementById(viewId);
@@ -349,7 +375,6 @@ function bindCanvasClickToControl() {
         }
     });
 }
-
 // ==================== 🚀 4. 肖恩AI 智能大模型与多模态图片解析引擎 ====================
 const API_KEY = "sk-J8qfNDBaclZUYadIA5Dc2b975257460495D2E9B36fD0Bc65";
 let currentImageBase64 = null;
@@ -358,7 +383,6 @@ const aiPromptInput = document.getElementById('aiPromptInput');
 const aiInputContainer = document.getElementById('aiInputContainer');
 const aiImagePreview = document.getElementById('aiImagePreview');
 const aiPreviewImg = document.getElementById('aiPreviewImg');
-
 async function processPdfFile(file) {
     aiPromptInput.value = `📄 [正在全力解析 PDF 中，请稍候...]`;
     try {
@@ -449,7 +473,7 @@ function loadAiImage(file) {
     reader.onload = function (event) {
         const img = new Image();
         img.onload = () => {
-            const MAX_SIZE = 1200; // 极限压缩长边
+            const MAX_SIZE = 1200;
             let width = img.width, height = img.height;
             if (width > height && width > MAX_SIZE) {
                 height *= MAX_SIZE / width; width = MAX_SIZE;
@@ -459,8 +483,6 @@ function loadAiImage(file) {
             const canvas = document.createElement('canvas');
             canvas.width = width; canvas.height = height;
             canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-
-            // 核心压缩点：转为 50% 质量的低清 JPEG 喂给 AI
             currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
             aiPreviewImg.src = currentImageBase64;
             aiImagePreview.style.display = 'block';
@@ -469,41 +491,32 @@ function loadAiImage(file) {
     };
     reader.readAsDataURL(file);
 }
-
-// ✨ UI 组件：在控制面板渲染多方案切换 Tab
 function renderABTestSwitcher(ctrlId, moduleKey) {
     const copies = window.abTestCopies[moduleKey];
     if (!copies || copies.length <= 1) return;
-
     const ctrl = document.getElementById(ctrlId);
     if (!ctrl) return;
-
     let switcherBox = ctrl.querySelector('.ab-switcher-box');
     if (!switcherBox) {
         switcherBox = document.createElement('div');
         switcherBox.className = 'ab-switcher-box';
         switcherBox.style.cssText = 'margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; background: #f0f4f8; padding: 10px 12px; border-radius: 8px; border: 1px dashed #cbd5e1;';
-
         const label = document.createElement('span');
         label.style.cssText = 'font-size: 13px; color: #64748b; font-weight: bold; margin-right: 4px;';
         label.innerHTML = '✨ 识别到多套文案，请点击切换预览:';
         switcherBox.appendChild(label);
-
         ctrl.insertBefore(switcherBox, ctrl.firstChild);
     } else {
         Array.from(switcherBox.querySelectorAll('.ab-btn')).forEach(el => el.remove());
     }
-
     if (window.abTestActiveIndex[moduleKey] === undefined) {
         window.abTestActiveIndex[moduleKey] = 0;
     }
-
     copies.forEach((copy, index) => {
         const btn = document.createElement('button');
         btn.className = 'ab-btn';
         btn.innerText = `方案 ${index + 1}`;
         btn.style.cssText = `padding: 4px 14px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; border: 1px solid #258AFF; transition: all 0.2s ease; outline: none;`;
-
         if (index === window.abTestActiveIndex[moduleKey]) {
             btn.style.background = '#258AFF';
             btn.style.color = '#fff';
@@ -513,16 +526,13 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
             btn.style.color = '#258AFF';
             btn.style.boxShadow = 'none';
         }
-
         btn.onclick = () => {
             window.abTestActiveIndex[moduleKey] = index;
-
             switcherBox.querySelectorAll('.ab-btn').forEach((b, i) => {
                 b.style.background = i === index ? '#258AFF' : '#fff';
                 b.style.color = i === index ? '#fff' : '#258AFF';
                 b.style.boxShadow = i === index ? '0 2px 6px rgba(37,138,255,0.3)' : 'none';
             });
-
             const map = MODULE_INPUT_MAP[moduleKey];
             if (map) {
                 map.forEach(ref => {
@@ -530,70 +540,50 @@ function renderABTestSwitcher(ctrlId, moduleKey) {
                     const el = document.getElementById(ref.id);
                     if (el) {
                         if (val !== undefined) {
-                            el.value = formatAndLimitText(ref.id === 'textCapsule' ? (val || '宝宝专属') : val, ref.limit || 99);
+                            el.value = formatAndLimitText(ref.id === 'textCapsule' ? (val || '去查看') : val, ref.limit || 99);
                         } else {
                             el.value = '';
                         }
-                        // 这行不仅更新值，还让浏览器知道值变了
                         el.dispatchEvent(new Event('input'));
                     }
                 });
-
-                // 确保强制刷新画布
                 if (MODULE_RENDER_FNS[moduleKey]) MODULE_RENDER_FNS[moduleKey]();
             }
         };
         switcherBox.appendChild(btn);
     });
 }
-
 document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
     const rawText = aiPromptInput.value.trim();
     const modelSelectVal = document.getElementById('apiModelSelect')?.value;
-
     if (!rawText && !currentImageBase64 && !currentRichTextContext) { alert('请粘贴需求文案、PDF文件或需求截图！'); return; }
     if (API_KEY.includes('sk-xxxxx')) { alert('请先在 script.js 文件顶部填写你的 API Key！'); return; }
     if (!modelSelectVal) { alert('未能获取模型地址'); return; }
-
     const [apiURL, selectedModel] = modelSelectVal.split('|');
     const btn = document.getElementById('aiGenerateBtn');
     const originalText = btn.innerText;
-
     btn.innerText = '⚡ AI 视觉与多方案矩阵解析中...';
     btn.style.opacity = '0.8';
     btn.disabled = true;
-
     document.querySelectorAll('.ab-switcher-box').forEach(el => el.remove());
     window.abTestCopies = {};
     window.abTestActiveIndex = {};
-
     let userContent = [];
     let textPayload = `【任务指令】: 请仔细查看我提供的图片截图或底层文本。这是一个UI设计需求文档。请提取其中的文案，并匹配到对应的画板模块。\n`;
-
-    // 💡 黑科技：一并过滤垃圾链接和偏旁部首错别字
     const fixHeteronyms = (str) => str ? str.replace(/https?:\/\/[^\s]+/g, '[链接已过滤]').replace(/⼼/g, '心').replace(/⻚/g, '页').replace(/⽹/g, '网').replace(/⻛/g, '风').replace(/⾸/g, '首').replace(/⻔/g, '门') : '';
-
     let cleanRawText = fixHeteronyms(rawText);
     let cleanRichText = fixHeteronyms(currentRichTextContext);
-
     if (cleanRawText && !cleanRawText.includes('[正在') && !cleanRawText.includes('[已成功读取')) {
         textPayload += `【用户手动输入的附加说明】:\n${cleanRawText}\n\n`;
     }
     if (cleanRichText) {
         textPayload += `【系统自动提取的底层表格/PDF原本文本】:\n${cleanRichText}\n\n`;
     }
-
-    // ⚠️ 修复致命BUG：把组装好的文字装进 payload 里！
     userContent.push({ type: "text", text: textPayload });
-
-    // ⚡ 提速黑科技：如果已经成功提取了 PDF 的文字，就【绝对不要】再把图片发给 AI 看！极速秒出！
-    // 只有在没提取出文本（比如用户直接上传了一张死图片）时，才让 AI 去看图。
     if (currentImageBase64 && !cleanRichText) {
         userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } });
     }
-
     console.log("🚀 即将发给 AI 的文本体 (给AI减负后的纯净版):", textPayload);
-
     const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
 【映射关系】(注意识别可能带有"-banner"或PDF提取错别字的情况):
 - "首页banner" / "⾸⻚banner" / "首页沉浸" -> "home"
@@ -603,6 +593,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 - "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
 - "简单扫描" -> "simpleScan"
 - "共享点对点" / "点对点" -> "peerSharing"
+- "设备banner" / "设备" -> "yikeEquip"
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
 2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
@@ -611,7 +602,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
    -> 寻找带有标点（逗号或空格）的那一行（如“珍藏童年，全家共享”），从标点处切断！前一半填入 "title1"，后一半填入 "title2"。绝不能把整句塞进一个字段！
    -> 将剩下的那行短字（如“创建宝宝相簿”）直接填入 "sub"。
    -> 绝对禁止重复填词！提取过的字不要再填到其他字段。
-3. 【多套方案支持】：如果你在某模块（如"我的页面banner"）看到了多组不同的备选文案，请将它们作为数组的多个元素返回。如果没有明确写多套，切忌无中生有！有几套写几套。
+3. 【多套方案支持】：如果你在某模块看到了多组不同的备选文案，请将它们作为数组的多个元素返回。如果没有明确写多套，切忌无中生有！
 请只输出严格的JSON，不要解释。
 JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
 {
@@ -622,7 +613,8 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "mySpace": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
-    "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ]
+    "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
+    "yikeEquip": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ]
 }`;
     try {
         const response = await fetch(apiURL, {
@@ -635,11 +627,8 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             })
         });
         if (!response.ok) throw new Error(`[${response.status}] 服务器报错: ${await response.text()}`);
-
         const data = await response.json();
         let aiResult = data.choices[0].message.content.trim();
-        console.log("💰 AI 返回的原始数据：\n", aiResult);
-
         let jsonString = aiResult;
         const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
         if (jsonMatch) jsonString = jsonMatch[0];
@@ -647,9 +636,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
-
         if (config.theme) triggerThemeSwitch(config.theme);
-
         if (config.home && config.home.length > 0) {
             recognizedModules.add('na_home');
             window.abTestCopies['home'] = config.home; window.abTestActiveIndex['home'] = 0;
@@ -682,8 +669,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             renderABTestSwitcher('feedControls', 'feed');
         }
         if (config.mySpace && config.mySpace.length > 0) {
-            recognizedModules.add('dev_1_1_16');
-            foundMySpace = true;
+            recognizedModules.add('dev_1_1_16'); foundMySpace = true;
             window.abTestCopies['mySpace'] = config.mySpace; window.abTestActiveIndex['mySpace'] = 0;
             const first = config.mySpace[0];
             if (first.title) document.getElementById('mySpaceTitle').value = formatAndLimitText(first.title, 11);
@@ -692,8 +678,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             renderABTestSwitcher('mySpaceControls', 'mySpace');
         }
         if (config.simpleScan && config.simpleScan.length > 0) {
-            recognizedModules.add('dev_1_1_16');
-            foundSimpleScan = true;
+            recognizedModules.add('dev_1_1_16'); foundSimpleScan = true;
             window.abTestCopies['simpleScan'] = config.simpleScan; window.abTestActiveIndex['simpleScan'] = 0;
             const first = config.simpleScan[0];
             if (first.title) document.getElementById('simpleScanTitle').value = formatAndLimitText(first.title, 11);
@@ -722,19 +707,26 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('peerSharingControls', 'peerSharing');
         }
-
+        if (config.yikeEquip && config.yikeEquip.length > 0) {
+            recognizedModules.add('yike_5');
+            window.abTestCopies['yikeEquip'] = config.yikeEquip; window.abTestActiveIndex['yikeEquip'] = 0;
+            const first = config.yikeEquip[0];
+            if (first.title) document.getElementById('yikeEquipTitle').value = formatAndLimitText(first.title, 9);
+            if (first.sub) document.getElementById('yikeEquipSub').value = formatAndLimitText(first.sub, 12);
+            if (first.btn) document.getElementById('yikeEquipBtnText').value = formatAndLimitText(first.btn, 4);
+            renderABTestSwitcher('yikeEquipControls', 'yikeEquip');
+            // 注意：这里已经删除了自动跳转业务线的代码
+        }
         await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
         await renderMySpaceCanvas(); await renderSimpleScanCanvas();
-        await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-
+        await renderMyActivityCanvas(); await renderPeerSharingCanvas(); await renderYikeEquipCanvas();
         if (recognizedModules.size > 0) {
             const modules = Array.from(recognizedModules);
-            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
             developingPrompt.classList.add('hidden');
             document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
             const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
             if (firstEl) firstEl.classList.add('active');
-
             const container = document.getElementById('canvasContainer');
             if (modules.length > 1) {
                 container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px';
@@ -743,7 +735,6 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
                 document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
             }
-
             modules.forEach(mod => {
                 let viewId, ctrlId;
                 if (mod === 'na_home') { viewId = 'homeView'; ctrlId = 'homeControls'; }
@@ -752,6 +743,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 else if (mod === 'dev_1_1_13') { viewId = 'searchIconView'; ctrlId = 'searchIconControls'; }
                 else if (mod === 'dev_1_1_17') { viewId = 'myActivityView'; ctrlId = 'myActivityControls'; }
                 else if (mod === 'dev_1_1_18') { viewId = 'peerSharingView'; ctrlId = 'peerSharingControls'; }
+                else if (mod === 'yike_5') { viewId = 'yikeEquipView'; ctrlId = 'yikeEquipControls'; }
                 else if (mod === 'dev_1_1_16') {
                     viewId = 'mySpaceView'; ctrlId = 'mySpaceControls';
                     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
@@ -759,7 +751,6 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                     if (spaceCard) spaceCard.style.display = foundMySpace ? '' : 'none';
                     if (scanCard) scanCard.style.display = foundSimpleScan ? '' : 'none';
                 }
-
                 if (viewId) document.getElementById(viewId).classList.add('active');
                 if (ctrlId) document.getElementById(ctrlId).classList.add('active');
             });
@@ -767,7 +758,6 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             updateCanvasTransform();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         btn.innerText = '🎉 解析成功，已生成多方案画板！';
         btn.style.background = '#10B981';
     } catch (error) {
@@ -784,7 +774,6 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         }, 3000);
     }
 });
-
 // ==================== 渲染与绘图核心代码 ====================
 function setupHighQualityContext(ctx) { if (!ctx) return; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
 function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
@@ -829,8 +818,6 @@ function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highli
     const parts = fullText.split(highlightText); let currentX = fixedX;
     for (let i = 0; i < parts.length; i++) { ctx.fillStyle = baseColor; ctx.fillText(parts[i], currentX, fixedY); currentX += Math.floor(ctx.measureText(parts[i]).width); if (i < parts.length - 1) { ctx.fillStyle = highlightColor; ctx.fillText(highlightText, currentX, fixedY); currentX += Math.floor(ctx.measureText(highlightText).width); } }
 }
-
-// 首页大图状态 Banner
 async function createTopBannerCanvas(kvImg) {
     const defaultBanner = await loadImage(config.homeMainBanner);
     if (!defaultBanner || !defaultBanner.width) return null;
@@ -871,8 +858,6 @@ async function drawTopHomePage(canvas, ctx, kvImg) {
     ctx.drawImage(bCanvas, 0, 0, drawW, drawH); ctx.drawImage(uiImg, 0, 0, canvas.width, canvas.height);
     canvas._bannerBBox = { x: 0, y: 0, w: drawW, h: drawH };
 }
-
-// 小图状态 Banner 相关
 async function drawMode(isDark, canvas, ctx, kvImg) {
     const bgUrl = isDark ? config.baseUIDark : config.baseUI, bannerUrl = isDark ? (config.colorsDark[homeColor] || null) : (config.colors[homeColor] || null), textColor1 = isDark ? config.nightTextColor1 : '#030B1A', arrowColor = isDark ? config.nightTextColor2 : config.colorHex[homeColor];
     const baseUIImg = await loadImage(bgUrl), bannerBgImg = bannerUrl ? await loadImage(bannerUrl) : null, arrowImg = await loadColoredArrow(config.arrowSvg, arrowColor);
@@ -903,8 +888,6 @@ async function renderHomeCanvas() {
     if (lightBannerCanvas && lightBannerCtx) { const lbCanvas = await createFullBannerCanvas(false); lightBannerCanvas.width = lbCanvas.width; lightBannerCanvas.height = lbCanvas.height; setupHighQualityContext(lightBannerCtx); lightBannerCtx.clearRect(0, 0, lightBannerCanvas.width, lightBannerCanvas.height); lightBannerCtx.drawImage(lbCanvas, 0, 0); }
     if (darkBannerCanvas && darkBannerCtx) { const dbCanvas = await createFullBannerCanvas(true); darkBannerCanvas.width = dbCanvas.width; darkBannerCanvas.height = dbCanvas.height; setupHighQualityContext(darkBannerCtx); darkBannerCtx.clearRect(0, 0, darkBannerCanvas.width, darkBannerCanvas.height); darkBannerCtx.drawImage(dbCanvas, 0, 0); }
 }
-
-// 我的页面相关
 async function renderMyPage() { await renderMyPageBanner(); await renderMyPageFullCanvas(); }
 async function renderMyPageBanner() {
     const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg;
@@ -917,7 +900,7 @@ async function renderMyPageBanner() {
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
             ctx.save(); ctx.fillStyle = currentCapsuleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'normal 38px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.fillText(capsuleTxt, 963, 111); ctx.restore();
             ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'normal 44px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; const titleBaseColor = isDark ? 'rgba(255, 255, 255, 0.8)' : '#030B1A', titleHighlightColor = isDark ? 'rgba(255, 255, 255, 0.8)' : elementColor; drawDualColorText(ctx, titleTxt, highlightTxt, 388, 57, titleBaseColor, titleHighlightColor); ctx.restore();
-            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = ' 38px "FZLTHK", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(128)); ctx.restore();
+            ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = ' 38px "FZLTHK", "PingFang SC", sans-serif'; if (isDark) ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; else { ctx.fillStyle = elementColor; ctx.globalAlpha = 0.75; } ctx.fillText(subtitleTxt, Math.floor(388), Math.floor(126)); ctx.restore();
         }
     };
     await drawMyPageMode(myPageCanvas, myPageCtx, false); await drawMyPageMode(myPageDarkCanvas, myPageDarkCtx, true);
@@ -929,8 +912,6 @@ async function renderMyPageFullCanvas() {
         myPageFullCanvas._bannerBBox = { x: config.myPageX + 24, y: config.myPageY, w: myPageCanvas.width - 48, h: myPageCanvas.height };
     } catch (e) { }
 }
-
-// Feed 相关
 async function createFeedBannerCanvas() {
     const canvas = document.createElement('canvas'); canvas.width = 561; canvas.height = 750; const ctx = canvas.getContext('2d'); setupHighQualityContext(ctx);
     if (currentFeedBgMode === 'image') { const bgBannerImg = feedBgBannerObj || await loadImage(config.feedBanner); if (bgBannerImg && bgBannerImg.width) ctx.drawImage(bgBannerImg, 0, 0, canvas.width, canvas.height); else { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); } }
@@ -939,7 +920,7 @@ async function createFeedBannerCanvas() {
     const defaultImg = await loadImage(config.feedExampleImage); const imgToDraw = userImgObj || defaultImg;
     if (imgToDraw && imgToDraw.width) { ctx.save(); const imgW = 412, imgH = 360, imgX = 74.5, imgY = 185; ctx.beginPath(); ctx.rect(imgX, imgY, imgW, imgH); ctx.clip(); const scale = Math.min(imgW / imgToDraw.width, imgH / imgToDraw.height), drawW = imgToDraw.width * scale, drawH = imgToDraw.height * scale, drawX = imgX + (imgW - drawW) / 2, drawY = imgY + (imgH - drawH) / 2; drawSharpenedImage(ctx, imgToDraw, drawX, drawY, drawW, drawH, 0.3); ctx.restore(); }
     ctx.textAlign = 'center'; ctx.textBaseline = 'top'; const centerX = 280.5;
-    const titleTxt = feedTitleInput?.value || ''; ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif'; ctx.fillStyle = feedTitleColor?.value || '#000000'; ctx.fillText(titleTxt, centerX, 69);
+    const titleTxt = feedTitleInput?.value || ''; ctx.font = 'normal 42px "FZLanTingHeiS-H", sans-serif'; ctx.fillStyle = feedTitleColor?.value || '#000000'; ctx.fillText(titleTxt, centerX, 77);
     const subtitleTxt = feedSubtitleInput?.value || ''; ctx.font = 'normal 36px "FZLTHK", sans-serif'; ctx.fillStyle = feedSubtitleColor?.value || '#000000'; ctx.fillText(subtitleTxt, centerX, 124);
     ctx.fillStyle = '#000000'; drawRoundRect(ctx, 45, 557, 471, 108, 54); ctx.fill();
     const btnTxt = feedBtnTextInput?.value || ''; ctx.font = 'normal 36px "FZLanTingHeiS-DB", sans-serif'; ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(btnTxt, centerX, 611);
@@ -954,8 +935,6 @@ async function renderFeedCanvas() {
         feedCanvas._bannerBBox = { x: config.feedBannerX, y: config.feedBannerY, w: fbCanvas.width, h: fbCanvas.height };
     } catch (e) { console.error(e); }
 }
-
-// 搜索框 Icon 相关
 async function renderSearchIcon() {
     if (!searchPageCanvas || !searchPageCtx) return;
     const bgImg = await loadImage(config.searchBoxPage);
@@ -994,8 +973,6 @@ async function renderSearchIcon() {
         }
     }
 }
-
-// 1182x252 Banner 共用渲染逻
 async function build1182Banner(opts) {
     const canvas = document.createElement('canvas');
     canvas.width = 1182; canvas.height = 252;
@@ -1013,11 +990,11 @@ async function build1182Banner(opts) {
     }
     ctx.font = 'normal 50px "FZLanTingHeiS-DB-GB", sans-serif';
     ctx.textBaseline = 'top';
-    drawDualColorText(ctx, opts.title, opts.highlight, 62, 62, '#000000', opts.highlightColor);
+    drawDualColorText(ctx, opts.title, opts.highlight, 62, 64, '#000000', opts.highlightColor);
     ctx.font = 'normal 42px "FZLanTingHeiS-R-GB", sans-serif';
     ctx.fillStyle = '#777777';
     ctx.textBaseline = 'top';
-    ctx.fillText(opts.sub, 62, 142);
+    ctx.fillText(opts.sub, 62, 149);
     const btnSvg = await loadImage(config.searchBtSvg);
     const btnX = 410, btnY = 144;
     if (btnSvg && btnSvg.width) {
@@ -1166,7 +1143,6 @@ async function renderMyActivityCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-
     exactGrad.addColorStop(0, myActivityGrad1?.value || '#E5F3FF');
     exactGrad.addColorStop(1, myActivityGrad2?.value || '#FFFFFF');
     ctx.fillStyle = exactGrad;
@@ -1175,19 +1151,15 @@ async function renderMyActivityCanvas() {
     ctx.textBaseline = 'top';
     ctx.fillStyle = myActivitySubColor?.value || '#777777';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
-    ctx.fillText(myActivitySub?.value || '', 47.01, 47.67);
-
+    ctx.fillText(myActivitySub?.value || '', 47.01, 50.67);
     const titleColor = myActivityTitle1Color?.value || '#000000';
     ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText(myActivityTitle1?.value || '', 47.01, 87.5);
-
+    ctx.fillText(myActivityTitle1?.value || '', 47.01, 89.5);
     ctx.fillStyle = myActivityTitle2Color?.value || '#000000';
-    ctx.fillText(myActivityTitle2?.value || '', 47.01, 146.92);
-
+    ctx.fillText(myActivityTitle2?.value || '', 47.01, 148.92);
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-
     const btnColor = titleColor;
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
@@ -1265,7 +1237,6 @@ async function renderPeerSharingCanvas() {
     let x1 = halfW + Math.cos(rad) * length / 2;
     let y1 = halfH + Math.sin(rad) * length / 2;
     const exactGrad = ctx.createLinearGradient(x0, y0, x1, y1);
-
     exactGrad.addColorStop(0, peerSharingGrad1?.value || '#06A7FF');
     exactGrad.addColorStop(1, peerSharingGrad2?.value || '#0052CC');
     ctx.fillStyle = exactGrad;
@@ -1274,19 +1245,15 @@ async function renderPeerSharingCanvas() {
     ctx.textBaseline = 'top';
     ctx.fillStyle = peerSharingSubColor?.value || '#FFFFFF';
     ctx.font = 'normal 27px "FZLanTingHeiS-R", sans-serif';
-    ctx.fillText(peerSharingSub?.value || '', 47.01, 47.67);
-
+    ctx.fillText(peerSharingSub?.value || '', 47.01, 50.67);
     const titleColor = peerSharingTitle1Color?.value || '#FFFFFF';
     ctx.fillStyle = titleColor;
     ctx.font = 'normal 46px "FZLanTingHeiS-DB", sans-serif';
-    ctx.fillText(peerSharingTitle1?.value || '', 47.01, 87.5);
-
+    ctx.fillText(peerSharingTitle1?.value || '', 47.01, 89.5);
     ctx.fillStyle = peerSharingTitle2Color?.value || '#FFFFFF';
-    ctx.fillText(peerSharingTitle2?.value || '', 47.01, 146.92);
-
+    ctx.fillText(peerSharingTitle2?.value || '', 47.01, 148.92);
     const btnX = 47.01, btnY = 220.05, btnW = 176.3, btnH = 53.53, lw = 1.96;
     const radius = btnH / 2;
-
     const btnColor = titleColor;
     ctx.lineWidth = lw;
     ctx.strokeStyle = btnColor;
@@ -1349,19 +1316,92 @@ async function renderPeerSharingCanvas() {
         }
     }
 }
+// ==================== 🛠️ 一刻相册：设备Banner (SS级) ====================
+async function renderYikeEquipCanvas() {
+    if (!yikeEquipPageCtx || !yikeEquipExportCtx) return;
+    const bannerW = 1125, bannerH = 270;
+    yikeEquipExportCanvas.width = bannerW; yikeEquipExportCanvas.height = bannerH;
 
+    // 渐变底板
+    const grad = yikeEquipExportCtx.createLinearGradient(0, 0, bannerW, 0);
+    grad.addColorStop(0, yikeEquipGrad1?.value || '#AFF000');
+    grad.addColorStop(1, yikeEquipGrad2?.value || '#E6FAB2');
+    yikeEquipExportCtx.fillStyle = grad;
+    yikeEquipExportCtx.fillRect(0, 0, bannerW, bannerH);
+
+    // 图片居中
+    let visualImg = userImgObj;
+    if (!visualImg && !globalImageCache[config.yikeEquipExampleImage]) {
+        // ✨ 这里修复了，使用正确的 loadImage 函数
+        globalImageCache[config.yikeEquipExampleImage] = await loadImage(config.yikeEquipExampleImage);
+    }
+    if (!visualImg) visualImg = globalImageCache[config.yikeEquipExampleImage];
+
+    if (visualImg) {
+        const maxW = 420, maxH = 240;
+        const scale = Math.min(maxW / visualImg.width, maxH / visualImg.height);
+        const drawW = visualImg.width * scale, drawH = visualImg.height * scale;
+        const drawX = 51 + (maxW - drawW) / 2, drawY = 15 + (maxH - drawH) / 2;
+        setupHighQualityContext(yikeEquipExportCtx);
+        yikeEquipExportCtx.drawImage(visualImg, drawX, drawY, drawW, drawH);
+    }
+
+    // 文字
+    yikeEquipExportCtx.textAlign = 'left'; yikeEquipExportCtx.textBaseline = 'top';
+    yikeEquipExportCtx.font = `63px "FZHanZhenGuangBiaoS-GB", "FZHanZhenGuangBiaoS", sans-serif`;
+    yikeEquipExportCtx.fillStyle = yikeEquipTitleColor?.value || '#000000';
+    if (yikeEquipExportCtx.letterSpacing !== undefined) yikeEquipExportCtx.letterSpacing = '-1.89px';
+    yikeEquipExportCtx.fillText(yikeEquipTitle?.value || '', 510, 53);
+    if (yikeEquipExportCtx.letterSpacing !== undefined) yikeEquipExportCtx.letterSpacing = '0px';
+
+    yikeEquipExportCtx.font = `33px "FZLanTingHeiS-R-GB", "FZLanTingHeiS-R", sans-serif`;
+    yikeEquipExportCtx.fillStyle = yikeEquipSubColor?.value || '#000000';
+    yikeEquipExportCtx.fillText(yikeEquipSub?.value || '', 624, 124);
+
+    yikeEquipExportCtx.fillStyle = yikeEquipBtnBgColor?.value || '#000000';
+    yikeEquipExportCtx.beginPath();
+    yikeEquipExportCtx.roundRect(661, 174, 229, 66, 33);
+    yikeEquipExportCtx.fill();
+
+    yikeEquipExportCtx.font = `33px "FZLanTingHeiS-DB-GB", "FZLanTingHeiS-DB", sans-serif`;
+    yikeEquipExportCtx.fillStyle = yikeEquipBtnTextColor?.value || '#FFFFFF';
+    yikeEquipExportCtx.textAlign = 'center'; yikeEquipExportCtx.textBaseline = 'middle';
+    yikeEquipExportCtx.fillText(yikeEquipBtnText?.value || '', 661 + 229 / 2, 174 + 66 / 2);
+
+    // 透视外壳
+    if (!globalImageCache[config.yikeEquipPage]) {
+        // ✨ 这里也修复了
+        globalImageCache[config.yikeEquipPage] = await loadImage(config.yikeEquipPage);
+    }
+    const pageImg = globalImageCache[config.yikeEquipPage];
+
+    if (pageImg) {
+        yikeEquipPageCanvas.width = pageImg.width; yikeEquipPageCanvas.height = pageImg.height;
+        setupHighQualityContext(yikeEquipPageCtx);
+        yikeEquipPageCtx.drawImage(yikeEquipExportCanvas, -1, 735);
+        yikeEquipPageCtx.drawImage(pageImg, 0, 0);
+    }
+}
 // ==================== 界面交互事件 ====================
 function updateResourceDropdown(terminalId) {
     const resourceList = document.getElementById('resourceList');
     if (!resourceList) return;
     resourceList.innerHTML = '';
-    const pages = PAGE_DIRECTORY[terminalId] || [];
+    let dirData = PAGE_DIRECTORY;
+    if (currentBU === 'yike') dirData = YIKE_PAGE_DIRECTORY;
+    if (currentBU === 'chuhai') dirData = CHUHAI_PAGE_DIRECTORY;
+    const pages = dirData[terminalId] || [];
     pages.forEach((page, index) => {
         const item = document.createElement('div');
         item.className = 'resource-item';
-        if ((terminalId === 'NA' && page.value === 'na_home') || (terminalId !== 'NA' && index === 0)) {
-            item.classList.add('active');
+
+        // ✨ 修复：网盘默认选中 na_home，其他业务线(如一刻)默认选中第一个菜单
+        if (currentBU === 'wangpan' && terminalId === 'NA') {
+            if (page.value === 'na_home') item.classList.add('active');
+        } else {
+            if (index === 0) item.classList.add('active');
         }
+
         item.dataset.value = page.value;
         item.innerHTML = `<div class="resource-item-text" title="${page.text}">${page.text}</div>`;
         item.addEventListener('click', (e) => {
@@ -1373,24 +1413,21 @@ function updateResourceDropdown(terminalId) {
         resourceList.appendChild(item);
     });
     const activeItem = resourceList.querySelector('.active');
-    if (activeItem) switchResourceView(activeItem.dataset.value);
-    else switchResourceView(null);
+    if (activeItem) switchResourceView(activeItem.dataset.value); else switchResourceView(null);
 }
 const renderedPages = { home: true };
 async function switchResourceView(selected) {
-    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
     document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
-
     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
-
-    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18'].includes(selected)) {
+    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_5'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
@@ -1416,6 +1453,10 @@ async function switchResourceView(selected) {
     } else if (selected === 'dev_1_1_18') {
         peerSharingControls.classList.add('active'); peerSharingView.classList.add('active');
         if (!renderedPages.peerSharing) { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+    } else if (selected === 'yike_5') {
+        if (yikeEquipControls) yikeEquipControls.classList.add('active');
+        if (yikeEquipView) yikeEquipView.classList.add('active');
+        if (!renderedPages.yikeEquip) { await renderYikeEquipCanvas(); renderedPages.yikeEquip = true; }
     } else {
         developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active');
     }
@@ -1423,14 +1464,32 @@ async function switchResourceView(selected) {
 const buBtns = document.querySelectorAll('.bu-btn');
 buBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        buBtns.forEach(b => b.classList.remove('active')); const currentBtn = e.currentTarget; currentBtn.classList.add('active'); const targetBU = currentBtn.dataset.bu;
-        if (targetBU === 'wangpan') {
-            document.documentElement.style.setProperty('--primary-color', '#258AFF');
+        buBtns.forEach(b => b.classList.remove('active'));
+        const currentBtn = e.currentTarget; currentBtn.classList.add('active');
+        currentBU = currentBtn.dataset.bu;
+
+        // ✨ 新增隔离逻辑：切换业务线时，清空用户上传的图
+        userImgObj = null;
+
+        // ✨ 智能切换全局预览图的默认图片，解决破图问题
+        const uploadPreviewImg = document.getElementById('uploadPreviewImg');
+        if (uploadPreviewImg) {
+            if (currentBU === 'yike') {
+                uploadPreviewImg.src = config.yikeEquipExampleImage; // 一刻用设备默认图
+            } else {
+                uploadPreviewImg.src = config.heroImage; // 网盘等用普通的hero默认图
+            }
+        }
+
+        if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
+            if (currentBU === 'yike') document.documentElement.style.setProperty('--primary-color', '#258AFF');
+            else if (currentBU === 'chuhai') document.documentElement.style.setProperty('--primary-color', '#258AFF');
+            else document.documentElement.style.setProperty('--primary-color', '#258AFF');
             wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
             updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
         } else {
-            document.documentElement.style.setProperty('--primary-color', targetBU === 'yike' ? '#0066ff' : '#87B4FF');
-            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            document.documentElement.style.setProperty('--primary-color', '#87B4FF');
+            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
         }
     });
 });
@@ -1474,19 +1533,20 @@ function openDetailModal(targetType) {
     } else if (targetType === 'peerSharing') {
         detailModalTitle.innerText = '共享点对点 Banner - 纯净切图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (670x320)</div><img src="${peerSharingExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
+    } else if (targetType === 'yikeEquip') {
+        detailModalTitle.innerText = '设备 Banner - 详情预览';
+        detailImagesBox.innerHTML = `
+            <div class="banner-label" style="color:#258AFF; font-size:16px;">纯净版切图 (1125x270) 👇</div>
+            <img src="${yikeEquipExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; margin-bottom: 30px; border: 1px dashed #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">`;
     }
     detailModal.style.display = 'flex';
 }
-
 document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
     canvas.addEventListener('click', (e) => {
         if (isDraggingCanvas) return;
         const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const clickX = (e.clientX - rect.left) * scaleX;
-        const clickY = (e.clientY - rect.top) * scaleY;
-
+        const scaleX = canvas.width / rect.width; const scaleY = canvas.height / rect.height;
+        const clickX = (e.clientX - rect.left) * scaleX; const clickY = (e.clientY - rect.top) * scaleY;
         const bbox = canvas._bannerBBox;
         if (bbox) {
             if (clickX >= bbox.x && clickX <= bbox.x + bbox.w && clickY >= bbox.y && clickY <= bbox.y + bbox.h) {
@@ -1501,7 +1561,6 @@ document.querySelectorAll('.zoomable-canvas').forEach(canvas => {
 });
 document.querySelector('.close-detail-modal')?.addEventListener('click', () => { detailModal.style.display = 'none'; });
 detailModal?.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.style.display = 'none'; });
-
 // ==================== 参数输入监听 ====================
 homeColorRadios.forEach(r => r.addEventListener('change', async e => { homeColor = e.target.value; await renderHomeCanvas(); }));
 myPageColorRadios.forEach(r => r.addEventListener('change', async e => { myPageColor = e.target.value; await renderMyPage(); }));
@@ -1539,6 +1598,11 @@ myActivityGrad1?.addEventListener('input', renderMyActivityCanvas); myActivityGr
 myActivitySubColor?.addEventListener('input', renderMyActivityCanvas); myActivityTitle1Color?.addEventListener('input', renderMyActivityCanvas); myActivityTitle2Color?.addEventListener('input', renderMyActivityCanvas); myActivityBtnColor?.addEventListener('input', renderMyActivityCanvas);
 peerSharingGrad1?.addEventListener('input', renderPeerSharingCanvas); peerSharingGrad2?.addEventListener('input', renderPeerSharingCanvas);
 peerSharingSubColor?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle1Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle2Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingBtnColor?.addEventListener('input', renderPeerSharingCanvas);
+// 绑定一刻设备 Banner 参数实时监听
+['yikeEquipGrad1', 'yikeEquipGrad2', 'yikeEquipTitleColor', 'yikeEquipSubColor', 'yikeEquipBtnBgColor', 'yikeEquipBtnTextColor'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', renderYikeEquipCanvas); if (el._pickrInstance) el._pickrInstance.on('change', renderYikeEquipCanvas); }
+});
 
 // ==================== 文件上传与取色 ====================
 function handleFileUpload(file, callback) {
@@ -1577,11 +1641,11 @@ bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src 
     }
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
     await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
+    await renderYikeEquipCanvas();
 });
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
-
 // ==================== ✨ 智能勾选辅助函数 ====================
 function autoSelectExportItems() {
     document.querySelectorAll('.export-item-chk').forEach(chk => chk.checked = false);
@@ -1621,16 +1685,24 @@ function autoSelectExportItems() {
     if (document.getElementById('peerSharingView')?.classList.contains('active')) {
         ['chkPeerSharingExport', 'chkPeerSharingPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
+    if (document.getElementById('yikeEquipView')?.classList.contains('active')) {
+        ['chkYikeEquipExport', 'chkYikeEquipPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
     const allChks = document.querySelectorAll('.export-item-chk');
     const selectAllChk = document.getElementById('selectAllExport');
     if (selectAllChk && allChks.length > 0) { selectAllChk.checked = Array.from(allChks).every(c => c.checked); }
 }
-
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
 
-async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn) {
-    if (!document.getElementById(chkId)?.checked || !canvas) return;
+async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force = false) {
+    const chkEl = document.getElementById(chkId);
+    // ✨ 修复关键：如果不强制导出，且没打勾或者压根没有复选框，才跳过
+    if (!force) {
+        if (!chkEl || !chkEl.checked) return;
+    }
+    if (!canvas) return;
+
     let chunks = window.abTestCopies ? window.abTestCopies[testKey] : null;
     if (chunks && chunks.length > 1) {
         let backups = inputRefs.map(ref => document.getElementById(ref.id).value);
@@ -1639,11 +1711,8 @@ async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, input
             inputRefs.forEach(ref => {
                 let val = chunk[ref.key];
                 if (val !== undefined) {
-                    if (ref.id === 'textCapsule') {
-                        document.getElementById(ref.id).value = formatAndLimitText(val || '去查看', 4);
-                    } else {
-                        document.getElementById(ref.id).value = formatAndLimitText(val, ref.limit || 99);
-                    }
+                    if (ref.id === 'textCapsule') document.getElementById(ref.id).value = formatAndLimitText(val || '去查看', 4);
+                    else document.getElementById(ref.id).value = formatAndLimitText(val, ref.limit || 99);
                 }
             });
             await renderFn();
@@ -1656,8 +1725,8 @@ async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, input
     }
 }
 
-async function exportCanvasOrMulti(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn) {
-    await exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn);
+async function exportCanvasOrMulti(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force = false) {
+    await exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force);
 }
 
 function initExportModal() {
@@ -1668,19 +1737,16 @@ function initExportModal() {
     const selectAllChk = document.getElementById('selectAllExport');
     const itemChks = document.querySelectorAll('.export-item-chk');
     if (!exportModal || !openExportModalBtn) return;
+
     openExportModalBtn.addEventListener('click', () => {
-        autoSelectExportItems();
-        exportModal.style.display = 'flex';
+        autoSelectExportItems(); exportModal.style.display = 'flex';
     });
     cancelExportBtn.addEventListener('click', () => { exportModal.style.display = 'none'; });
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
+
     if (selectAllChk) {
-        selectAllChk.addEventListener('change', (e) => {
-            itemChks.forEach(chk => chk.checked = e.target.checked);
-        });
-        itemChks.forEach(chk => {
-            chk.addEventListener('change', () => { selectAllChk.checked = Array.from(itemChks).every(c => c.checked); });
-        });
+        selectAllChk.addEventListener('change', (e) => { itemChks.forEach(chk => chk.checked = e.target.checked); });
+        itemChks.forEach(chk => { chk.addEventListener('change', () => { selectAllChk.checked = Array.from(itemChks).every(c => c.checked); }); });
     }
 
     confirmExportBtn.addEventListener('click', async () => {
@@ -1692,193 +1758,127 @@ function initExportModal() {
         if (!hasSelected) { alert('您没有勾选任何资源，请至少勾选一项！'); return; }
 
         const originalText = confirmExportBtn.innerText;
-        confirmExportBtn.innerText = '正在执行打包下载...';
-        confirmExportBtn.disabled = true;
+        confirmExportBtn.innerText = '正在执行打包下载...'; confirmExportBtn.disabled = true;
 
         try {
-            if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas));
-            if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas));
+            // == 网盘首页特殊处理：大图状态与气泡状态 ==
+            const homeViewActive = document.getElementById('homeView')?.classList.contains('active');
+            if (homeViewActive) {
+                if (document.getElementById('chkTopHomePhone')?.checked && topHomePageCanvas) previewFolder.file(`首页-大图状态预览.png`, await canvasToBlob(topHomePageCanvas));
+                if (document.getElementById('chkTopHomeBanner')?.checked && topHomeBannerCanvas) bannerFolder.file(`首页-大图状态Banner.png`, await canvasToBlob(topHomeBannerCanvas));
+                
+                let homeRefs = MODULE_INPUT_MAP['home'];
+                // 导出完整的日夜间气泡Banner
+                await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas, true);
+                await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas, true);
+                await exportCanvasOrMulti('chkHomePhone', lightCanvas, `首页-小图状态预览-${homeColor}`, 'home', previewFolder, homeRefs, renderHomeCanvas);
 
-            let homeRefs = MODULE_INPUT_MAP['home'];
-            await exportCanvasOrMulti('chkHomePhone', lightCanvas, `首页-小图状态预览-${homeColor}`, 'home', previewFolder, homeRefs, renderHomeCanvas);
-            await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
-            await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
-
+                // ✨✨✨ 单独导出纯透明底的配图切图 (只保留 420x282) ✨✨✨
+                const kvImg = userImgObj || await loadImage(config.heroImage);
+                if (kvImg && kvImg.width) {
+                    const standaloneCanvas = document.createElement('canvas');
+                    standaloneCanvas.width = 420; standaloneCanvas.height = 282;
+                    const sCtx = standaloneCanvas.getContext('2d');
+                    setupHighQualityContext(sCtx);
+                    const sScale = Math.min(420 / kvImg.width, 282 / kvImg.height);
+                    const sDrawW = kvImg.width * sScale; const sDrawH = kvImg.height * sScale;
+                    const sDrawX = (420 - sDrawW) / 2; const sDrawY = (282 - sDrawH) / 2;
+                    sCtx.save(); sCtx.beginPath(); sCtx.rect(0, 0, 420, 282); sCtx.clip();
+                    drawSharpenedImage(sCtx, kvImg, sDrawX, sDrawY, sDrawW, sDrawH, 0.3);
+                    sCtx.restore();
+                    bannerFolder.file(`首页-纯净配图独立切图(420x282).png`, await canvasToBlob(standaloneCanvas));
+                }
+            }
+            
             let feedRefs = MODULE_INPUT_MAP['feed'];
             await exportCanvasOrMulti('chkFeedBannerExport', feedBannerCanvas, `首页-Feed10出1banner`, 'feed', bannerFolder, feedRefs, renderFeedCanvas);
             await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
-
             let myPageRefs = MODULE_INPUT_MAP['myPage'];
             await exportCanvasOrMulti('chkMyPageBannerLight', myPageCanvas, `我的-Banner(日间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
             await exportCanvasOrMulti('chkMyPageBannerDark', myPageDarkCanvas, `我的-Banner(夜间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
             if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas));
-
             if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas));
             if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas));
-
             let mySpaceRefs = MODULE_INPUT_MAP['mySpace'];
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpaceExport', mySpaceExportCanvas, `我的空间-独立切图(1182x252)`, 'mySpace', bannerFolder, mySpaceRefs, renderMySpaceCanvas);
             if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpacePageExport', mySpacePageCanvas, `我的空间-页面预览`, 'mySpace', previewFolder, mySpaceRefs, renderMySpaceCanvas);
-
             let simpleScanRefs = MODULE_INPUT_MAP['simpleScan'];
             if (document.getElementById('chkSimpleScanExport')?.checked && simpleScanExportCanvas && simpleScanPageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkSimpleScanExport', simpleScanExportCanvas, `简单扫描-独立切图(1182x252)`, 'simpleScan', bannerFolder, simpleScanRefs, renderSimpleScanCanvas);
             if (document.getElementById('chkSimpleScanPageExport')?.checked && simpleScanPageCanvas && simpleScanPageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkSimpleScanPageExport', simpleScanPageCanvas, `简单扫描-页面预览`, 'simpleScan', previewFolder, simpleScanRefs, renderSimpleScanCanvas);
-
             let myActivityRefs = MODULE_INPUT_MAP['activity'];
             await exportCanvasOrMulti('chkMyActivityExport', myActivityExportCanvas, `活动中心-独立切图(670x320)`, 'activity', bannerFolder, myActivityRefs, renderMyActivityCanvas);
             await exportCanvasOrMulti('chkMyActivityPageExport', myActivityPageCanvas, `活动中心-页面预览`, 'activity', previewFolder, myActivityRefs, renderMyActivityCanvas);
-
             let peerSharingRefs = MODULE_INPUT_MAP['peerSharing'];
             await exportCanvasOrMulti('chkPeerSharingExport', peerSharingExportCanvas, `共享点对点-独立切图(670x320)`, 'peerSharing', bannerFolder, peerSharingRefs, renderPeerSharingCanvas);
             await exportCanvasOrMulti('chkPeerSharingPageExport', peerSharingPageCanvas, `共享点对点-页面预览`, 'peerSharing', previewFolder, peerSharingRefs, renderPeerSharingCanvas);
-
+            let yikeEquipRefs = MODULE_INPUT_MAP['yikeEquip'];
+            await exportCanvasOrMulti('chkYikeEquipExport', yikeEquipExportCanvas, `设备-独立切图(1125x270)`, 'yikeEquip', bannerFolder, yikeEquipRefs, renderYikeEquipCanvas);
+            await exportCanvasOrMulti('chkYikeEquipPageExport', yikeEquipPageCanvas, `设备-页面预览`, 'yikeEquip', previewFolder, yikeEquipRefs, renderYikeEquipCanvas);
+            
             const content = await zip.generateAsync({ type: 'blob' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(content);
-            a.download = `设计资源打包_${new Date().getTime()}.zip`;
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(content); a.download = `设计资源打包_${new Date().getTime()}.zip`; a.click();
             exportModal.style.display = 'none';
-
-        } catch (e) {
-            alert('导出出错，可能是图片跨域污染或内存不足：\n' + e);
-        } finally {
-            confirmExportBtn.innerText = originalText;
-            confirmExportBtn.disabled = false;
-        }
+        } catch (e) { alert('导出出错，可能是图片跨域污染或内存不足：\n' + e); } finally { confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; }
     });
 }
-
 function upgradeToFigmaColorPickers() {
     const colorInputs = document.querySelectorAll('input[type="color"]');
     colorInputs.forEach(input => {
-        const defaultValue = input.value;
-        input.type = 'text';
-        input.style.display = 'none';
-        const pickrEl = document.createElement('div');
-        input.parentNode.insertBefore(pickrEl, input);
+        const defaultValue = input.value; input.type = 'text'; input.style.display = 'none';
+        const pickrEl = document.createElement('div'); input.parentNode.insertBefore(pickrEl, input);
         const pickr = Pickr.create({
-            el: pickrEl,
-            theme: 'nano',
-            default: defaultValue,
+            el: pickrEl, theme: 'nano', default: defaultValue,
             swatches: ['#258AFF', '#079C04', '#FF5E00', '#FF014D', '#641AFF', '#FFFFFF', '#000000', 'rgba(0, 0, 0, 0.4)', 'rgba(255, 255, 255, 0.8)'],
             components: { preview: true, opacity: true, hue: true, interaction: { hex: true, rgba: true, input: true, save: false } }
         });
         input._pickrInstance = pickr;
-        pickr.on('change', (color) => {
-            const rgbaColor = color.toRGBA().toString(0);
-            input.value = rgbaColor;
-            input.dispatchEvent(new Event('input'));
-        });
+        pickr.on('change', (color) => { input.value = color.toRGBA().toString(0); input.dispatchEvent(new Event('input')); });
     });
 }
-
 // 灵魂启动：全量渲染与字体加载
 window.onload = async () => {
-    // 绑定映射字典，自动挂载事件
     Object.keys(MODULE_INPUT_MAP).forEach(moduleKey => {
-        MODULE_INPUT_MAP[moduleKey].forEach(ref => {
-            bindFormatter(ref.id, ref.limit, moduleKey, ref.key);
-        });
+        MODULE_INPUT_MAP[moduleKey].forEach(ref => { bindFormatter(ref.id, ref.limit, moduleKey, ref.key); });
     });
-
     upgradeToFigmaColorPickers();
     updateResourceDropdown('NA');
     initExportModal();
     bindCanvasClickToControl();
-
-    // ✨ 黑科技注入：无感添加【+】文件上传按钮
     const aiInputContainer = document.getElementById('aiInputContainer');
     if (aiInputContainer) {
         aiInputContainer.style.position = 'relative';
-
-        // 创建隐藏的 input file
-        const hiddenFileInput = document.createElement('input');
-        hiddenFileInput.type = 'file';
-        hiddenFileInput.style.display = 'none';
-        hiddenFileInput.accept = 'image/*,.pdf,.txt,.csv,.md,.html';
+        const hiddenFileInput = document.createElement('input'); hiddenFileInput.type = 'file'; hiddenFileInput.style.display = 'none'; hiddenFileInput.accept = 'image/*,.pdf,.txt,.csv,.md,.html';
         document.body.appendChild(hiddenFileInput);
-
-        // 创建悬浮的 + 号按钮
         const addFileBtn = document.createElement('div');
         addFileBtn.innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             <span style="font-size: 13px; margin-left: 4px; font-weight: 500;">添加文件</span>
         `;
-        addFileBtn.style.cssText = `
-            position: absolute;
-            right: 12px;
-            bottom: 12px;
-            display: flex;
-            align-items: center;
-            background: #f8fafc;
-            color: #641AFF;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        `;
-
-        addFileBtn.onmouseover = () => {
-            addFileBtn.style.background = '#f1f5f9';
-            addFileBtn.style.borderColor = '#cbd5e1';
-            addFileBtn.style.transform = 'translateY(-1px)';
-        };
-        addFileBtn.onmouseout = () => {
-            addFileBtn.style.background = '#f8fafc';
-            addFileBtn.style.borderColor = '#e2e8f0';
-            addFileBtn.style.transform = 'translateY(0)';
-        };
-
-        // 点击按钮触发隐藏的 file input
-        addFileBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // 防止冒泡
-            hiddenFileInput.click();
-        });
-
-        // 监听文件选择事件
+        addFileBtn.style.cssText = `position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; background: #f8fafc; color: #641AFF; padding: 6px 12px; border-radius: 20px; cursor: pointer; border: 1px solid #e2e8f0; transition: all 0.2s ease; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.02);`;
+        addFileBtn.onmouseover = () => { addFileBtn.style.background = '#f1f5f9'; addFileBtn.style.borderColor = '#cbd5e1'; addFileBtn.style.transform = 'translateY(-1px)'; };
+        addFileBtn.onmouseout = () => { addFileBtn.style.background = '#f8fafc'; addFileBtn.style.borderColor = '#e2e8f0'; addFileBtn.style.transform = 'translateY(0)'; };
+        addFileBtn.addEventListener('click', (e) => { e.stopPropagation(); hiddenFileInput.click(); });
         hiddenFileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 const file = e.target.files[0];
-                if (file.type.startsWith('image/')) {
-                    loadAiImage(file);
-                } else if (file.type === 'application/pdf' || file.name.match(/\.pdf$/i)) {
-                    processPdfFile(file);
-                } else if (file.name.match(/\.(html|md|txt|csv)$/i)) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        currentRichTextContext = event.target.result;
-                        aiPromptInput.value = `📄 [已成功读取需求文件：${file.name}]\n你可以直接点击解析，AI将读取底层文件内容。`;
-                    };
-                    reader.readAsText(file);
-                }
+                if (file.type.startsWith('image/')) loadAiImage(file);
+                else if (file.type === 'application/pdf' || file.name.match(/\.pdf$/i)) processPdfFile(file);
+                else if (file.name.match(/\.(html|md|txt|csv)$/i)) { const reader = new FileReader(); reader.onload = function (event) { currentRichTextContext = event.target.result; aiPromptInput.value = `📄 [已成功读取需求文件：${file.name}]\n你可以直接点击解析，AI将读取底层文件内容。`; }; reader.readAsText(file); }
             }
-            // 清空 value 允许重复选择同名文件
             hiddenFileInput.value = '';
         });
-
         aiInputContainer.appendChild(addFileBtn);
     }
-
     if ('fonts' in document) {
         try {
-            await document.fonts.load('10px "FZLanTingHeiS-R-GB"');
-            await document.fonts.load('10px "FZLanTingHeiS-R"');
-            await document.fonts.load('10px "FZLanTingHeiS-DB-GB"');
-            await document.fonts.load('10px "FZLanTingHeiS-DB"');
-            await document.fonts.load('10px "FZLanTingHeiS-H"');
-            await document.fonts.load('10px "FZLTHK"');
+            await document.fonts.load('10px "FZLanTingHeiS-R-GB"'); await document.fonts.load('10px "FZLanTingHeiS-R"');
+            await document.fonts.load('10px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('10px "FZLanTingHeiS-DB"');
+            await document.fonts.load('10px "FZHanZhenGuangBiaoS-GB"'); // SS 级专用字体预加载
+            await document.fonts.load('10px "FZLanTingHeiS-H"'); await document.fonts.load('10px "FZLTHK"');
             await document.fonts.ready;
-        } catch (e) {
-            console.warn("字体加载报错:", e);
-        }
+        } catch (e) { console.warn("字体加载报错:", e); }
     }
-
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
     await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
+    await renderYikeEquipCanvas();
 };

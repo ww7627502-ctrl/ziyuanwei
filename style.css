@@ -108,6 +108,12 @@
     font-weight: normal;
 }
 
+@font-face {
+    font-family: 'FZHanZhenGuangBiaoS-GB';
+    src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanZhenGuangBiaoS-GB.ttf') format('truetype');
+    font-weight: normal;
+}
+
 :root {
     --primary-color: #258AFF;
     --bg-color: #f2f5f8;

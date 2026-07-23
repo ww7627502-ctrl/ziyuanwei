@@ -109,6 +109,19 @@
                         </div>
                     </div>
                 </div>
+                <div id="yikeEquipView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看导出的纯净版大图 (1125x270)
+                    </div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">一刻设备 Banner <span
+                                    style="color:#E63F00;font-size:12px;">【SS级】</span></div>
+                            <canvas id="yikeEquipPageCanvas" class="phone-canvas zoomable-canvas"
+                                data-target="yikeEquip"></canvas>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="feedView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
@@ -414,6 +427,65 @@
                                 <div class="input-group">
                                     <span>按钮文案 (最多4字):</span><input type="text" id="feedBtnText" value="立即参加"
                                         maxlength="4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="yikeEquipControls" class="control-group">
+                    <div
+                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 视觉图(420x240)请在最上方<b>【全局基础配图】</b>统一上传。<br>
+                        <span style="color:#666;">系统会自动将此Banner垫在有透视洞口的页面图底层。</span>
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">设备 Banner 配置 (1125x270)</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">渐变底板颜色</div>
+                                <div
+                                    style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color"
+                                                id="yikeEquipGrad1" value="#AFF000"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color"
+                                                id="yikeEquipGrad2" value="#E6FAB2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">主标题 (最多9字):</span>
+                                        <input type="color" id="yikeEquipTitleColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="yikeEquipTitle" value="主标题最多九个文字" maxlength="9">
+                                </div>
+                                <div class="input-group">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题 (最多12字):</span>
+                                        <input type="color" id="yikeEquipSubColor" value="#000000"
+                                            style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="yikeEquipSub" value="副标题最多十二个文字" maxlength="12">
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title">按钮样式配置</div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">按钮文案 (最多4字):</span>
+                                    <input type="text" id="yikeEquipBtnText" value="按钮文字" maxlength="4">
+                                </div>
+                                <div
+                                    style="display: flex; gap: 16px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <div class="color-picker-wrap"><span>底色</span><input type="color"
+                                            id="yikeEquipBtnBgColor" value="#000000"></div>
+                                    <div class="color-picker-wrap"><span>字色</span><input type="color"
+                                            id="yikeEquipBtnTextColor" value="#FFFFFF"></div>
                                 </div>
                             </div>
                         </div>
@@ -730,6 +802,7 @@
         <canvas id="simpleScanExportCanvas"></canvas>
         <canvas id="myActivityExportCanvas"></canvas>
         <canvas id="peerSharingExportCanvas"></canvas>
+        <canvas id="yikeEquipExportCanvas"></canvas>
     </div>
 
     <!-- ==================== 大图详情 Modal ==================== -->
@@ -822,6 +895,14 @@
                         (670x320)</label>
                     <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked>
                         共享点对点-页面预览</label>
+                </div>
+                <div class="export-group">
+                    <div class="export-group-title">B1.1.5 NA - 设备banner <span class="export-badge ss">【SS级】</span>
+                    </div>
+                    <label><input type="checkbox" id="chkYikeEquipExport" class="export-item-chk" checked> 设备-独立切图
+                        (1125x270)</label>
+                    <label><input type="checkbox" id="chkYikeEquipPageExport" class="export-item-chk" checked> 设备-页面预览
+                        (透视叠加)</label>
                 </div>
             </div>
             <div class="export-modal-footer">
