@@ -82,54 +82,63 @@
     font-family: 'PingFangSC-Medium';
     src: url('https://cdn.jsdelivr.net/gh/shenweiyan/PingFangSC-Fonts/PingFang%20Medium.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZLanTingHeiS-R';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-R-GB.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZLanTingHeiS-H';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-H-GB.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZLanTingHeiS-DB';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLanTingHeiS-DB-GB.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZLTHK';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZLTHK.TTF') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZHanZhenGuangBiaoS-GB';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanZhenGuangBiaoS-GB.ttf') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZHanYunHeiS-M';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanYHJW-M.TTF') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZHanYunHeiS-L';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanYHJW-L.TTF') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'FZHZGBJW';
     src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHZGBJW.TTF') format('truetype');
     font-weight: normal;
+    font-display: swap;
 }
 
 :root {

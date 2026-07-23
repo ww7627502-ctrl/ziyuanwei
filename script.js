@@ -87,7 +87,7 @@ const IMPLEMENTED_RESOURCE_PRIORITY = {
         NA: []
     }
 };
-const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 10 };
+const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 8 };
 const config = {
     baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
     topHomePageUI: 'assets/top-of-the-home-page.png',
@@ -260,15 +260,61 @@ const MODULE_INPUT_MAP = {
     'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
     'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }],
     'yikeEquip': [{ id: 'yikeEquipTitle', key: 'title', limit: 9 }, { id: 'yikeEquipSub', key: 'sub', limit: 12 }, { id: 'yikeEquipBtnText', key: 'btn', limit: 4 }],
+    'yikeHome': [{ id: 'yikeHomeTitle', key: 'title', limit: 8 }, { id: 'yikeHomeSub', key: 'sub', limit: 11 }, { id: 'yikeHomeSubHighlight', key: 'highlight', limit: 11 }, { id: 'yikeHomeTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeHomeSubColor', key: 'subColor', limit: 7 }, { id: 'yikeHomeSubHighlightColor', key: 'highlightColor', limit: 7 }],
     'yikeCash': [{ id: 'yikeCashTitle', key: 'title', limit: 12 }, { id: 'yikeCashHighlight', key: 'highlight', limit: 12 }, { id: 'yikeCashTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeCashHighlightColor', key: 'highlightColor', limit: 7 }, { id: 'yikeCashGrad1', key: 'grad1', limit: 7 }, { id: 'yikeCashGrad2', key: 'grad2', limit: 7 }],
 };
 const MODULE_RENDER_FNS = {
     'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
-    'yikeEquip': renderYikeEquipCanvas,
+    'yikeEquip': renderYikeEquipCanvas, 'yikeHome': renderYikeHomeCanvas,
     'yikeCash': renderYikeCashCanvas
 };
+const AI_RESOURCE_MATCHERS = [
+    { resource: 'na_home', bu: 'wangpan', label: 'A1.1.3 NA - 13.14首页顶部沉浸banner', patterns: [/A\s*1\.1\.3/i, /13\.14\s*首页顶部沉浸\s*banner/i, /首页顶部沉浸\s*banner/i] },
+    { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/] },
+    { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i] },
+    { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索\s*icon/i] },
+    { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间/简单扫描banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /简单扫描/i] },
+    { resource: 'dev_1_1_17', bu: 'wangpan', label: 'A1.1.17 NA - 活动中心', patterns: [/A\s*1\.1\.17/i, /活动中心/i] },
+    { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i] },
+    { resource: 'yike_4', bu: 'yike', label: 'B1.1.4 NA - 首页banner', patterns: [/B\s*1\.1\.4/i, /一刻.*首页\s*banner/i, /一刻相册.*首页/i] },
+    { resource: 'yike_5', bu: 'yike', label: 'B1.1.5 NA - 设备banner', patterns: [/B\s*1\.1\.5/i, /一刻.*设备\s*banner/i] },
+    { resource: 'yike_7', bu: 'yike', label: 'B1.1.7 NA - 收银台banner', patterns: [/B\s*1\.1\.7/i, /一刻.*收银台\s*banner/i, /一刻.*收银台/i] }
+];
+function normalizeDemandTextForMatch(str = '') {
+    return String(str)
+        .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+function inferResourcesFromDemandText(text) {
+    const normalized = normalizeDemandTextForMatch(text);
+    if (!normalized) return [];
+    const matched = [];
+    AI_RESOURCE_MATCHERS.forEach(item => {
+        if (item.patterns.some(pattern => pattern.test(normalized))) matched.push(item.resource);
+    });
+    return [...new Set(matched)];
+}
+function getBusinessForResource(resource) {
+    const match = AI_RESOURCE_MATCHERS.find(item => item.resource === resource);
+    return match?.bu || (resource?.startsWith('yike_') ? 'yike' : resource?.startsWith('chuhai_') ? 'chuhai' : 'wangpan');
+}
+function getDominantBusinessFromResources(resources) {
+    const counts = resources.reduce((acc, resource) => {
+        const bu = getBusinessForResource(resource);
+        acc[bu] = (acc[bu] || 0) + 1;
+        return acc;
+    }, {});
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (!entries.length) return null;
+    if (entries.length === 1 || entries[0][1] > entries[1][1]) return entries[0][0];
+    return currentBU;
+}
 // ==================== ✨ 核心工具：智能半角统计、逗号转空格、打字实时渲染 ====================
 function formatAndLimitText(str, maxLen) {
     if (!str) return '';
@@ -394,14 +440,15 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
             'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
             'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
             'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
-            'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF',
+            'myActivityGrad1': matchedTheme.grad1, 'myActivityGrad2': matchedTheme.grad2,
             'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
-            'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
-            'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
+            'peerSharingGrad1': matchedTheme.grad1, 'peerSharingGrad2': matchedTheme.grad2,
+            'peerSharingTitle1Color': '#000000', 'peerSharingTitle2Color': '#000000', 'peerSharingSubColor': '#777777',
         },
         yike: {
             'yikeEquipGrad1': matchedTheme.grad1, 'yikeEquipGrad2': matchedTheme.grad2,
             'yikeCashGrad1': matchedTheme.grad1, 'yikeCashGrad2': matchedTheme.grad2,
+            'yikeHomeTitleColor': '#000000', 'yikeHomeSubColor': '#000000', 'yikeHomeSubHighlightColor': matchedTheme.textHighlight,
         }
     };
     const colorMap = colorMapByBU[targetBU] || colorMapByBU.wangpan;
@@ -426,7 +473,8 @@ function bindCanvasClickToControl() {
         'homeView': 'homeControls', 'myPageView': 'myPageControls', 'feedView': 'feedControls',
         'searchIconView': 'searchIconControls', 'mySpaceView': 'mySpaceControls',
         'myActivityView': 'myActivityControls', 'peerSharingView': 'peerSharingControls',
-        'yikeEquipView': 'yikeEquipControls'
+        'yikeHomeView': 'yikeHomeControls', 'yikeEquipView': 'yikeEquipControls',
+        'yikeCashView': 'yikeCashControls'
     };
     Object.keys(mappings).forEach(viewId => {
         const viewEl = document.getElementById(viewId);
@@ -471,11 +519,12 @@ async function processPdfFile(file) {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
         let fullText = "";
-        for (let i = 1; i <= Math.min(pdf.numPages, 3); i++) {
+        const maxPages = Math.min(pdf.numPages, 10);
+        for (let i = 1; i <= maxPages; i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
-            const strings = textContent.items.map(item => item.str);
-            fullText += strings.join(" ") + "\n";
+            const strings = textContent.items.map(item => item.str).filter(Boolean);
+            fullText += `\n--- PDF Page ${i} ---\n` + strings.join(" ") + "\n";
         }
         currentRichTextContext = fullText;
         const page1 = await pdf.getPage(1);
@@ -487,7 +536,7 @@ async function processPdfFile(file) {
         currentImageBase64 = canvas.toDataURL('image/jpeg', 0.5);
         aiPreviewImg.src = currentImageBase64;
         aiImagePreview.style.display = 'block';
-        aiPromptInput.value = `📄 [已成功读取 PDF：${file.name}]\n(已自动提取文字 + 首页截图)，您可以直接点击解析按钮了！`;
+        aiPromptInput.value = `📄 [已成功读取 PDF：${file.name}]\n(已自动提取前 ${maxPages} 页文字 + 首页截图)，您可以直接点击解析按钮了！`;
     } catch (e) {
         console.error("PDF 解析失败:", e);
         aiPromptInput.value = `❌ PDF 读取失败，请尝试直接复制表格文字粘贴。`;
@@ -642,30 +691,39 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
     let userContent = [];
     let textPayload = `【任务指令】: 请仔细查看我提供的图片截图或底层文本。这是一个UI设计需求文档。请提取其中的文案，并匹配到对应的画板模块。\n`;
     const fixHeteronyms = (str) => str ? str.replace(/https?:\/\/[^\s]+/g, '[链接已过滤]').replace(/⼼/g, '心').replace(/⻚/g, '页').replace(/⽹/g, '网').replace(/⻛/g, '风').replace(/⾸/g, '首').replace(/⻔/g, '门') : '';
+    const isAiStatusText = (str) => str && (str.includes('[正在') || str.includes('[已成功读取') || str.includes('PDF 读取失败'));
     let cleanRawText = fixHeteronyms(rawText);
     let cleanRichText = fixHeteronyms(currentRichTextContext);
-    if (cleanRawText && !cleanRawText.includes('[正在') && !cleanRawText.includes('[已成功读取')) {
+    const demandTextForMatch = `${isAiStatusText(cleanRawText) ? '' : cleanRawText}\n${cleanRichText}`;
+    const inferredResources = inferResourcesFromDemandText(demandTextForMatch);
+    if (inferredResources.length > 0) {
+        const labels = inferredResources.map(resource => AI_RESOURCE_MATCHERS.find(item => item.resource === resource)?.label || resource);
+        textPayload += `【系统本地预匹配到的资源位编号】:\n${labels.join('\n')}\n请优先按这些资源位输出对应 JSON 字段，不要因为截图里还有其他示例区域而串到别的模块。\n\n`;
+    }
+    if (cleanRawText && !isAiStatusText(cleanRawText)) {
         textPayload += `【用户手动输入的附加说明】:\n${cleanRawText}\n\n`;
     }
     if (cleanRichText) {
         textPayload += `【系统自动提取的底层表格/PDF原本文本】:\n${cleanRichText}\n\n`;
     }
     userContent.push({ type: "text", text: textPayload });
-    if (currentImageBase64 && !cleanRichText) {
+    if (currentImageBase64) {
         userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } });
     }
     console.log("🚀 即将发给 AI 的文本体 (给AI减负后的纯净版):", textPayload);
     const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
-【映射关系】(注意识别可能带有"-banner"或PDF提取错别字的情况):
-- "首页banner" / "⾸⻚banner" / "首页沉浸" -> "home"
-- "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
-- "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
-- "活动中心" -> "activity"
-- "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
-- "简单扫描" -> "simpleScan"
-- "共享点对点" / "点对点" -> "peerSharing"
-- "设备banner" / "设备" -> "yikeEquip"
-- "收银台banner" / "收银台" -> "yikeCash"
+【映射关系】(资源编号优先级最高，注意识别可能带有"-banner"或PDF提取错别字的情况):
+- "A1.1.3" / "13.14首页顶部沉浸banner" / "首页沉浸" -> "home"
+- "A1.1.4" / "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
+- "A1.1.5" / "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
+- "A1.1.13" / "搜索框icon" / "搜索icon" -> "searchIcon"
+- "A1.1.16" + "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
+- "A1.1.16" + "简单扫描" -> "simpleScan"
+- "A1.1.17" / "活动中心" -> "activity"
+- "A1.1.18" / "共享点对点" / "点对点" -> "peerSharing"
+- "B1.1.4" / "一刻相册NA端B1.1.4" / "一刻首页banner" -> "yikeHome"
+- "B1.1.5" / "设备banner" / "设备" -> "yikeEquip"
+- "B1.1.7" / "收银台banner" / "收银台" -> "yikeCash"
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
 2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
@@ -686,6 +744,8 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
     "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
+    "searchIcon": [ { "matched": true } ],
+    "yikeHome": [ { "title": "主标题", "sub": "副标题", "highlight": "高亮词", "titleColor": "#000000", "subColor": "#000000", "highlightColor": "#E63F00" } ],
     "yikeEquip": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "yikeCash": [ { "title": "主标题", "highlight": "高亮词", "titleColor": "#000000", "highlightColor": "#EE3A31", "grad1": "#FFFAEF", "grad2": "#FEEFBA" } ]
 }`;
@@ -709,7 +769,16 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
+        inferredResources.forEach(resource => recognizedModules.add(resource));
+        const inferredDemandText = normalizeDemandTextForMatch(demandTextForMatch);
+        if (inferredResources.includes('dev_1_1_16')) {
+            foundSimpleScan = /简单扫描/.test(inferredDemandText);
+            foundMySpace = /任务中心|任务中|我的空间|分享页/.test(inferredDemandText);
+        }
         if (config.theme) triggerThemeSwitch(config.theme, getActiveBusinessLineKey());
+        if (config.searchIcon && config.searchIcon.length > 0) {
+            recognizedModules.add('dev_1_1_13');
+        }
         if (config.home && config.home.length > 0) {
             recognizedModules.add('na_home');
             window.abTestCopies['home'] = config.home; window.abTestActiveIndex['home'] = 0;
@@ -727,7 +796,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.capsule && first.capsule !== "null") document.getElementById('textCapsule').value = formatAndLimitText(first.capsule, 4);
             if (first.title) document.getElementById('myPageTitle').value = formatAndLimitText(first.title, 9);
             if (first.highlight) document.getElementById('myPageHighlight').value = formatAndLimitText(first.highlight, 9);
-            if (first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 10);
+            if (first.sub) document.getElementById('myPageSubtitle').value = formatAndLimitText(first.sub, 8);
             renderABTestSwitcher('myPageControls', 'myPage');
         }
         if (config.feed && config.feed.length > 0) {
@@ -780,6 +849,18 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.btn) document.getElementById('peerSharingBtnText').value = formatAndLimitText(first.btn, 4);
             renderABTestSwitcher('peerSharingControls', 'peerSharing');
         }
+        if (config.yikeHome && config.yikeHome.length > 0) {
+            recognizedModules.add('yike_4');
+            window.abTestCopies['yikeHome'] = config.yikeHome; window.abTestActiveIndex['yikeHome'] = 0;
+            const first = config.yikeHome[0];
+            if (first.title) document.getElementById('yikeHomeTitle').value = formatAndLimitText(first.title, 8);
+            if (first.sub) document.getElementById('yikeHomeSub').value = formatAndLimitText(first.sub, 11);
+            if (first.highlight) document.getElementById('yikeHomeSubHighlight').value = formatAndLimitText(first.highlight, 11);
+            if (first.titleColor) document.getElementById('yikeHomeTitleColor').value = first.titleColor;
+            if (first.subColor) document.getElementById('yikeHomeSubColor').value = first.subColor;
+            if (first.highlightColor) document.getElementById('yikeHomeSubHighlightColor').value = first.highlightColor;
+            renderABTestSwitcher('yikeHomeControls', 'yikeHome');
+        }
         if (config.yikeEquip && config.yikeEquip.length > 0) {
             recognizedModules.add('yike_5');
             window.abTestCopies['yikeEquip'] = config.yikeEquip; window.abTestActiveIndex['yikeEquip'] = 0;
@@ -802,16 +883,23 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             if (first.grad2) document.getElementById('yikeCashGrad2').value = first.grad2;
             renderABTestSwitcher('yikeCashControls', 'yikeCash');
         }
-            await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
-        await renderMySpaceCanvas(); await renderSimpleScanCanvas();
-        await renderMyActivityCanvas(); await renderPeerSharingCanvas(); await renderYikeEquipCanvas(); await renderYikeCashCanvas(); await renderYikeHomeCanvas();
         if (recognizedModules.size > 0) {
-            const modules = Array.from(recognizedModules);
+            const allModules = Array.from(recognizedModules);
+            const targetBU = getDominantBusinessFromResources(allModules);
+            if (targetBU && targetBU !== currentBU) {
+                setActiveBusinessLine(targetBU);
+            }
+            const sameBusinessModules = allModules.filter(mod => getBusinessForResource(mod) === currentBU);
+            const modules = sameBusinessModules.length > 0 ? sameBusinessModules : allModules;
+            await renderResourceCanvases(modules, { foundMySpace, foundSimpleScan });
             [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
             developingPrompt.classList.add('hidden');
             document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
             const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
             if (firstEl) firstEl.classList.add('active');
+            await switchResourceView(modules[0]);
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            developingPrompt.classList.add('hidden');
             const container = document.getElementById('canvasContainer');
             if (modules.length > 1) {
                 container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px';
@@ -828,13 +916,16 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 else if (mod === 'dev_1_1_13') { viewId = 'searchIconView'; ctrlId = 'searchIconControls'; }
                 else if (mod === 'dev_1_1_17') { viewId = 'myActivityView'; ctrlId = 'myActivityControls'; }
                 else if (mod === 'dev_1_1_18') { viewId = 'peerSharingView'; ctrlId = 'peerSharingControls'; }
+                else if (mod === 'yike_4') { viewId = 'yikeHomeView'; ctrlId = 'yikeHomeControls'; }
                 else if (mod === 'yike_5') { viewId = 'yikeEquipView'; ctrlId = 'yikeEquipControls'; }
+                else if (mod === 'yike_7') { viewId = 'yikeCashView'; ctrlId = 'yikeCashControls'; }
                 else if (mod === 'dev_1_1_16') {
                     viewId = 'mySpaceView'; ctrlId = 'mySpaceControls';
                     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
                     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
-                    if (spaceCard) spaceCard.style.display = foundMySpace ? '' : 'none';
-                    if (scanCard) scanCard.style.display = foundSimpleScan ? '' : 'none';
+                    const showBothA116 = !foundMySpace && !foundSimpleScan;
+                    if (spaceCard) spaceCard.style.display = (showBothA116 || foundMySpace) ? '' : 'none';
+                    if (scanCard) scanCard.style.display = (showBothA116 || foundSimpleScan) ? '' : 'none';
                 }
                 if (viewId) document.getElementById(viewId).classList.add('active');
                 if (ctrlId) document.getElementById(ctrlId).classList.add('active');
@@ -1561,7 +1652,41 @@ function updateResourceDropdown(terminalId) {
     const activeItem = resourceList.querySelector('.active') || resourceList.querySelector('.resource-item');
     if (activeItem) switchResourceView(activeItem.dataset.value); else switchResourceView(null);
 }
-const renderedPages = { home: true };
+const renderedPages = {};
+async function renderActiveBusinessCanvases() {
+    if (currentBU === 'yike') {
+        if (renderedPages.yikeHome) await renderYikeHomeCanvas();
+        if (renderedPages.yikeEquip) await renderYikeEquipCanvas();
+        if (renderedPages.yikeCash) await renderYikeCashCanvas();
+        return;
+    }
+    if (renderedPages.home) await renderHomeCanvas();
+    if (renderedPages.myPage) await renderMyPage();
+    if (renderedPages.feed) await renderFeedCanvas();
+    if (renderedPages.searchIcon) await renderSearchIcon();
+    if (renderedPages.mySpace) { await renderMySpaceCanvas(); await renderSimpleScanCanvas(); }
+    if (renderedPages.myActivity) await renderMyActivityCanvas();
+    if (renderedPages.peerSharing) await renderPeerSharingCanvas();
+}
+async function renderResourceCanvases(resources, options = {}) {
+    const uniqueResources = [...new Set(resources)];
+    for (const resource of uniqueResources) {
+        if (resource === 'na_home') { await renderHomeCanvas(); renderedPages.home = true; }
+        else if (resource === 'na_mypage') { await renderMyPage(); renderedPages.myPage = true; }
+        else if (resource === 'na_feed') { await renderFeedCanvas(); renderedPages.feed = true; }
+        else if (resource === 'dev_1_1_13') { await renderSearchIcon(); renderedPages.searchIcon = true; }
+        else if (resource === 'dev_1_1_16') {
+            const showBoth = !options.foundMySpace && !options.foundSimpleScan;
+            if (showBoth || options.foundMySpace) await renderMySpaceCanvas();
+            if (showBoth || options.foundSimpleScan) await renderSimpleScanCanvas();
+            renderedPages.mySpace = true;
+        } else if (resource === 'dev_1_1_17') { await renderMyActivityCanvas(); renderedPages.myActivity = true; }
+        else if (resource === 'dev_1_1_18') { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+        else if (resource === 'yike_4') { await renderYikeHomeCanvas(); renderedPages.yikeHome = true; }
+        else if (resource === 'yike_5') { await renderYikeEquipCanvas(); renderedPages.yikeEquip = true; }
+        else if (resource === 'yike_7') { await renderYikeCashCanvas(); renderedPages.yikeCash = true; }
+    }
+}
 async function switchResourceView(selected) {
     [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
@@ -1608,7 +1733,7 @@ async function switchResourceView(selected) {
     } else if (selected === 'yike_5') {
         if (yikeEquipControls) yikeEquipControls.classList.add('active');
         if (yikeEquipView) yikeEquipView.classList.add('active');
-        if (!renderedPages.yikeEquip) { await renderYikeEquipCanvas(); await renderYikeHomeCanvas(); renderedPages.yikeEquip = true; }
+        if (!renderedPages.yikeEquip) { await renderYikeEquipCanvas(); renderedPages.yikeEquip = true; }
     } else if (selected === 'yike_7') {
         if (yikeCashControls) yikeCashControls.classList.add('active');
         if (yikeCashView) yikeCashView.classList.add('active');
@@ -1618,26 +1743,30 @@ async function switchResourceView(selected) {
     }
 }
 const buBtns = document.querySelectorAll('.bu-btn');
+function setActiveBusinessLine(bu) {
+    const targetBtn = document.querySelector(`.bu-btn[data-bu="${bu}"]`);
+    if (!targetBtn) return;
+    buBtns.forEach(b => b.classList.remove('active'));
+    targetBtn.classList.add('active');
+    currentBU = bu;
+
+    Object.keys(renderedPages).forEach(key => { renderedPages[key] = false; });
+    syncCurrentBusinessUploadState();
+
+    if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
+        document.documentElement.style.setProperty('--primary-color', '#258AFF');
+        wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
+        updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
+        if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
+    } else {
+        document.documentElement.style.setProperty('--primary-color', '#87B4FF');
+        wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');
+        [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    }
+}
 buBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        buBtns.forEach(b => b.classList.remove('active'));
-        const currentBtn = e.currentTarget; currentBtn.classList.add('active');
-        currentBU = currentBtn.dataset.bu;
-
-        Object.keys(renderedPages).forEach(key => { renderedPages[key] = false; });
-        syncCurrentBusinessUploadState();
-
-        if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
-            if (currentBU === 'yike') document.documentElement.style.setProperty('--primary-color', '#258AFF');
-            else if (currentBU === 'chuhai') document.documentElement.style.setProperty('--primary-color', '#258AFF');
-            else document.documentElement.style.setProperty('--primary-color', '#258AFF');
-            wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
-            updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
-            if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
-        } else {
-            document.documentElement.style.setProperty('--primary-color', '#87B4FF');
-            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
-        }
+        setActiveBusinessLine(e.currentTarget.dataset.bu);
     });
 });
 const terminalBtns = document.querySelectorAll('.terminal-btn');
@@ -1811,9 +1940,7 @@ bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src 
             }
         }
     }
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
-    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-    await renderYikeEquipCanvas(); await renderYikeCashCanvas(); await renderYikeHomeCanvas();
+    await renderActiveBusinessCanvases();
 });
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
@@ -1886,6 +2013,28 @@ function autoSelectExportItems() {
 }
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
+const externalScriptPromises = {};
+function loadExternalScriptOnce(src) {
+    if (externalScriptPromises[src]) return externalScriptPromises[src];
+    externalScriptPromises[src] = new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+            existing.addEventListener('load', resolve, { once: true });
+            existing.addEventListener('error', reject, { once: true });
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+    return externalScriptPromises[src];
+}
+async function ensureJSZipLoaded() {
+    if (typeof JSZip !== 'undefined') return;
+    await loadExternalScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+}
 
 async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force = false) {
     const chkEl = document.getElementById(chkId);
@@ -1896,6 +2045,7 @@ async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, input
     if (!canvas) return;
 
     let chunks = window.abTestCopies ? window.abTestCopies[testKey] : null;
+    inputRefs = inputRefs || [];
     if (chunks && chunks.length > 1) {
         let backups = inputRefs.map(ref => document.getElementById(ref.id).value);
         for (let i = 0; i < chunks.length; i++) {
@@ -1943,7 +2093,11 @@ function initExportModal() {
     }
 
     confirmExportBtn.addEventListener('click', async () => {
-        if (typeof JSZip === 'undefined') return alert('加载 ZIP 库失败，请检查网络');
+        try {
+            await ensureJSZipLoaded();
+        } catch (e) {
+            return alert('加载 ZIP 库失败，请检查网络');
+        }
         const zip = new JSZip();
         const previewFolder = zip.folder("带壳预览图");
         const bannerFolder = zip.folder("纯净Banner切图");
@@ -2012,8 +2166,9 @@ function initExportModal() {
             await exportCanvasOrMulti('chkYikeCashExport', yikeCashExportCanvas, `收银台-独立切图(670x78)`, 'yikeCash', bannerFolder, yikeCashRefs, renderYikeCashCanvas);
             await exportCanvasOrMulti('chkYikeCashPageExport', yikeCashPageCanvas, `收银台-页面预览`, 'yikeCash', previewFolder, yikeCashRefs, renderYikeCashCanvas);
             
-            await exportCanvasOrMulti('chkYikeHomeExport', yikeHomeExportCanvas, `首页banner-独立切图(1170x624)`, 'yikeHome', bannerFolder, null, renderYikeHomeCanvas);
-            await exportCanvasOrMulti('chkYikeHomePageExport', yikeHomePageCanvas, `首页banner-页面预览`, 'yikeHome', previewFolder, null, renderYikeHomeCanvas);
+            let yikeHomeRefs = MODULE_INPUT_MAP['yikeHome'];
+            await exportCanvasOrMulti('chkYikeHomeExport', yikeHomeExportCanvas, `首页banner-独立切图(1170x624)`, 'yikeHome', bannerFolder, yikeHomeRefs, renderYikeHomeCanvas);
+            await exportCanvasOrMulti('chkYikeHomePageExport', yikeHomePageCanvas, `首页banner-页面预览`, 'yikeHome', previewFolder, yikeHomeRefs, renderYikeHomeCanvas);
 
             
             const content = await zip.generateAsync({ type: 'blob' });
@@ -2070,18 +2225,22 @@ window.onload = async () => {
         });
         aiInputContainer.appendChild(addFileBtn);
     }
-    if ('fonts' in document) {
+    const warmFonts = async () => {
+        if (!('fonts' in document)) return;
         try {
-            await document.fonts.load('10px "FZLanTingHeiS-R-GB"'); await document.fonts.load('10px "FZLanTingHeiS-R"');
-            await document.fonts.load('10px "FZLanTingHeiS-DB-GB"'); await document.fonts.load('10px "FZLanTingHeiS-DB"');
-            await document.fonts.load('10px "FZHanZhenGuangBiaoS-GB"'); // SS 级专用字体预加载
-            await document.fonts.load('10px "FZLanTingHeiS-H"'); await document.fonts.load('10px "FZLTHK"');
-            await document.fonts.ready;
+            await Promise.all([
+                document.fonts.load('10px "FZLanTingHeiS-R-GB"'),
+                document.fonts.load('10px "FZLanTingHeiS-R"'),
+                document.fonts.load('10px "FZLanTingHeiS-DB-GB"'),
+                document.fonts.load('10px "FZLanTingHeiS-DB"'),
+                document.fonts.load('10px "FZHanZhenGuangBiaoS-GB"'),
+                document.fonts.load('10px "FZLanTingHeiS-H"'),
+                document.fonts.load('10px "FZLTHK"')
+            ]);
         } catch (e) { console.warn("字体加载报错:", e); }
-    }
-    await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
-    await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-    await renderYikeEquipCanvas(); await renderYikeHomeCanvas();
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(warmFonts, { timeout: 2000 });
+    else setTimeout(warmFonts, 800);
 };
 
 // ==================== 🛠️ 一刻首页：Banner (SS级) ====================
