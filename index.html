@@ -123,6 +123,30 @@
                     </div>
                 </div>
 
+                <div id="yikeCashView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看导出的纯净版大图 (670x78)
+                    </div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">一刻收银台 Banner <span style="color:#E63F00;font-size:12px;">【SS级】</span></div>
+                            <canvas id="yikeCashPageCanvas" class="phone-canvas zoomable-canvas" data-target="yikeCash"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="yikeHomeView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看导出的纯净版大图 (1170x624)
+                    </div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">一刻首页 Banner <span style="color:#E63F00;font-size:12px;">【SS级】</span></div>
+                            <canvas id="yikeHomePageCanvas" class="phone-canvas zoomable-canvas" data-target="yikeHome"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="feedView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图中的banner可查看纯净版大图</div>
@@ -492,6 +516,88 @@
                     </div>
                 </div>
 
+                <div id="yikeCashControls" class="control-group">
+                    <div class="control-scroll-wrapper">
+                        <div class="control-scroll-content">
+                            <div class="sidebar-section">
+                                <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">Banner 底板 (670x78)</div>
+                                <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 12px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                                    👉 视觉图(156x78)请在最上方<b>【全局基础配图】</b>统一上传。<br>
+                                    <span style="color:#666;">系统会自动将此 Banner 画在 670x78 的圆角底板中。</span>
+                                </div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="yikeCashGrad1" value="#FFFAEF"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="yikeCashGrad2" value="#FEEFBA"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">标题 (最多12字):</span>
+                                        <input type="color" id="yikeCashTitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="yikeCashTitle" value="标题文字最多12个字" maxlength="12">
+                                </div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">高亮文字 (可为空):</span>
+                                    <input type="text" id="yikeCashHighlight" value="12" maxlength="12" placeholder="输入要标红的字词">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">高亮文字颜色:</span>
+                                        <input type="color" id="yikeCashHighlightColor" value="#EE3A31" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="yikeHomeControls" class="control-group">
+                    <div class="control-scroll-wrapper">
+                        <div class="control-scroll-content">
+                            <div class="sidebar-section">
+                                <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">Banner 底图 (1170x624)</div>
+                                <label id="yikeHomeBgUploadDropZone" class="upload-drop-zone" for="yikeHomeBgUpload">
+                                    <img id="yikeHomeBgPreviewImg" class="upload-preview-img" src="assets/photo-home-beijing.png" alt="底图预览">
+                                    <span class="upload-text">点击或将图片拖拽到此处替换</span>
+                                    <input type="file" id="yikeHomeBgUpload" style="display:none;" accept="image/png, image/jpeg">
+                                </label>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title" style="margin-bottom: 12px;">文案与颜色配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">主标题 (最多8字):</span>
+                                        <input type="color" id="yikeHomeTitleColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="yikeHomeTitle" value="主标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">副标题 (最多11字):</span>
+                                        <input type="color" id="yikeHomeSubColor" value="#000000" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="yikeHomeSub" value="副标题最多11个字" maxlength="11">
+                                </div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">副标题高亮文字:</span>
+                                    <input type="text" id="yikeHomeSubHighlight" value="文字" placeholder="输入要高亮的文字">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">高亮文字颜色:</span>
+                                        <input type="color" id="yikeHomeSubHighlightColor" value="#E63F00" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">搜索框 icon 配置</div>
@@ -803,6 +909,8 @@
         <canvas id="myActivityExportCanvas"></canvas>
         <canvas id="peerSharingExportCanvas"></canvas>
         <canvas id="yikeEquipExportCanvas"></canvas>
+        <canvas id="yikeCashExportCanvas"></canvas>
+        <canvas id="yikeHomeExportCanvas"></canvas>
     </div>
 
     <!-- ==================== 大图详情 Modal ==================== -->
@@ -828,7 +936,7 @@
                             style="cursor: pointer; width: 16px; height: 16px;"> 全选 / 取消全选
                     </label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.3 NA - 13.14首页顶部沉浸banner <span
                             class="export-badge ss">【SS级】</span></div>
                     <label><input type="checkbox" id="chkTopHomePhone" class="export-item-chk" checked>
@@ -843,7 +951,7 @@
                     <label><input type="checkbox" id="chkHomeKV" class="export-item-chk" checked> 首页-独立切图
                         (420x282)</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.4 NA - 首页feed 10出1 <span class="export-badge ss">【SS级】</span>
                     </div>
                     <label><input type="checkbox" id="chkFeedBannerExport" class="export-item-chk" checked>
@@ -851,7 +959,7 @@
                     <label><input type="checkbox" id="chkFeedPhone" class="export-item-chk" checked>
                         首页-Feed10出1预览</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.5 NA - 我的页面banner <span class="export-badge s">【S级】</span>
                     </div>
                     <label><input type="checkbox" id="chkMyPageBannerLight" class="export-item-chk" checked>
@@ -860,7 +968,7 @@
                         我的-Banner(夜间)</label>
                     <label><input type="checkbox" id="chkMyPagePhone" class="export-item-chk" checked> 我的-预览</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"
                             style="color:#258AFF;">【A级】</span></div>
                     <label><input type="checkbox" id="chkSearchIconExport" class="export-item-chk" checked> 搜索框-独立切图
@@ -868,7 +976,7 @@
                     <label><input type="checkbox" id="chkSearchPageExport" class="export-item-chk" checked>
                         搜索框-页面预览</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.16 NA - 我的空间/简单扫描 <span class="export-badge"
                             style="color:#258AFF;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMySpaceExport" class="export-item-chk" checked> 我的空间-独立切图
@@ -880,7 +988,7 @@
                     <label><input type="checkbox" id="chkSimpleScanPageExport" class="export-item-chk" checked>
                         简单扫描-页面预览</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.17 NA - 活动中心 <span class="export-badge"
                             style="color:#258AFF;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMyActivityExport" class="export-item-chk" checked> 活动中心-独立切图
@@ -888,7 +996,7 @@
                     <label><input type="checkbox" id="chkMyActivityPageExport" class="export-item-chk" checked>
                         活动中心-页面预览</label>
                 </div>
-                <div class="export-group">
+                <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.18 NA - 共享点对点 <span class="export-badge"
                             style="color:#258AFF;">【A级】</span></div>
                     <label><input type="checkbox" id="chkPeerSharingExport" class="export-item-chk" checked> 共享点对点-独立切图
@@ -896,13 +1004,24 @@
                     <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked>
                         共享点对点-页面预览</label>
                 </div>
-                <div class="export-group">
+
+                <div class="export-group" data-bu="yike">
+                    <div class="export-group-title">B1.1.4 NA - 首页banner <span class="export-badge ss">【SS级】</span></div>
+                    <label><input type="checkbox" id="chkYikeHomeExport" class="export-item-chk" checked> 首页banner-独立切图 (1170x624)</label>
+                    <label><input type="checkbox" id="chkYikeHomePageExport" class="export-item-chk" checked> 首页banner-页面预览 (透视叠加)</label>
+                </div>
+                <div class="export-group" data-bu="yike">
                     <div class="export-group-title">B1.1.5 NA - 设备banner <span class="export-badge ss">【SS级】</span>
                     </div>
                     <label><input type="checkbox" id="chkYikeEquipExport" class="export-item-chk" checked> 设备-独立切图
                         (1125x270)</label>
                     <label><input type="checkbox" id="chkYikeEquipPageExport" class="export-item-chk" checked> 设备-页面预览
                         (透视叠加)</label>
+                </div>
+                <div class="export-group" data-bu="yike">
+                    <div class="export-group-title">【SS级】B1.1.7 NA - 收银台banner</div>
+                    <label><input type="checkbox" id="chkYikeCashExport" class="export-item-chk" checked> 收银台-独立切图 (670x78)</label>
+                    <label><input type="checkbox" id="chkYikeCashPageExport" class="export-item-chk" checked> 收银台-页面预览 (透视叠加)</label>
                 </div>
             </div>
             <div class="export-modal-footer">

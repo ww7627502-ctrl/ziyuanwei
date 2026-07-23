@@ -114,6 +114,24 @@
     font-weight: normal;
 }
 
+@font-face {
+    font-family: 'FZHanYunHeiS-M';
+    src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanYHJW-M.TTF') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'FZHanYunHeiS-L';
+    src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHanYHJW-L.TTF') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'FZHZGBJW';
+    src: url('https://cdn.jsdelivr.net/gh/ww7627502-ctrl/baidudu@main/FZHZGBJW.TTF') format('truetype');
+    font-weight: normal;
+}
+
 :root {
     --primary-color: #258AFF;
     --bg-color: #f2f5f8;
@@ -193,7 +211,7 @@ body {
     display: flex;
     flex: 1;
     overflow: hidden;
-    width: 100vw;
+    width: 100%;
 }
 
 /* 基础侧边栏 */
@@ -223,6 +241,7 @@ body {
     z-index: 5;
     background: #fafafa;
     overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 #wangpanWorkspace {
@@ -634,6 +653,7 @@ body {
 .detail-modal-body {
     padding: 32px 24px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     background: #f8fafc;
     display: flex;
     flex-direction: column;
@@ -679,6 +699,7 @@ body {
     padding: 20px;
     max-height: 55vh;
     overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 .export-group {
@@ -802,6 +823,7 @@ input[type=range]:focus::-webkit-slider-thumb {
     margin-top: 8px;
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    scrollbar-gutter: stable;
     flex: 1;
     min-height: 0;
     padding-bottom: 20px;

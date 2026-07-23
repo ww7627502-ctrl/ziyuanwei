@@ -47,10 +47,10 @@ const YIKE_PAGE_DIRECTORY = {
         { value: 'yike_1', text: 'B1.1.1 NA - 开屏' },
         { value: 'yike_2', text: 'B1.1.2 NA - 弹窗' },
         { value: 'yike_3', text: 'B1.1.3 NA - 角标' },
-        { value: 'yike_4', text: 'B1.1.4 NA - 首页banner' },
+        { value: 'yike_4', text: '【SS级】B1.1.4 NA - 首页banner' },
         { value: 'yike_5', text: '【SS级】B1.1.5 NA - 设备banner' },
         { value: 'yike_6', text: 'B1.1.6 NA - 九宫格' },
-        { value: 'yike_7', text: 'B1.1.7 NA - 收银台banner' },
+        { value: 'yike_7', text: '【SS级】B1.1.7 NA - 收银台banner' },
         { value: 'yike_8', text: 'B1.1.8 NA - 创意banner' },
         { value: 'yike_9', text: 'B1.1.9 NA - 搜索banner' },
         { value: 'yike_10', text: 'B1.1.10 NA - 网盘相册-弹窗' },
@@ -76,6 +76,17 @@ const CHUHAI_PAGE_DIRECTORY = {
     ],
     'PC': [], 'Web': [], 'Wap': [], 'Mac': [], 'ipd': []
 };
+const IMPLEMENTED_RESOURCE_PRIORITY = {
+    wangpan: {
+        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
+    },
+    yike: {
+        NA: ['yike_4', 'yike_5', 'yike_7']
+    },
+    chuhai: {
+        NA: []
+    }
+};
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 10 };
 const config = {
     baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
@@ -94,6 +105,11 @@ const config = {
     peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png',
     yikeEquipPage: 'assets/photo-equipment-page.png',
     yikeEquipExampleImage: 'assets/photo-equipment-image.png',
+    yikeHomePage: 'assets/photo-home-page.png',
+    yikeHomeExampleImage: 'assets/photo-home-image.png',
+    yikeHomeBottomSvg: 'assets/photo-home-jianbian.svg',
+    yikeCashPage: 'assets/photo-cash-page.png',
+    yikeCashExampleImage: 'assets/photo-cash- image.png',
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
     colorHex: { blue: '#258AFF', green: '#079C04', orange: '#FF5E00', red: '#FF014D', purple: '#641AFF' },
@@ -183,7 +199,51 @@ const yikeEquipTitle = document.getElementById('yikeEquipTitle'); const yikeEqui
 const yikeEquipSub = document.getElementById('yikeEquipSub'); const yikeEquipSubColor = document.getElementById('yikeEquipSubColor');
 const yikeEquipBtnText = document.getElementById('yikeEquipBtnText'); const yikeEquipBtnBgColor = document.getElementById('yikeEquipBtnBgColor'); const yikeEquipBtnTextColor = document.getElementById('yikeEquipBtnTextColor');
 const yikeEquipGrad1 = document.getElementById('yikeEquipGrad1'); const yikeEquipGrad2 = document.getElementById('yikeEquipGrad2');
+
+const yikeCashView = document.getElementById('yikeCashView');
+const yikeCashControls = document.getElementById('yikeCashControls');
+const yikeCashPageCanvas = document.getElementById('yikeCashPageCanvas');
+const yikeCashPageCtx = yikeCashPageCanvas?.getContext('2d');
+const yikeCashExportCanvas = document.getElementById('yikeCashExportCanvas');
+const yikeCashExportCtx = yikeCashExportCanvas?.getContext('2d');
+const yikeCashTitle = document.getElementById('yikeCashTitle'); const yikeCashTitleColor = document.getElementById('yikeCashTitleColor');
+const yikeCashHighlight = document.getElementById('yikeCashHighlight'); const yikeCashHighlightColor = document.getElementById('yikeCashHighlightColor');
+const yikeCashGrad1 = document.getElementById('yikeCashGrad1'); const yikeCashGrad2 = document.getElementById('yikeCashGrad2');
+
+const yikeHomeView = document.getElementById('yikeHomeView');
+const yikeHomeControls = document.getElementById('yikeHomeControls');
+const yikeHomePageCanvas = document.getElementById('yikeHomePageCanvas');
+const yikeHomePageCtx = yikeHomePageCanvas?.getContext('2d');
+const yikeHomeExportCanvas = document.getElementById('yikeHomeExportCanvas');
+const yikeHomeExportCtx = yikeHomeExportCanvas?.getContext('2d');
+const yikeHomeTitle = document.getElementById('yikeHomeTitle'); const yikeHomeTitleColor = document.getElementById('yikeHomeTitleColor');
+const yikeHomeSub = document.getElementById('yikeHomeSub'); const yikeHomeSubColor = document.getElementById('yikeHomeSubColor');
+const yikeHomeSubHighlight = document.getElementById('yikeHomeSubHighlight'); const yikeHomeSubHighlightColor = document.getElementById('yikeHomeSubHighlightColor');
+let yikeHomeBgBannerObj = null;
+
+const businessUploadState = {
+    wangpan: { src: null, img: null },
+    yike: { src: null, img: null },
+    chuhai: { src: null, img: null },
+};
 let userImgObj = null; let feedBgBannerObj = null; let topBgBannerObj = null; let userTopBannerTitleObj = null;
+function getActiveBusinessLineKey() { return currentBU === 'yike' ? 'yike' : currentBU === 'chuhai' ? 'chuhai' : 'wangpan'; }
+function getDefaultUploadPreviewSrc(selectedResource = document.querySelector('.resource-item.active')?.dataset.value) {
+    const key = getActiveBusinessLineKey();
+    if (key === 'yike') {
+        if (selectedResource === 'yike_4') return config.yikeHomeExampleImage;
+        if (selectedResource === 'yike_5') return config.yikeEquipExampleImage;
+        if (selectedResource === 'yike_7') return config.yikeCashExampleImage;
+        return config.yikeEquipExampleImage;
+    }
+    return config.heroImage;
+}
+function syncCurrentBusinessUploadState(selectedResource) {
+    const key = getActiveBusinessLineKey();
+    userImgObj = businessUploadState[key].img;
+    const uploadPreviewImg = document.getElementById('uploadPreviewImg');
+    if (uploadPreviewImg) uploadPreviewImg.src = businessUploadState[key].src || getDefaultUploadPreviewSrc(selectedResource);
+}
 let currentTopBgMode = 'image'; let currentFeedBgMode = 'image';
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid'; let currentSimpleScanBgMode = 'solid';
@@ -200,12 +260,14 @@ const MODULE_INPUT_MAP = {
     'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
     'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }],
     'yikeEquip': [{ id: 'yikeEquipTitle', key: 'title', limit: 9 }, { id: 'yikeEquipSub', key: 'sub', limit: 12 }, { id: 'yikeEquipBtnText', key: 'btn', limit: 4 }],
+    'yikeCash': [{ id: 'yikeCashTitle', key: 'title', limit: 12 }, { id: 'yikeCashHighlight', key: 'highlight', limit: 12 }, { id: 'yikeCashTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeCashHighlightColor', key: 'highlightColor', limit: 7 }, { id: 'yikeCashGrad1', key: 'grad1', limit: 7 }, { id: 'yikeCashGrad2', key: 'grad2', limit: 7 }],
 };
 const MODULE_RENDER_FNS = {
     'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
-    'yikeEquip': renderYikeEquipCanvas
+    'yikeEquip': renderYikeEquipCanvas,
+    'yikeCash': renderYikeCashCanvas
 };
 // ==================== ✨ 核心工具：智能半角统计、逗号转空格、打字实时渲染 ====================
 function formatAndLimitText(str, maxLen) {
@@ -322,20 +384,27 @@ const BRAND_THEMES = [
     { id: 'blue', hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
     { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' }
 ];
-function triggerThemeSwitch(themeId) {
+function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
     let matchedTheme = BRAND_THEMES.find(t => t.id === themeId);
     if (themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
     if (!matchedTheme) matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
-    const colorMap = {
-        'topSolidColor': matchedTheme.solid, 'topGradColor1': '#FFFFFF', 'topGradColor2': matchedTheme.grad1,
-        'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
-        'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
-        'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
-        'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF',
-        'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
-        'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
-        'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
+    const colorMapByBU = {
+        wangpan: {
+            'topSolidColor': matchedTheme.solid, 'topGradColor1': '#FFFFFF', 'topGradColor2': matchedTheme.grad1,
+            'feedSolidColor': matchedTheme.solid, 'feedGradColor1': matchedTheme.grad1, 'feedGradColor2': matchedTheme.grad2,
+            'mySpaceSolidColor': '#FFFFFF', 'mySpaceGradColor1': matchedTheme.lightGrad, 'mySpaceGradColor2': '#FFFFFF', 'mySpaceBtnGrad1': matchedTheme.btn1, 'mySpaceBtnGrad2': matchedTheme.btn2,
+            'simpleScanSolidColor': '#FFFFFF', 'simpleScanGradColor1': matchedTheme.lightGrad, 'simpleScanGradColor2': '#FFFFFF', 'simpleScanBtnGrad1': matchedTheme.btn1, 'simpleScanBtnGrad2': matchedTheme.btn2, 'simpleScanHighlightColor': matchedTheme.textHighlight,
+            'myActivityGrad1': matchedTheme.lightGrad, 'myActivityGrad2': '#FFFFFF',
+            'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
+            'peerSharingGrad1': matchedTheme.btn1, 'peerSharingGrad2': matchedTheme.btn2,
+            'peerSharingTitle1Color': '#FFFFFF', 'peerSharingTitle2Color': '#FFFFFF', 'peerSharingSubColor': '#FFFFFF',
+        },
+        yike: {
+            'yikeEquipGrad1': matchedTheme.grad1, 'yikeEquipGrad2': matchedTheme.grad2,
+            'yikeCashGrad1': matchedTheme.grad1, 'yikeCashGrad2': matchedTheme.grad2,
+        }
     };
+    const colorMap = colorMapByBU[targetBU] || colorMapByBU.wangpan;
     Object.keys(colorMap).forEach(id => {
         const inputEl = document.getElementById(id);
         if (inputEl) {
@@ -344,11 +413,13 @@ function triggerThemeSwitch(themeId) {
             inputEl.dispatchEvent(new Event('input'));
         }
     });
-    let targetRadioId = themeId === 'yellow' ? 'orange' : themeId;
-    const targetRadioHome = document.querySelector(`input[name="homeColor"][value="${targetRadioId}"]`);
-    if (targetRadioHome) { targetRadioHome.checked = true; homeColor = targetRadioId; }
-    const targetRadioMyPage = document.querySelector(`input[name="myPageColor"][value="${targetRadioId}"]`);
-    if (targetRadioMyPage) { targetRadioMyPage.checked = true; myPageColor = targetRadioId; }
+    if (targetBU === 'wangpan') {
+        let targetRadioId = themeId === 'yellow' ? 'orange' : themeId;
+        const targetRadioHome = document.querySelector(`input[name="homeColor"][value="${targetRadioId}"]`);
+        if (targetRadioHome) { targetRadioHome.checked = true; homeColor = targetRadioId; }
+        const targetRadioMyPage = document.querySelector(`input[name="myPageColor"][value="${targetRadioId}"]`);
+        if (targetRadioMyPage) { targetRadioMyPage.checked = true; myPageColor = targetRadioId; }
+    }
 }
 function bindCanvasClickToControl() {
     const mappings = {
@@ -594,6 +665,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 - "简单扫描" -> "simpleScan"
 - "共享点对点" / "点对点" -> "peerSharing"
 - "设备banner" / "设备" -> "yikeEquip"
+- "收银台banner" / "收银台" -> "yikeCash"
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
 2. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
@@ -614,7 +686,8 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
     "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
-    "yikeEquip": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ]
+    "yikeEquip": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
+    "yikeCash": [ { "title": "主标题", "highlight": "高亮词", "titleColor": "#000000", "highlightColor": "#EE3A31", "grad1": "#FFFAEF", "grad2": "#FEEFBA" } ]
 }`;
     try {
         const response = await fetch(apiURL, {
@@ -636,7 +709,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
-        if (config.theme) triggerThemeSwitch(config.theme);
+        if (config.theme) triggerThemeSwitch(config.theme, getActiveBusinessLineKey());
         if (config.home && config.home.length > 0) {
             recognizedModules.add('na_home');
             window.abTestCopies['home'] = config.home; window.abTestActiveIndex['home'] = 0;
@@ -717,12 +790,24 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             renderABTestSwitcher('yikeEquipControls', 'yikeEquip');
             // 注意：这里已经删除了自动跳转业务线的代码
         }
-        await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
+        if (config.yikeCash && config.yikeCash.length > 0) {
+            recognizedModules.add('yike_7');
+            window.abTestCopies['yikeCash'] = config.yikeCash; window.abTestActiveIndex['yikeCash'] = 0;
+            const first = config.yikeCash[0];
+            if (first.title) document.getElementById('yikeCashTitle').value = formatAndLimitText(first.title, 12);
+            if (first.highlight) document.getElementById('yikeCashHighlight').value = formatAndLimitText(first.highlight, 12);
+            if (first.titleColor) document.getElementById('yikeCashTitleColor').value = first.titleColor;
+            if (first.highlightColor) document.getElementById('yikeCashHighlightColor').value = first.highlightColor;
+            if (first.grad1) document.getElementById('yikeCashGrad1').value = first.grad1;
+            if (first.grad2) document.getElementById('yikeCashGrad2').value = first.grad2;
+            renderABTestSwitcher('yikeCashControls', 'yikeCash');
+        }
+            await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas();
         await renderMySpaceCanvas(); await renderSimpleScanCanvas();
-        await renderMyActivityCanvas(); await renderPeerSharingCanvas(); await renderYikeEquipCanvas();
+        await renderMyActivityCanvas(); await renderPeerSharingCanvas(); await renderYikeEquipCanvas(); await renderYikeCashCanvas(); await renderYikeHomeCanvas();
         if (recognizedModules.size > 0) {
             const modules = Array.from(recognizedModules);
-            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
             developingPrompt.classList.add('hidden');
             document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
             const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
@@ -1380,6 +1465,71 @@ async function renderYikeEquipCanvas() {
         setupHighQualityContext(yikeEquipPageCtx);
         yikeEquipPageCtx.drawImage(yikeEquipExportCanvas, -1, 735);
         yikeEquipPageCtx.drawImage(pageImg, 0, 0);
+        yikeEquipPageCanvas._bannerBBox = { x: 0, y: 735, w: 1125, h: 270 };
+    }
+}
+// ==================== 🛠️ 一刻相册：收银台Banner (SS级) ====================
+async function renderYikeCashCanvas() {
+    if (!yikeCashPageCtx || !yikeCashExportCtx) return;
+    const bannerW = 670, bannerH = 78;
+    yikeCashExportCanvas.width = bannerW; yikeCashExportCanvas.height = bannerH;
+    setupHighQualityContext(yikeCashExportCtx);
+    yikeCashExportCtx.clearRect(0, 0, bannerW, bannerH);
+
+    const grad = yikeCashExportCtx.createLinearGradient(0, 0, bannerW, 0);
+    grad.addColorStop(0, yikeCashGrad1?.value || '#FFFAEF');
+    grad.addColorStop(1, yikeCashGrad2?.value || '#FEEFBA');
+    yikeCashExportCtx.fillStyle = grad;
+    drawRoundRect(yikeCashExportCtx, 0, 0, bannerW, bannerH, 16);
+    yikeCashExportCtx.fill();
+
+    yikeCashExportCtx.save();
+    drawRoundRect(yikeCashExportCtx, 0, 0, bannerW, bannerH, 16);
+    yikeCashExportCtx.clip();
+
+    let visualImg = userImgObj;
+    if (!visualImg && !globalImageCache[config.yikeCashExampleImage]) {
+        globalImageCache[config.yikeCashExampleImage] = await loadImage(config.yikeCashExampleImage);
+    }
+    if (!visualImg) visualImg = globalImageCache[config.yikeCashExampleImage];
+    if (visualImg && visualImg.width) {
+        const maxW = 156, maxH = 78;
+        const scale = Math.min(maxW / visualImg.width, maxH / visualImg.height);
+        const drawW = visualImg.width * scale, drawH = visualImg.height * scale;
+        const drawX = 14 + (maxW - drawW) / 2, drawY = (maxH - drawH) / 2;
+        drawSharpenedImage(yikeCashExportCtx, visualImg, drawX, drawY, drawW, drawH, 0.3);
+    }
+
+    const titleVal = yikeCashTitle?.value || '';
+    const highlightVal = yikeCashHighlight?.value || '';
+    if (document.fonts?.load) {
+        await document.fonts.load('36px "FZHZGBJW"');
+    }
+    yikeCashExportCtx.textAlign = 'left';
+    yikeCashExportCtx.textBaseline = 'top';
+    yikeCashExportCtx.font = `36px "FZHZGBJW", sans-serif`;
+    drawDualColorText(
+        yikeCashExportCtx,
+        titleVal,
+        highlightVal,
+        188,
+        23,
+        yikeCashTitleColor?.value || '#000000',
+        yikeCashHighlightColor?.value || '#EE3A31'
+    );
+
+    yikeCashExportCtx.restore();
+
+    if (!globalImageCache[config.yikeCashPage]) {
+        globalImageCache[config.yikeCashPage] = await loadImage(config.yikeCashPage);
+    }
+    const pageImg = globalImageCache[config.yikeCashPage];
+    if (pageImg) {
+        yikeCashPageCanvas.width = pageImg.width; yikeCashPageCanvas.height = pageImg.height;
+        setupHighQualityContext(yikeCashPageCtx);
+        yikeCashPageCtx.drawImage(pageImg, 0, 0);
+        yikeCashPageCtx.drawImage(yikeCashExportCanvas, 43, 443);
+        yikeCashPageCanvas._bannerBBox = { x: 43, y: 443, w: 670, h: 78 };
     }
 }
 // ==================== 界面交互事件 ====================
@@ -1388,20 +1538,16 @@ function updateResourceDropdown(terminalId) {
     if (!resourceList) return;
     resourceList.innerHTML = '';
     let dirData = PAGE_DIRECTORY;
-    if (currentBU === 'yike') dirData = YIKE_PAGE_DIRECTORY;
-    if (currentBU === 'chuhai') dirData = CHUHAI_PAGE_DIRECTORY;
-    const pages = dirData[terminalId] || [];
-    pages.forEach((page, index) => {
+    let buKey = 'wangpan';
+    if (currentBU === 'yike') { dirData = YIKE_PAGE_DIRECTORY; buKey = 'yike'; }
+    if (currentBU === 'chuhai') { dirData = CHUHAI_PAGE_DIRECTORY; buKey = 'chuhai'; }
+    const priorityList = IMPLEMENTED_RESOURCE_PRIORITY[buKey]?.[terminalId] || [];
+    const pages = (dirData[terminalId] || []).slice();
+    const activeValue = priorityList.find(value => pages.some(page => page.value === value)) || pages[0]?.value;
+    pages.forEach((page) => {
         const item = document.createElement('div');
         item.className = 'resource-item';
-
-        // ✨ 修复：网盘默认选中 na_home，其他业务线(如一刻)默认选中第一个菜单
-        if (currentBU === 'wangpan' && terminalId === 'NA') {
-            if (page.value === 'na_home') item.classList.add('active');
-        } else {
-            if (index === 0) item.classList.add('active');
-        }
-
+        if (page.value === activeValue) item.classList.add('active');
         item.dataset.value = page.value;
         item.innerHTML = `<div class="resource-item-text" title="${page.text}">${page.text}</div>`;
         item.addEventListener('click', (e) => {
@@ -1412,22 +1558,23 @@ function updateResourceDropdown(terminalId) {
         });
         resourceList.appendChild(item);
     });
-    const activeItem = resourceList.querySelector('.active');
+    const activeItem = resourceList.querySelector('.active') || resourceList.querySelector('.resource-item');
     if (activeItem) switchResourceView(activeItem.dataset.value); else switchResourceView(null);
 }
 const renderedPages = { home: true };
 async function switchResourceView(selected) {
-    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
     document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
+    syncCurrentBusinessUploadState(selected);
     const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
-    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_5'].includes(selected)) {
+    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
@@ -1453,10 +1600,19 @@ async function switchResourceView(selected) {
     } else if (selected === 'dev_1_1_18') {
         peerSharingControls.classList.add('active'); peerSharingView.classList.add('active');
         if (!renderedPages.peerSharing) { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+
+    } else if (selected === 'yike_4') {
+        if (yikeHomeControls) yikeHomeControls.classList.add('active');
+        if (yikeHomeView) yikeHomeView.classList.add('active');
+        if (!renderedPages.yikeHome) { await renderYikeHomeCanvas(); renderedPages.yikeHome = true; }
     } else if (selected === 'yike_5') {
         if (yikeEquipControls) yikeEquipControls.classList.add('active');
         if (yikeEquipView) yikeEquipView.classList.add('active');
-        if (!renderedPages.yikeEquip) { await renderYikeEquipCanvas(); renderedPages.yikeEquip = true; }
+        if (!renderedPages.yikeEquip) { await renderYikeEquipCanvas(); await renderYikeHomeCanvas(); renderedPages.yikeEquip = true; }
+    } else if (selected === 'yike_7') {
+        if (yikeCashControls) yikeCashControls.classList.add('active');
+        if (yikeCashView) yikeCashView.classList.add('active');
+        if (!renderedPages.yikeCash) { await renderYikeCashCanvas(); renderedPages.yikeCash = true; }
     } else {
         developingPrompt.classList.remove('hidden'); viewDevelopingPrompt.classList.add('active');
     }
@@ -1468,18 +1624,8 @@ buBtns.forEach(btn => {
         const currentBtn = e.currentTarget; currentBtn.classList.add('active');
         currentBU = currentBtn.dataset.bu;
 
-        // ✨ 新增隔离逻辑：切换业务线时，清空用户上传的图
-        userImgObj = null;
-
-        // ✨ 智能切换全局预览图的默认图片，解决破图问题
-        const uploadPreviewImg = document.getElementById('uploadPreviewImg');
-        if (uploadPreviewImg) {
-            if (currentBU === 'yike') {
-                uploadPreviewImg.src = config.yikeEquipExampleImage; // 一刻用设备默认图
-            } else {
-                uploadPreviewImg.src = config.heroImage; // 网盘等用普通的hero默认图
-            }
-        }
+        Object.keys(renderedPages).forEach(key => { renderedPages[key] = false; });
+        syncCurrentBusinessUploadState();
 
         if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
             if (currentBU === 'yike') document.documentElement.style.setProperty('--primary-color', '#258AFF');
@@ -1487,9 +1633,10 @@ buBtns.forEach(btn => {
             else document.documentElement.style.setProperty('--primary-color', '#258AFF');
             wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
             updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
+            if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
         } else {
             document.documentElement.style.setProperty('--primary-color', '#87B4FF');
-            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+            wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');[homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
         }
     });
 });
@@ -1538,6 +1685,16 @@ function openDetailModal(targetType) {
         detailImagesBox.innerHTML = `
             <div class="banner-label" style="color:#258AFF; font-size:16px;">纯净版切图 (1125x270) 👇</div>
             <img src="${yikeEquipExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; margin-bottom: 30px; border: 1px dashed #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">`;
+    } else if (targetType === 'yikeCash') {
+        detailModalTitle.innerText = '收银台 Banner - 详情预览';
+        detailImagesBox.innerHTML = `
+            <div class="banner-label" style="color:#258AFF; font-size:16px;">纯净版切图 (670x78) 👇</div>
+            <img src="${yikeCashExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; margin-bottom: 30px; border: 1px dashed #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">`;
+    } else if (targetType === 'yikeHome') {
+        detailModalTitle.innerText = '首页 Banner - 详情预览';
+        detailImagesBox.innerHTML = `
+            <div class="banner-label" style="color:#258AFF; font-size:16px;">纯净版切图 (1170x624) 👇</div>
+            <img src="${yikeHomeExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; margin-bottom: 30px; border: 1px dashed #cbd5e1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">`;
     }
     detailModal.style.display = 'flex';
 }
@@ -1604,6 +1761,17 @@ peerSharingSubColor?.addEventListener('input', renderPeerSharingCanvas); peerSha
     if (el) { el.addEventListener('input', renderYikeEquipCanvas); if (el._pickrInstance) el._pickrInstance.on('change', renderYikeEquipCanvas); }
 });
 
+
+['yikeHomeTitleColor', 'yikeHomeSubColor', 'yikeHomeSubHighlightColor', 'yikeHomeSubHighlight'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', renderYikeHomeCanvas); if (el._pickrInstance) el._pickrInstance.on('change', renderYikeHomeCanvas); }
+});
+['yikeHomeTitle', 'yikeHomeSub'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', renderYikeHomeCanvas); }
+});
+bindUploadEvents('yikeHomeBgUploadDropZone', 'yikeHomeBgUpload', 'yikeHomeBgPreviewImg', async src => { yikeHomeBgBannerObj = await loadImage(src); await renderYikeHomeCanvas(); });
+
 // ==================== 文件上传与取色 ====================
 function handleFileUpload(file, callback) {
     if (!file || !file.type.startsWith('image/')) return;
@@ -1619,7 +1787,11 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
 }
 function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max == min) { h = s = 0; } else { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }h /= 6; } return [h * 360, s, l]; }
 bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => {
-    userImgObj = await loadImage(src);
+    const activeBU = getActiveBusinessLineKey();
+    const loadedImg = await loadImage(src);
+    businessUploadState[activeBU] = { src, img: loadedImg };
+    userImgObj = loadedImg;
+    syncCurrentBusinessUploadState();
     if (userImgObj) {
         const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const w = canvas.width = Math.min(userImgObj.width, 100); const h = canvas.height = Math.min(userImgObj.height, 100);
         ctx.drawImage(userImgObj, 0, 0, w, h); let data; try { data = ctx.getImageData(0, 0, w, h).data; } catch (e) { }
@@ -1635,19 +1807,32 @@ bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src 
                         if (diff < minDiff) { minDiff = diff; matchedTheme = theme; }
                     }
                 }
-                triggerThemeSwitch(matchedTheme.id === 'yellow' ? 'orange' : matchedTheme.id);
+                triggerThemeSwitch(matchedTheme.id === 'yellow' ? 'orange' : matchedTheme.id, activeBU);
             }
         }
     }
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
     await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-    await renderYikeEquipCanvas();
+    await renderYikeEquipCanvas(); await renderYikeCashCanvas(); await renderYikeHomeCanvas();
 });
 bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); await renderHomeCanvas(); });
 bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); await renderFeedCanvas(); });
 bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); await renderHomeCanvas(); });
+function syncExportModalByBusinessLine() {
+    const activeBU = getActiveBusinessLineKey() === 'yike' ? 'yike' : 'wangpan';
+    const visibleChecks = [];
+    document.querySelectorAll('.export-group[data-bu]').forEach(group => {
+        const visible = group.dataset.bu === activeBU;
+        group.style.display = visible ? '' : 'none';
+        const checks = Array.from(group.querySelectorAll('.export-item-chk'));
+        if (visible) visibleChecks.push(...checks);
+        else checks.forEach(chk => { chk.checked = false; });
+    });
+    return visibleChecks;
+}
 // ==================== ✨ 智能勾选辅助函数 ====================
 function autoSelectExportItems() {
+    const visibleChecks = syncExportModalByBusinessLine();
     document.querySelectorAll('.export-item-chk').forEach(chk => chk.checked = false);
     if (document.getElementById('homeView')?.classList.contains('active')) {
         ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'].forEach(id => {
@@ -1688,9 +1873,16 @@ function autoSelectExportItems() {
     if (document.getElementById('yikeEquipView')?.classList.contains('active')) {
         ['chkYikeEquipExport', 'chkYikeEquipPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
-    const allChks = document.querySelectorAll('.export-item-chk');
+    if (document.getElementById('yikeCashView')?.classList.contains('active')) {
+        ['chkYikeCashExport', 'chkYikeCashPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
+    if (document.getElementById('yikeHomeView')?.classList.contains('active')) {
+        ['chkYikeHomeExport', 'chkYikeHomePageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
+
     const selectAllChk = document.getElementById('selectAllExport');
-    if (selectAllChk && allChks.length > 0) { selectAllChk.checked = Array.from(allChks).every(c => c.checked); }
+    if (selectAllChk && visibleChecks.length > 0) { selectAllChk.checked = visibleChecks.every(c => c.checked); }
+    else if (selectAllChk) { selectAllChk.checked = false; }
 }
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
@@ -1735,6 +1927,7 @@ function initExportModal() {
     const cancelExportBtn = document.getElementById('cancelExportBtn');
     const confirmExportBtn = document.getElementById('confirmExportBtn');
     const selectAllChk = document.getElementById('selectAllExport');
+    const getVisibleItemChks = () => Array.from(document.querySelectorAll('.export-group[data-bu]')).filter(group => group.style.display !== 'none').flatMap(group => Array.from(group.querySelectorAll('.export-item-chk')));
     const itemChks = document.querySelectorAll('.export-item-chk');
     if (!exportModal || !openExportModalBtn) return;
 
@@ -1745,8 +1938,8 @@ function initExportModal() {
     window.addEventListener('click', (e) => { if (e.target === exportModal) exportModal.style.display = 'none'; });
 
     if (selectAllChk) {
-        selectAllChk.addEventListener('change', (e) => { itemChks.forEach(chk => chk.checked = e.target.checked); });
-        itemChks.forEach(chk => { chk.addEventListener('change', () => { selectAllChk.checked = Array.from(itemChks).every(c => c.checked); }); });
+        selectAllChk.addEventListener('change', (e) => { getVisibleItemChks().forEach(chk => chk.checked = e.target.checked); });
+        itemChks.forEach(chk => { chk.addEventListener('change', () => { const visibleItemChks = getVisibleItemChks(); selectAllChk.checked = visibleItemChks.length > 0 && visibleItemChks.every(c => c.checked); }); });
     }
 
     confirmExportBtn.addEventListener('click', async () => {
@@ -1754,7 +1947,7 @@ function initExportModal() {
         const zip = new JSZip();
         const previewFolder = zip.folder("带壳预览图");
         const bannerFolder = zip.folder("纯净Banner切图");
-        let hasSelected = Array.from(document.querySelectorAll('.export-item-chk')).some(c => c.checked);
+        let hasSelected = getVisibleItemChks().some(c => c.checked);
         if (!hasSelected) { alert('您没有勾选任何资源，请至少勾选一项！'); return; }
 
         const originalText = confirmExportBtn.innerText;
@@ -1811,9 +2004,17 @@ function initExportModal() {
             let peerSharingRefs = MODULE_INPUT_MAP['peerSharing'];
             await exportCanvasOrMulti('chkPeerSharingExport', peerSharingExportCanvas, `共享点对点-独立切图(670x320)`, 'peerSharing', bannerFolder, peerSharingRefs, renderPeerSharingCanvas);
             await exportCanvasOrMulti('chkPeerSharingPageExport', peerSharingPageCanvas, `共享点对点-页面预览`, 'peerSharing', previewFolder, peerSharingRefs, renderPeerSharingCanvas);
+
             let yikeEquipRefs = MODULE_INPUT_MAP['yikeEquip'];
             await exportCanvasOrMulti('chkYikeEquipExport', yikeEquipExportCanvas, `设备-独立切图(1125x270)`, 'yikeEquip', bannerFolder, yikeEquipRefs, renderYikeEquipCanvas);
             await exportCanvasOrMulti('chkYikeEquipPageExport', yikeEquipPageCanvas, `设备-页面预览`, 'yikeEquip', previewFolder, yikeEquipRefs, renderYikeEquipCanvas);
+            let yikeCashRefs = MODULE_INPUT_MAP['yikeCash'];
+            await exportCanvasOrMulti('chkYikeCashExport', yikeCashExportCanvas, `收银台-独立切图(670x78)`, 'yikeCash', bannerFolder, yikeCashRefs, renderYikeCashCanvas);
+            await exportCanvasOrMulti('chkYikeCashPageExport', yikeCashPageCanvas, `收银台-页面预览`, 'yikeCash', previewFolder, yikeCashRefs, renderYikeCashCanvas);
+            
+            await exportCanvasOrMulti('chkYikeHomeExport', yikeHomeExportCanvas, `首页banner-独立切图(1170x624)`, 'yikeHome', bannerFolder, null, renderYikeHomeCanvas);
+            await exportCanvasOrMulti('chkYikeHomePageExport', yikeHomePageCanvas, `首页banner-页面预览`, 'yikeHome', previewFolder, null, renderYikeHomeCanvas);
+
             
             const content = await zip.generateAsync({ type: 'blob' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(content); a.download = `设计资源打包_${new Date().getTime()}.zip`; a.click();
@@ -1880,5 +2081,104 @@ window.onload = async () => {
     }
     await renderHomeCanvas(); await renderMyPage(); await renderFeedCanvas(); await renderSearchIcon();
     await renderMySpaceCanvas(); await renderSimpleScanCanvas(); await renderMyActivityCanvas(); await renderPeerSharingCanvas();
-    await renderYikeEquipCanvas();
+    await renderYikeEquipCanvas(); await renderYikeHomeCanvas();
 };
+
+// ==================== 🛠️ 一刻首页：Banner (SS级) ====================
+async function renderYikeHomeCanvas() {
+    if (!yikeHomePageCanvas || !yikeHomeExportCanvas) return;
+    const bannerW = 1170, bannerH = 624;
+    yikeHomeExportCanvas.width = bannerW; yikeHomeExportCanvas.height = bannerH;
+
+    // 底图或背景色
+    if (yikeHomeBgBannerObj) {
+        yikeHomeExportCtx.drawImage(yikeHomeBgBannerObj, 0, 0, bannerW, bannerH);
+    } else {
+        if (!globalImageCache['assets/photo-home-beijing.png']) {
+            globalImageCache['assets/photo-home-beijing.png'] = await loadImage('assets/photo-home-beijing.png');
+        }
+        if (globalImageCache['assets/photo-home-beijing.png']) {
+            yikeHomeExportCtx.drawImage(globalImageCache['assets/photo-home-beijing.png'], 0, 0, bannerW, bannerH);
+        } else {
+            yikeHomeExportCtx.fillStyle = '#FFFFFF';
+            yikeHomeExportCtx.fillRect(0, 0, bannerW, bannerH);
+        }
+    }
+
+    // 视觉图
+    let visualImg = userImgObj;
+    if (!visualImg && !globalImageCache[config.yikeHomeExampleImage]) {
+        globalImageCache[config.yikeHomeExampleImage] = await loadImage(config.yikeHomeExampleImage);
+    }
+    if (!visualImg) visualImg = globalImageCache[config.yikeHomeExampleImage];
+
+    if (visualImg && visualImg.width) {
+        const imgW = 492, imgH = 318, imgX = 36, imgY = 132;
+        yikeHomeExportCtx.save();
+        yikeHomeExportCtx.beginPath();
+        yikeHomeExportCtx.rect(imgX, imgY, imgW, imgH);
+        yikeHomeExportCtx.clip();
+        const scale = Math.min(imgW / visualImg.width, imgH / visualImg.height);
+        const drawW = visualImg.width * scale, drawH = visualImg.height * scale;
+        const drawX = imgX + (imgW - drawW) / 2, drawY = imgY + (imgH - drawH) / 2;
+        drawSharpenedImage(yikeHomeExportCtx, visualImg, drawX, drawY, drawW, drawH, 0.3);
+        yikeHomeExportCtx.restore();
+    }
+
+    // 文字
+    const titleVal = yikeHomeTitle?.value || '';
+    yikeHomeExportCtx.font = `71px "FZHanYunHeiS-M", sans-serif`;
+    yikeHomeExportCtx.fillStyle = yikeHomeTitleColor?.value || '#000000';
+    yikeHomeExportCtx.textBaseline = 'top';
+    yikeHomeExportCtx.fillText(titleVal, 563, 252);
+
+    const subVal = yikeHomeSub?.value || '';
+    const hlVal = yikeHomeSubHighlight?.value || '';
+    const hlColor = yikeHomeSubHighlightColor?.value || '#E63F00';
+    const subColor = yikeHomeSubColor?.value || '#000000';
+
+    yikeHomeExportCtx.font = `41px "FZHanYunHeiS-L", sans-serif`;
+    yikeHomeExportCtx.textBaseline = 'top';
+    
+    if (hlVal && subVal.includes(hlVal)) {
+        const parts = subVal.split(hlVal);
+        let currX = 649;
+        const subY = 343.27;
+        for (let i = 0; i < parts.length; i++) {
+            yikeHomeExportCtx.fillStyle = subColor;
+            yikeHomeExportCtx.fillText(parts[i], currX, subY);
+            currX += yikeHomeExportCtx.measureText(parts[i]).width;
+            if (i < parts.length - 1) {
+                yikeHomeExportCtx.fillStyle = hlColor;
+                yikeHomeExportCtx.fillText(hlVal, currX, subY);
+                currX += yikeHomeExportCtx.measureText(hlVal).width;
+            }
+        }
+    } else {
+        yikeHomeExportCtx.fillStyle = subColor;
+        yikeHomeExportCtx.fillText(subVal, 649, 343.27);
+    }
+
+    // 底部渐变SVG
+    if (!globalImageCache[config.yikeHomeBottomSvg]) {
+        globalImageCache[config.yikeHomeBottomSvg] = await loadImage(config.yikeHomeBottomSvg);
+    }
+    if (globalImageCache[config.yikeHomeBottomSvg]) {
+        yikeHomeExportCtx.drawImage(globalImageCache[config.yikeHomeBottomSvg], 0, 624 - 177, 1170, 177);
+    }
+
+    // 透视外壳
+    if (!globalImageCache[config.yikeHomePage]) {
+        globalImageCache[config.yikeHomePage] = await loadImage(config.yikeHomePage);
+    }
+    const pageImg = globalImageCache[config.yikeHomePage];
+
+    if (pageImg) {
+        yikeHomePageCanvas.width = pageImg.width; yikeHomePageCanvas.height = pageImg.height;
+        setupHighQualityContext(yikeHomePageCtx);
+        // Banner在最顶部居中，yikeHomePageCanvas的width就是1170
+        yikeHomePageCtx.drawImage(yikeHomeExportCanvas, 0, 0);
+        yikeHomePageCtx.drawImage(pageImg, 0, 0);
+        yikeHomePageCanvas._bannerBBox = { x: 0, y: 0, w: 1170, h: 624 };
+    }
+}
