@@ -430,6 +430,30 @@ const BRAND_THEMES = [
     { id: 'blue', hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
     { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' }
 ];
+function setCheckedRadioValue(radios, value) {
+    Array.from(radios || []).forEach(radio => { radio.checked = radio.value === value; });
+}
+function showOnlyModePanel(activePanel, panels) {
+    panels.forEach(panel => panel?.classList.add('hidden'));
+    activePanel?.classList.remove('hidden');
+}
+function switchWangpanAutoColorModesToGradient() {
+    currentTopBgMode = 'gradient';
+    setCheckedRadioValue(topBgModeRadios, 'gradient');
+    showOnlyModePanel(topBgModeGradient, [topBgModeImage, topBgModeGradient, topBgModeSolid]);
+
+    currentFeedBgMode = 'gradient';
+    setCheckedRadioValue(feedBgModeRadios, 'gradient');
+    showOnlyModePanel(feedBgModeGradient, [feedBgModeImage, feedBgModeGradient, feedBgModeSolid]);
+
+    currentMySpaceBgMode = 'gradient';
+    setCheckedRadioValue(mySpaceBgModeRadios, 'gradient');
+    showOnlyModePanel(mySpaceBgModeGradient, [mySpaceBgModeSolid, mySpaceBgModeGradient]);
+
+    currentSimpleScanBgMode = 'gradient';
+    setCheckedRadioValue(simpleScanBgModeRadios, 'gradient');
+    showOnlyModePanel(simpleScanBgModeGradient, [simpleScanBgModeSolid, simpleScanBgModeGradient]);
+}
 function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
     let matchedTheme = BRAND_THEMES.find(t => t.id === themeId);
     if (themeId === 'orange') matchedTheme = BRAND_THEMES.find(t => t.id === 'yellow');
@@ -452,6 +476,9 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
         }
     };
     const colorMap = colorMapByBU[targetBU] || colorMapByBU.wangpan;
+    if (targetBU === 'wangpan') {
+        switchWangpanAutoColorModesToGradient();
+    }
     Object.keys(colorMap).forEach(id => {
         const inputEl = document.getElementById(id);
         if (inputEl) {
