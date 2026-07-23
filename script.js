@@ -271,34 +271,253 @@ const MODULE_RENDER_FNS = {
     'yikeCash': renderYikeCashCanvas
 };
 const AI_RESOURCE_MATCHERS = [
-    { resource: 'na_home', bu: 'wangpan', label: 'A1.1.3 NA - 13.14首页顶部沉浸banner', patterns: [/A\s*1\.1\.3/i, /13\.14\s*首页顶部沉浸\s*banner/i, /首页顶部沉浸\s*banner/i] },
-    { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/] },
-    { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i] },
-    { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索\s*icon/i] },
-    { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间/简单扫描banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /简单扫描/i] },
-    { resource: 'dev_1_1_17', bu: 'wangpan', label: 'A1.1.17 NA - 活动中心', patterns: [/A\s*1\.1\.17/i, /活动中心/i] },
-    { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i] },
+    { resource: 'na_home', bu: 'wangpan', label: 'A1.1.3 NA - 13.14首页顶部沉浸banner', patterns: [/A\s*1\.1\.3/i, /13\.14\s*首页顶部沉浸\s*banner/i, /首页顶部沉浸\s*banner/i, /首页\s*banner\s*(尺寸|尺|A|宝宝相簿|宝宝相册)/i, /首页\s*banner[\s\S]{0,120}(沉浸式|宝宝相簿|宝宝相册|去创建|立即创建)/i, /沉浸式\s*banner/i, /首页\s*banner.*420\s*[×x*]\s*282/i] },
+    { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/, /561\s*[×x*]\s*750/] },
+    { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i, /我的(页面|页).*1182\s*[×x*]\s*(225|252)/] },
+    { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索词\s*icon/i, /搜索\s*icon/i, /204\s*[×x*]\s*204/] },
+    { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间/简单扫描banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /简单扫描/i, /分享页\s*\/\s*任务中心/i] },
+    { resource: 'dev_1_1_17', bu: 'wangpan', label: 'A1.1.17 NA - 活动中心', patterns: [/A\s*1\.1\.17/i, /活动中心/i, /670\s*[×x*]\s*320/] },
+    { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i, /1023\s*[×x*]\s*488/] },
     { resource: 'yike_4', bu: 'yike', label: 'B1.1.4 NA - 首页banner', patterns: [/B\s*1\.1\.4/i, /一刻.*首页\s*banner/i, /一刻相册.*首页/i] },
     { resource: 'yike_5', bu: 'yike', label: 'B1.1.5 NA - 设备banner', patterns: [/B\s*1\.1\.5/i, /一刻.*设备\s*banner/i] },
     { resource: 'yike_7', bu: 'yike', label: 'B1.1.7 NA - 收银台banner', patterns: [/B\s*1\.1\.7/i, /一刻.*收银台\s*banner/i, /一刻.*收银台/i] }
 ];
+const RESOURCE_VIEW_MAP = {
+    na_home: 'homeView',
+    na_mypage: 'myPageView',
+    na_feed: 'feedView',
+    dev_1_1_13: 'searchIconView',
+    dev_1_1_16: 'mySpaceView',
+    dev_1_1_17: 'myActivityView',
+    dev_1_1_18: 'peerSharingView',
+    yike_4: 'yikeHomeView',
+    yike_5: 'yikeEquipView',
+    yike_7: 'yikeCashView'
+};
+const RESOURCE_CONTROL_MAP = {
+    na_home: 'homeControls',
+    na_mypage: 'myPageControls',
+    na_feed: 'feedControls',
+    dev_1_1_13: 'searchIconControls',
+    dev_1_1_16: 'mySpaceControls',
+    dev_1_1_17: 'myActivityControls',
+    dev_1_1_18: 'peerSharingControls',
+    yike_4: 'yikeHomeControls',
+    yike_5: 'yikeEquipControls',
+    yike_7: 'yikeCashControls'
+};
+const VIEW_RESOURCE_MAP = Object.fromEntries(Object.entries(RESOURCE_VIEW_MAP).map(([resource, viewId]) => [viewId, resource]));
+const RESOURCE_EXPORT_CHECKS = {
+    na_home: ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'],
+    na_mypage: ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'],
+    na_feed: ['chkFeedBannerExport', 'chkFeedPhone'],
+    dev_1_1_13: ['chkSearchIconExport', 'chkSearchPageExport'],
+    dev_1_1_17: ['chkMyActivityExport', 'chkMyActivityPageExport'],
+    dev_1_1_18: ['chkPeerSharingExport', 'chkPeerSharingPageExport'],
+    yike_4: ['chkYikeHomeExport', 'chkYikeHomePageExport'],
+    yike_5: ['chkYikeEquipExport', 'chkYikeEquipPageExport'],
+    yike_7: ['chkYikeCashExport', 'chkYikeCashPageExport']
+};
+let isAiResultPreviewMode = false;
+let lastAiRecognizedModules = [];
+let lastAiRenderOptions = {};
 function normalizeDemandTextForMatch(str = '') {
     return String(str)
         .replace(/<style[\s\S]*?<\/style>/gi, ' ')
         .replace(/<script[\s\S]*?<\/script>/gi, ' ')
         .replace(/<[^>]+>/g, ' ')
         .replace(/&nbsp;/gi, ' ')
+        .replace(/⼼/g, '心').replace(/⻚/g, '页').replace(/⽹/g, '网').replace(/⻛/g, '风').replace(/⾸/g, '首').replace(/⻔/g, '门')
         .replace(/\s+/g, ' ')
         .trim();
 }
+function compactDemandTextForMatch(str = '') {
+    let text = normalizeDemandTextForMatch(str);
+    for (let i = 0; i < 3; i++) {
+        text = text.replace(/([\u4e00-\u9fff])\s+(?=[\u4e00-\u9fff])/g, '$1');
+    }
+    return text.replace(/([A-Za-z])\s+(?=[A-Za-z])/g, '$1');
+}
 function inferResourcesFromDemandText(text) {
     const normalized = normalizeDemandTextForMatch(text);
+    const compacted = compactDemandTextForMatch(text);
     if (!normalized) return [];
     const matched = [];
     AI_RESOURCE_MATCHERS.forEach(item => {
-        if (item.patterns.some(pattern => pattern.test(normalized))) matched.push(item.resource);
+        if (item.patterns.some(pattern => pattern.test(normalized) || pattern.test(compacted))) matched.push(item.resource);
     });
     return [...new Set(matched)];
+}
+function pickFirstTextMatch(text, patterns) {
+    for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match) return match.slice(1).filter(Boolean).map(item => String(item).trim());
+    }
+    return [];
+}
+function cleanFallbackCopy(str = '', limit = 20) {
+    return formatAndLimitText(String(str).replace(/[“”"'<>【】]/g, '').replace(/ios[:：]?.*$/i, '').trim(), limit);
+}
+function splitFallbackTitlePair(text = '') {
+    const normalized = String(text).replace(/[，,、]/g, ' ').replace(/\s+/g, ' ').trim();
+    const parts = normalized.split(' ').filter(Boolean);
+    if (parts.length >= 2) return [parts[0], parts.slice(1).join('')];
+    const mid = Math.ceil(normalized.length / 2);
+    return [normalized.slice(0, mid), normalized.slice(mid)];
+}
+function ensureArrayConfig(config, key, fallbackItems) {
+    if (Array.isArray(config[key]) && config[key].length > 0) return false;
+    if (!fallbackItems || fallbackItems.length === 0) return false;
+    config[key] = fallbackItems;
+    return true;
+}
+function buildLocalFallbackConfigFromDemand(text, inferredResources) {
+    const normalized = compactDemandTextForMatch(text);
+    const fallback = {};
+    if (!normalized) return fallback;
+
+    if (inferredResources.includes('na_home')) {
+        let [line1, line2] = pickFirstTextMatch(normalized, [
+            /首页\s*banner[\s\S]{0,220}主标题[“\"]?([^“”\"，,。；;\s]{2,12})[”\"]?[\s\S]{0,80}按钮[“\"]?([^“”\"，,。；;\s]{2,6})/i,
+            /主标题[“\"]([^“”\"]{2,12})[”\"][\s\S]{0,80}按钮[“\"]([^“”\"]{2,6})[”\"]/i,
+            /首页\s*banner[\s\S]{0,120}(宝宝相簿|宝宝相册)[\s\S]{0,120}(去创建|立即创建)/i
+        ]);
+        if (line1 || line2) fallback.home = [{ line1: cleanFallbackCopy(line1 || '宝宝相簿', 6), line2: cleanFallbackCopy(line2 || '去创建', 4) }];
+    }
+
+    if (inferredResources.includes('na_feed')) {
+        let [title, sub, btn] = pickFirstTextMatch(normalized, [
+            /10\s*出\s*1[\s\S]{0,220}标题[:：]?([^，,。；;\s]{2,14})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮[:：]?([^，,。；;\s]{2,6})/i,
+            /10\s*出\s*1[\s\S]{0,220}(留存宝宝记忆|留存宝.记忆|职场解压站|珍藏成长|创建宝宝相册|创建宝宝相簿)[\s\S]{0,100}(高清原图[，,]全家共享|指尖轻击[，,]释放日常压力|珍藏成长[，,]定格美好|珍藏童年[，,]全家共享)[\s\S]{0,60}(立即创建|去创建|去参与)/i
+        ]);
+        if (title || sub) fallback.feed = [{ title: cleanFallbackCopy(title, 7), sub: cleanFallbackCopy(sub, 10), btn: cleanFallbackCopy(btn || '去查看', 4) }];
+    }
+
+    if (inferredResources.includes('na_mypage')) {
+        let [title, sub, btn] = pickFirstTextMatch(normalized, [
+            /我的(?:页面|页).*?banner[\s\S]{0,260}(留存宝宝记忆|留存宝.记忆|创建宝宝相册|创建宝宝相簿|点点解压赢积分)[\s\S]{0,120}(高清原图[，,]全家共享|珍藏童年[，,]全家共享|珍藏成长[，,]定格美好|珍藏成長[，,]定格美好|告别内耗赢取好礼)[\s\S]{0,60}(去创建|立即创建|去参与)/i,
+            /我的(?:页面|页).*?标题[:：]?([^，,。；;\s]{2,14})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮[:：]?([^，,。；;\s]{2,6})/i
+        ]);
+        if (title || sub) fallback.mypage = [{ title: cleanFallbackCopy(title, 9), sub: cleanFallbackCopy(sub, 8), capsule: '', highlight: '', btn: cleanFallbackCopy(btn || '去创建', 4) }];
+    }
+
+    if (inferredResources.includes('dev_1_1_16')) {
+        let [title, btn, sub] = pickFirstTextMatch(normalized, [
+            /分享页\s*\/\s*任务中心[\s\S]{0,160}(创建宝宝相簿|创建宝宝相册|疯狂点点乐)[\s\S]{0,40}(立即创建|去创建|去参与)[\s\S]{0,80}(珍藏童年[，,]全家共享|解压释放\s*好礼相随|珍藏成長[，,]定格美好)/i,
+            /任务中心[\s\S]{0,160}主标题[:：]?([^，,。；;\n]{2,16})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮(?:文案)?[:：]?([^，,。；;\s]{2,6})/i
+        ]);
+        if (title || sub) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub || btn, 8), btn: cleanFallbackCopy((sub && btn) || '去创建', 4) }];
+    }
+
+    const fillSquareBanner = (resource, key) => {
+        if (!inferredResources.includes(resource)) return;
+        let title = '', sub = '', btn = '';
+        if (key === 'peerSharing') {
+            [title, sub, btn] = pickFirstTextMatch(normalized, [
+                /点对点[\s\S]{0,220}主标题[:：]?([^\n。；;]{4,24})[\s\S]{0,80}副标题[:：]?([^\n。；;]{2,20})[\s\S]{0,80}(立即创建|去创建|去参与)?/i
+            ]);
+        } else {
+            const [shortSub, titlePhrase, actionText] = pickFirstTextMatch(normalized, [
+                /活动中心[\s\S]{0,120}(创建宝宝相簿|创建宝宝相册|疯狂点点乐)[\s\S]{0,80}(珍藏童年[，,]全家共享|解压释放\s*好礼相随|珍藏成長[，,]定格美好)[\s\S]{0,40}(立即创建|去创建|去参与)?/i
+            ]);
+            title = titlePhrase;
+            sub = shortSub;
+            btn = actionText;
+        }
+        if (!title && !sub) return;
+        const [title1, title2] = splitFallbackTitlePair(title);
+        fallback[key] = [{ title1: cleanFallbackCopy(title1, 7), title2: cleanFallbackCopy(title2, 7), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || '去创建', 4) }];
+    };
+    fillSquareBanner('dev_1_1_17', 'activity');
+    fillSquareBanner('dev_1_1_18', 'peerSharing');
+
+    if (inferredResources.includes('dev_1_1_13')) fallback.searchIcon = [{ matched: true }];
+    return fallback;
+}
+function applyLocalFallbackConfig(config, fallback) {
+    ensureArrayConfig(config, 'home', fallback.home);
+    ensureArrayConfig(config, 'feed', fallback.feed);
+    ensureArrayConfig(config, 'mypage', fallback.mypage);
+    ensureArrayConfig(config, 'mySpace', fallback.mySpace);
+    ensureArrayConfig(config, 'activity', fallback.activity);
+    ensureArrayConfig(config, 'peerSharing', fallback.peerSharing);
+    ensureArrayConfig(config, 'searchIcon', fallback.searchIcon);
+}
+function setLimitedInputValue(inputId, value, limit) {
+    if (!value) return;
+    const el = document.getElementById(inputId);
+    if (el) el.value = formatAndLimitText(value, limit);
+}
+async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, demandText) {
+    const modules = [...new Set(inferredResources)].filter(resource => RESOURCE_VIEW_MAP[resource]);
+    if (modules.length === 0) return false;
+
+    if (fallbackConfig.home?.length) {
+        const first = fallbackConfig.home[0];
+        window.abTestCopies.home = fallbackConfig.home;
+        window.abTestActiveIndex.home = 0;
+        setLimitedInputValue('textLine1', first.line1, 6);
+        setLimitedInputValue('textLine2', first.line2, 4);
+        renderABTestSwitcher('homeControls', 'home');
+    }
+    if (fallbackConfig.feed?.length) {
+        const first = fallbackConfig.feed[0];
+        window.abTestCopies.feed = fallbackConfig.feed;
+        window.abTestActiveIndex.feed = 0;
+        setLimitedInputValue('feedTitle', first.title, 7);
+        setLimitedInputValue('feedSubtitle', first.sub, 10);
+        setLimitedInputValue('feedBtnText', first.btn, 4);
+        renderABTestSwitcher('feedControls', 'feed');
+    }
+    if (fallbackConfig.mypage?.length) {
+        const first = fallbackConfig.mypage[0];
+        window.abTestCopies.myPage = fallbackConfig.mypage;
+        window.abTestActiveIndex.myPage = 0;
+        setLimitedInputValue('myPageTitle', first.title, 9);
+        setLimitedInputValue('myPageSubtitle', first.sub, 8);
+        setLimitedInputValue('textCapsule', first.capsule, 4);
+        setLimitedInputValue('myPageHighlight', first.highlight, 9);
+        renderABTestSwitcher('myPageControls', 'myPage');
+    }
+    if (fallbackConfig.mySpace?.length) {
+        const first = fallbackConfig.mySpace[0];
+        window.abTestCopies.mySpace = fallbackConfig.mySpace;
+        window.abTestActiveIndex.mySpace = 0;
+        setLimitedInputValue('mySpaceTitle', first.title, 11);
+        setLimitedInputValue('mySpaceSub', first.sub, 8);
+        setLimitedInputValue('mySpaceBtnText', first.btn, 4);
+        renderABTestSwitcher('mySpaceControls', 'mySpace');
+    }
+    if (fallbackConfig.activity?.length) {
+        const first = fallbackConfig.activity[0];
+        window.abTestCopies.activity = fallbackConfig.activity;
+        window.abTestActiveIndex.activity = 0;
+        setLimitedInputValue('myActivityTitle1', first.title1, 7);
+        setLimitedInputValue('myActivityTitle2', first.title2, 7);
+        setLimitedInputValue('myActivitySub', first.sub, 8);
+        setLimitedInputValue('myActivityBtnText', first.btn, 4);
+        renderABTestSwitcher('myActivityControls', 'activity');
+    }
+    if (fallbackConfig.peerSharing?.length) {
+        const first = fallbackConfig.peerSharing[0];
+        window.abTestCopies.peerSharing = fallbackConfig.peerSharing;
+        window.abTestActiveIndex.peerSharing = 0;
+        setLimitedInputValue('peerSharingTitle1', first.title1, 7);
+        setLimitedInputValue('peerSharingTitle2', first.title2, 7);
+        setLimitedInputValue('peerSharingSub', first.sub, 8);
+        setLimitedInputValue('peerSharingBtnText', first.btn, 4);
+        renderABTestSwitcher('peerSharingControls', 'peerSharing');
+    }
+
+    const targetBU = getDominantBusinessFromResources(modules);
+    if (targetBU && targetBU !== currentBU) setActiveBusinessLine(targetBU, { preserveAiResult: true });
+    const visibleModules = modules.filter(resource => getBusinessForResource(resource) === currentBU);
+    const inferredDemandText = compactDemandTextForMatch(demandText);
+    await showAiRecognizedPreview(visibleModules.length ? visibleModules : modules, {
+        foundMySpace: /任务中心|我的空间|分享页/.test(inferredDemandText),
+        foundSimpleScan: /简单扫描/.test(inferredDemandText)
+    });
+    return true;
 }
 function getBusinessForResource(resource) {
     const match = AI_RESOURCE_MATCHERS.find(item => item.resource === resource);
@@ -495,30 +714,105 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
         if (targetRadioMyPage) { targetRadioMyPage.checked = true; myPageColor = targetRadioId; }
     }
 }
-function bindCanvasClickToControl() {
-    const mappings = {
-        'homeView': 'homeControls', 'myPageView': 'myPageControls', 'feedView': 'feedControls',
-        'searchIconView': 'searchIconControls', 'mySpaceView': 'mySpaceControls',
-        'myActivityView': 'myActivityControls', 'peerSharingView': 'peerSharingControls',
-        'yikeHomeView': 'yikeHomeControls', 'yikeEquipView': 'yikeEquipControls',
-        'yikeCashView': 'yikeCashControls'
-    };
-    Object.keys(mappings).forEach(viewId => {
-        const viewEl = document.getElementById(viewId);
-        if (viewEl) {
-            viewEl.addEventListener('mousedown', (e) => {
-                if (isSpacePressed) return;
-                const ctrlEl = document.getElementById(mappings[viewId]);
-                const rightSidebar = document.querySelector('.right-sidebar');
-                if (ctrlEl && ctrlEl.classList.contains('active') && rightSidebar) {
-                    rightSidebar.scrollTo({ top: ctrlEl.offsetTop - 20, behavior: 'smooth' });
-                    ctrlEl.style.transition = 'all 0.3s ease';
-                    ctrlEl.style.boxShadow = '0 0 0 2px #258AFF, 0 8px 24px rgba(37,138,255,0.2)';
-                    ctrlEl.style.transform = 'scale(1.01)';
-                    setTimeout(() => { ctrlEl.style.boxShadow = 'none'; ctrlEl.style.transform = 'scale(1)'; }, 800);
-                }
-            });
+function getManagedViewElements() {
+    return [...new Set([...Object.values(RESOURCE_VIEW_MAP), 'viewDevelopingPrompt'])]
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+}
+function getManagedControlElements() {
+    return [...new Set(Object.values(RESOURCE_CONTROL_MAP))]
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+}
+function markResourceListActive(resource) {
+    document.querySelectorAll('.resource-item').forEach(el => el.classList.toggle('active', el.dataset.value === resource));
+}
+function getVisibleAiModulesForCurrentBusiness() {
+    return lastAiRecognizedModules.filter(resource => getBusinessForResource(resource) === getActiveBusinessLineKey());
+}
+function clearAiResultPreviewState() {
+    isAiResultPreviewMode = false;
+    lastAiRecognizedModules = [];
+    lastAiRenderOptions = {};
+    const canvasContainer = document.getElementById('canvasContainer');
+    canvasContainer?.classList.remove('ai-result-preview-mode');
+    getManagedViewElements().forEach(view => view.classList.remove('ai-preview-selected'));
+}
+function focusResourceControl(resource, options = {}) {
+    const { scroll = true, highlight = true } = options;
+    const ctrlEl = document.getElementById(RESOURCE_CONTROL_MAP[resource]);
+    if (!ctrlEl) return;
+    getManagedControlElements().forEach(ctrl => ctrl.classList.remove('active'));
+    ctrlEl.classList.add('active');
+    markResourceListActive(resource);
+    getManagedViewElements().forEach(view => view.classList.remove('ai-preview-selected'));
+    const viewEl = document.getElementById(RESOURCE_VIEW_MAP[resource]);
+    viewEl?.classList.add('ai-preview-selected');
+    if (scroll) {
+        const rightSidebar = document.querySelector('.right-sidebar');
+        if (rightSidebar) rightSidebar.scrollTo({ top: Math.max(ctrlEl.offsetTop - 20, 0), behavior: 'smooth' });
+    }
+    if (highlight) {
+        ctrlEl.style.transition = 'all 0.3s ease';
+        ctrlEl.style.boxShadow = '0 0 0 2px #258AFF, 0 8px 24px rgba(37,138,255,0.2)';
+        ctrlEl.style.transform = 'scale(1.01)';
+        setTimeout(() => { ctrlEl.style.boxShadow = 'none'; ctrlEl.style.transform = 'scale(1)'; }, 800);
+    }
+}
+async function showAiRecognizedPreview(resources, options = {}) {
+    const modules = [...new Set(resources)].filter(resource => RESOURCE_VIEW_MAP[resource]);
+    if (!modules.length) return;
+    isAiResultPreviewMode = true;
+    lastAiRecognizedModules = modules;
+    lastAiRenderOptions = { ...options };
+
+    await renderResourceCanvases(modules, options);
+    getManagedViewElements().forEach(view => view.classList.remove('active', 'ai-preview-selected'));
+    getManagedControlElements().forEach(ctrl => ctrl.classList.remove('active'));
+    developingPrompt.classList.add('hidden');
+
+    const canvasContainer = document.getElementById('canvasContainer');
+    canvasContainer?.classList.add('ai-result-preview-mode');
+    canvasContainer.style.flexDirection = modules.length > 1 ? 'row' : 'column';
+    canvasContainer.style.alignItems = modules.length > 1 ? 'flex-start' : 'center';
+    canvasContainer.style.justifyContent = 'center';
+    canvasContainer.style.gap = modules.length > 1 ? '80px' : '0px';
+    document.querySelectorAll('.view-section').forEach(el => {
+        el.style.width = modules.length > 1 ? 'auto' : '100%';
+        el.style.flexShrink = modules.length > 1 ? '0' : '1';
+    });
+
+    modules.forEach(resource => {
+        const viewEl = document.getElementById(RESOURCE_VIEW_MAP[resource]);
+        if (viewEl) viewEl.classList.add('active');
+        if (resource === 'dev_1_1_16') {
+            const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
+            const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
+            const showBothA116 = !options.foundMySpace && !options.foundSimpleScan;
+            if (spaceCard) spaceCard.style.display = (showBothA116 || options.foundMySpace) ? '' : 'none';
+            if (scanCard) scanCard.style.display = (showBothA116 || options.foundSimpleScan) ? '' : 'none';
         }
+    });
+    focusResourceControl(modules[0], { scroll: false, highlight: false });
+    cvsScale = modules.length > 1 ? 0.6 : 1;
+    cvsTranslateX = 0;
+    cvsTranslateY = modules.length > 1 ? 100 : 0;
+    updateCanvasTransform();
+    if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
+}
+function bindCanvasClickToControl() {
+    Object.keys(VIEW_RESOURCE_MAP).forEach(viewId => {
+        const viewEl = document.getElementById(viewId);
+        if (!viewEl) return;
+        viewEl.addEventListener('mousedown', () => {
+            if (isSpacePressed) return;
+            const resource = VIEW_RESOURCE_MAP[viewId];
+            if (isAiResultPreviewMode && lastAiRecognizedModules.includes(resource)) {
+                focusResourceControl(resource);
+                return;
+            }
+            focusResourceControl(resource);
+        });
     });
 }
 // ==================== 🚀 4. 肖恩AI 智能大模型与多模态图片解析引擎 ====================
@@ -723,6 +1017,8 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
     let cleanRichText = fixHeteronyms(currentRichTextContext);
     const demandTextForMatch = `${isAiStatusText(cleanRawText) ? '' : cleanRawText}\n${cleanRichText}`;
     const inferredResources = inferResourcesFromDemandText(demandTextForMatch);
+    const localFallbackConfig = buildLocalFallbackConfigFromDemand(demandTextForMatch, inferredResources);
+    let hasFastLocalPreview = false;
     if (inferredResources.length > 0) {
         const labels = inferredResources.map(resource => AI_RESOURCE_MATCHERS.find(item => item.resource === resource)?.label || resource);
         textPayload += `【系统本地预匹配到的资源位编号】:\n${labels.join('\n')}\n请优先按这些资源位输出对应 JSON 字段，不要因为截图里还有其他示例区域而串到别的模块。\n\n`;
@@ -737,13 +1033,17 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
     if (currentImageBase64) {
         userContent.push({ type: "image_url", image_url: { url: currentImageBase64 } });
     }
+    if (inferredResources.length > 0) {
+        hasFastLocalPreview = await applyFastLocalFallbackPreview(localFallbackConfig, inferredResources, demandTextForMatch);
+        if (hasFastLocalPreview) btn.innerText = '✅ 本地识别已生成，AI继续优化中...';
+    }
     console.log("🚀 即将发给 AI 的文本体 (给AI减负后的纯净版):", textPayload);
     const systemPrompt = `你是一个资深的UI设计助手。请从用户的表格或截图中，精准提取文案并分配到对应的 JSON 字段中。
 【映射关系】(资源编号优先级最高，注意识别可能带有"-banner"或PDF提取错别字的情况):
-- "A1.1.3" / "13.14首页顶部沉浸banner" / "首页沉浸" -> "home"
+- "A1.1.3" / "13.14首页顶部沉浸banner" / "首页沉浸" / "首页banner" / "420×282" -> "home"
 - "A1.1.4" / "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
 - "A1.1.5" / "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
-- "A1.1.13" / "搜索框icon" / "搜索icon" -> "searchIcon"
+- "A1.1.13" / "搜索框icon" / "搜索词icon" / "搜索icon" / "204×204" -> "searchIcon"
 - "A1.1.16" + "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
 - "A1.1.16" + "简单扫描" -> "simpleScan"
 - "A1.1.17" / "活动中心" -> "activity"
@@ -777,8 +1077,12 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "yikeCash": [ { "title": "主标题", "highlight": "高亮词", "titleColor": "#000000", "highlightColor": "#EE3A31", "grad1": "#FFFAEF", "grad2": "#FEEFBA" } ]
 }`;
     try {
+        const controller = new AbortController();
+        const aiTimeoutMs = hasFastLocalPreview ? 18000 : 45000;
+        const aiTimeout = setTimeout(() => controller.abort(), aiTimeoutMs);
         const response = await fetch(apiURL, {
             method: 'POST',
+            signal: controller.signal,
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
             body: JSON.stringify({
                 model: selectedModel,
@@ -786,6 +1090,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
                 temperature: 0.1
             })
         });
+        clearTimeout(aiTimeout);
         if (!response.ok) throw new Error(`[${response.status}] 服务器报错: ${await response.text()}`);
         const data = await response.json();
         let aiResult = data.choices[0].message.content.trim();
@@ -793,6 +1098,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
         if (jsonMatch) jsonString = jsonMatch[0];
         const config = JSON.parse(jsonString);
+        applyLocalFallbackConfig(config, localFallbackConfig);
         let recognizedModules = new Set();
         let foundMySpace = false;
         let foundSimpleScan = false;
@@ -911,63 +1217,29 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             renderABTestSwitcher('yikeCashControls', 'yikeCash');
         }
         if (recognizedModules.size > 0) {
-            const allModules = Array.from(recognizedModules);
+            const allModules = Array.from(recognizedModules).filter(mod => RESOURCE_VIEW_MAP[mod]);
             const targetBU = getDominantBusinessFromResources(allModules);
             if (targetBU && targetBU !== currentBU) {
-                setActiveBusinessLine(targetBU);
+                setActiveBusinessLine(targetBU, { preserveAiResult: true });
             }
             const sameBusinessModules = allModules.filter(mod => getBusinessForResource(mod) === currentBU);
             const modules = sameBusinessModules.length > 0 ? sameBusinessModules : allModules;
-            await renderResourceCanvases(modules, { foundMySpace, foundSimpleScan });
-            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
-            developingPrompt.classList.add('hidden');
-            document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
-            const firstEl = document.querySelector(`.resource-item[data-value="${modules[0]}"]`);
-            if (firstEl) firstEl.classList.add('active');
-            await switchResourceView(modules[0]);
-            [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
-            developingPrompt.classList.add('hidden');
-            const container = document.getElementById('canvasContainer');
-            if (modules.length > 1) {
-                container.style.flexDirection = 'row'; container.style.alignItems = 'flex-start'; container.style.justifyContent = 'center'; container.style.gap = '100px';
-                document.querySelectorAll('.view-section').forEach(el => { el.style.width = 'auto'; el.style.flexShrink = '0'; });
-            } else {
-                container.style.flexDirection = 'column'; container.style.alignItems = 'center'; container.style.gap = '0px';
-                document.querySelectorAll('.view-section').forEach(el => { el.style.width = '100%'; el.style.flexShrink = '1'; });
-            }
-            modules.forEach(mod => {
-                let viewId, ctrlId;
-                if (mod === 'na_home') { viewId = 'homeView'; ctrlId = 'homeControls'; }
-                else if (mod === 'na_mypage') { viewId = 'myPageView'; ctrlId = 'myPageControls'; }
-                else if (mod === 'na_feed') { viewId = 'feedView'; ctrlId = 'feedControls'; }
-                else if (mod === 'dev_1_1_13') { viewId = 'searchIconView'; ctrlId = 'searchIconControls'; }
-                else if (mod === 'dev_1_1_17') { viewId = 'myActivityView'; ctrlId = 'myActivityControls'; }
-                else if (mod === 'dev_1_1_18') { viewId = 'peerSharingView'; ctrlId = 'peerSharingControls'; }
-                else if (mod === 'yike_4') { viewId = 'yikeHomeView'; ctrlId = 'yikeHomeControls'; }
-                else if (mod === 'yike_5') { viewId = 'yikeEquipView'; ctrlId = 'yikeEquipControls'; }
-                else if (mod === 'yike_7') { viewId = 'yikeCashView'; ctrlId = 'yikeCashControls'; }
-                else if (mod === 'dev_1_1_16') {
-                    viewId = 'mySpaceView'; ctrlId = 'mySpaceControls';
-                    const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
-                    const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
-                    const showBothA116 = !foundMySpace && !foundSimpleScan;
-                    if (spaceCard) spaceCard.style.display = (showBothA116 || foundMySpace) ? '' : 'none';
-                    if (scanCard) scanCard.style.display = (showBothA116 || foundSimpleScan) ? '' : 'none';
-                }
-                if (viewId) document.getElementById(viewId).classList.add('active');
-                if (ctrlId) document.getElementById(ctrlId).classList.add('active');
-            });
-            cvsScale = modules.length > 1 ? 0.6 : 1; cvsTranslateX = 0; cvsTranslateY = modules.length > 1 ? 100 : 0;
-            updateCanvasTransform();
+            await showAiRecognizedPreview(modules, { foundMySpace, foundSimpleScan });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         btn.innerText = '🎉 解析成功，已生成多方案画板！';
         btn.style.background = '#10B981';
     } catch (error) {
         console.error("AI解析失败详情:", error);
-        alert("AI解析出错啦！\n" + error.message);
-        btn.innerText = '解析失败，点击重试';
-        btn.style.background = '#FF014D';
+        if (hasFastLocalPreview) {
+            console.warn('AI 模型优化失败，已保留本地快速识别结果:', error);
+            btn.innerText = '本地识别已生成，AI优化失败';
+            btn.style.background = '#F59E0B';
+        } else {
+            alert("AI解析出错啦！\n" + error.message);
+            btn.innerText = '解析失败，点击重试';
+            btn.style.background = '#FF014D';
+        }
     } finally {
         setTimeout(() => {
             btn.innerText = originalText;
@@ -1651,7 +1923,7 @@ async function renderYikeCashCanvas() {
     }
 }
 // ==================== 界面交互事件 ====================
-function updateResourceDropdown(terminalId) {
+function updateResourceDropdown(terminalId, options = {}) {
     const resourceList = document.getElementById('resourceList');
     if (!resourceList) return;
     resourceList.innerHTML = '';
@@ -1677,7 +1949,7 @@ function updateResourceDropdown(terminalId) {
         resourceList.appendChild(item);
     });
     const activeItem = resourceList.querySelector('.active') || resourceList.querySelector('.resource-item');
-    if (activeItem) switchResourceView(activeItem.dataset.value); else switchResourceView(null);
+    if (activeItem) switchResourceView(activeItem.dataset.value, { preserveAiResult: options.preserveAiResult }); else switchResourceView(null, { preserveAiResult: options.preserveAiResult });
 }
 const renderedPages = {};
 async function renderActiveBusinessCanvases() {
@@ -1714,7 +1986,8 @@ async function renderResourceCanvases(resources, options = {}) {
         else if (resource === 'yike_7') { await renderYikeCashCanvas(); renderedPages.yikeCash = true; }
     }
 }
-async function switchResourceView(selected) {
+async function switchResourceView(selected, options = {}) {
+    if (!options.preserveAiResult) clearAiResultPreviewState();
     [homeControls, myPageControls, feedControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
@@ -1770,7 +2043,8 @@ async function switchResourceView(selected) {
     }
 }
 const buBtns = document.querySelectorAll('.bu-btn');
-function setActiveBusinessLine(bu) {
+function setActiveBusinessLine(bu, options = {}) {
+    if (!options.preserveAiResult) clearAiResultPreviewState();
     const targetBtn = document.querySelector(`.bu-btn[data-bu="${bu}"]`);
     if (!targetBtn) return;
     buBtns.forEach(b => b.classList.remove('active'));
@@ -1783,7 +2057,7 @@ function setActiveBusinessLine(bu) {
     if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
         document.documentElement.style.setProperty('--primary-color', '#258AFF');
         wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
-        updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal);
+        updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal, { preserveAiResult: options.preserveAiResult });
         if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
     } else {
         document.documentElement.style.setProperty('--primary-color', '#87B4FF');
@@ -1985,9 +2259,34 @@ function syncExportModalByBusinessLine() {
     return visibleChecks;
 }
 // ==================== ✨ 智能勾选辅助函数 ====================
+function checkExportIds(ids) {
+    ids.forEach(id => {
+        const chk = document.getElementById(id);
+        if (chk) chk.checked = true;
+    });
+}
+function selectExportChecksForResources(resources, options = {}) {
+    resources.forEach(resource => {
+        if (resource === 'dev_1_1_16') {
+            const showBoth = !options.foundMySpace && !options.foundSimpleScan;
+            if (showBoth || options.foundMySpace) checkExportIds(['chkMySpaceExport', 'chkMySpacePageExport']);
+            if (showBoth || options.foundSimpleScan) checkExportIds(['chkSimpleScanExport', 'chkSimpleScanPageExport']);
+            return;
+        }
+        checkExportIds(RESOURCE_EXPORT_CHECKS[resource] || []);
+    });
+}
 function autoSelectExportItems() {
     const visibleChecks = syncExportModalByBusinessLine();
     document.querySelectorAll('.export-item-chk').forEach(chk => chk.checked = false);
+    const aiModulesForCurrentBU = getVisibleAiModulesForCurrentBusiness();
+    if (isAiResultPreviewMode && aiModulesForCurrentBU.length > 0) {
+        selectExportChecksForResources(aiModulesForCurrentBU, lastAiRenderOptions);
+        const selectAllChk = document.getElementById('selectAllExport');
+        if (selectAllChk && visibleChecks.length > 0) { selectAllChk.checked = visibleChecks.every(c => c.checked); }
+        else if (selectAllChk) { selectAllChk.checked = false; }
+        return;
+    }
     if (document.getElementById('homeView')?.classList.contains('active')) {
         ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'].forEach(id => {
             if (document.getElementById(id)) document.getElementById(id).checked = true;

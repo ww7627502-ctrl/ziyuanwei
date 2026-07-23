@@ -548,6 +548,16 @@ body {
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
 }
 
+.ai-result-preview-mode .view-section.active {
+    cursor: pointer;
+}
+
+.ai-result-preview-mode .view-section.ai-preview-selected .phone-canvas {
+    outline: 3px solid #258AFF;
+    outline-offset: 8px;
+    box-shadow: 0 18px 48px rgba(37, 138, 255, 0.22);
+}
+
 /* 动态显示控制 */
 .control-group {
     display: none;
