@@ -502,6 +502,7 @@ body {
 
 .preview-grid.flex-center {
     display: flex;
+    flex-wrap: wrap;
     gap: 60px;
     justify-content: center;
     width: 100%;
@@ -512,6 +513,24 @@ body {
     padding: 0 !important;
     border: none !important;
     box-shadow: none !important;
+}
+
+.members-channel-grid {
+    flex-wrap: nowrap !important;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 40px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+}
+
+.members-channel-grid .preview-card {
+    flex: 0 0 auto;
+}
+
+.members-channel-grid .phone-canvas {
+    max-height: 58vh;
+    max-width: 30vw;
 }
 
 .text-center {

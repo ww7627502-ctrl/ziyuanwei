@@ -156,6 +156,29 @@
                     </div>
                 </div>
 
+                <div id="membersChannelView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看对应纯净版大图
+                    </div>
+                    <div class="preview-grid flex-center members-channel-grid">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">会员频道下拉2楼 - 单列</div>
+                            <canvas id="membersChannelPage1Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="membersChannelPage1"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">会员频道下拉2楼 - 双列</div>
+                            <canvas id="membersChannelPage2Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="membersChannelPage2"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">会员频道下拉2楼 - 三列</div>
+                            <canvas id="membersChannelPage3Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="membersChannelPage3"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图</div>
@@ -301,12 +324,26 @@
                                             <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                     id="topGradColor2" value="#429321"></div>
                                         </div>
-                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                                             <span style="font-size: 12px; color: #666; width: 28px;">角度</span>
                                             <input type="range" id="topGradAngle" min="0" max="360" value="90"
                                                 style="flex: 1;">
                                             <span id="topGradAngleVal"
                                                 style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">90°</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 28px;">占比1</span>
+                                            <input type="range" id="topGradStop1" min="0" max="100" value="0"
+                                                style="flex: 1;">
+                                            <span id="topGradStop1Val"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">0%</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 12px; color: #666; width: 28px;">占比2</span>
+                                            <input type="range" id="topGradStop2" min="0" max="100" value="100"
+                                                style="flex: 1;">
+                                            <span id="topGradStop2Val"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 30px; text-align: right;">100%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -414,12 +451,26 @@
                                             <div class="color-picker-wrap"><span>终止色</span><input type="color"
                                                     id="feedGradColor2" value="#F2F5F8"></div>
                                         </div>
-                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                                             <span style="font-size: 12px; color: #666; width: 36px;">角度</span>
                                             <input type="range" id="feedGradAngle" min="0" max="360" value="180"
                                                 style="flex: 1;">
                                             <span id="feedGradAngleVal"
                                                 style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">180°</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 36px;">占比1</span>
+                                            <input type="range" id="feedGradStop1" min="0" max="100" value="0"
+                                                style="flex: 1;">
+                                            <span id="feedGradStop1Val"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">0%</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 12px; color: #666; width: 36px;">占比2</span>
+                                            <input type="range" id="feedGradStop2" min="0" max="100" value="100"
+                                                style="flex: 1;">
+                                            <span id="feedGradStop2Val"
+                                                style="font-size: 12px; font-weight: bold; color: #333; width: 36px; text-align: right;">100%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -460,6 +511,68 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="membersChannelControls" class="control-group">
+                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        👉 三个页面共用最上方<b>【全局基础配图】</b>区域上传的主图，也共用下面这套按钮渐变参数，系统会按各自画框等比适配。
+                    </div>
+                    <div class="sidebar-section" style="margin-bottom: 20px;">
+                        <div class="section-title">按钮渐变配置</div>
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 10px;">
+                            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
+                                <div class="color-picker-wrap"><span>起始</span><input type="color" id="membersChannelBtnGrad1" value="#FFFDED"></div>
+                                <div class="color-picker-wrap"><span>终止</span><input type="color" id="membersChannelBtnGrad2" value="#FBF6F3"></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                <input type="range" id="membersChannelBtnGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                <span id="membersChannelBtnGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                <input type="range" id="membersChannelBtnGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                <span id="membersChannelBtnGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                <input type="range" id="membersChannelBtnGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                <span id="membersChannelBtnGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group">
+                        <div class="panel-group-header">会员频道下拉2楼 - 单列</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group"><span>主标题 (最多11字):</span><input type="text" id="membersChannelPage1Title" value="主标题最多11个字" maxlength="11"></div>
+                                <div class="input-group"><span>副标题 (最多8字):</span><input type="text" id="membersChannelPage1Sub" value="副标题最多8个字" maxlength="8"></div>
+                                <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage1Btn" value="去查看" maxlength="4"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">会员频道下拉2楼 - 双列</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group"><span>主标题 (最多11字):</span><input type="text" id="membersChannelPage2Title" value="主标题最多11个字" maxlength="11"></div>
+                                <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage2Btn" value="去查看" maxlength="4"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">会员频道下拉2楼 - 三列</div>
+                        <div class="panel-group-body">
+                            <div class="sidebar-section">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group"><span>主标题 (最多7字):</span><input type="text" id="membersChannelPage3Title" value="主标题最多7个字" maxlength="7"></div>
+                                <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage3Btn" value="去查看" maxlength="4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="yikeEquipControls" class="control-group">
                     <div
                         style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
@@ -473,11 +586,26 @@
                                 <div class="section-title">渐变底板颜色</div>
                                 <div
                                     style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>起始</span><input type="color"
                                                 id="yikeEquipGrad1" value="#AFF000"></div>
                                         <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                 id="yikeEquipGrad2" value="#E6FAB2"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="yikeEquipGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="yikeEquipGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="yikeEquipGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="yikeEquipGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="yikeEquipGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="yikeEquipGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -530,9 +658,24 @@
                                     <span style="color:#666;">系统会自动将此 Banner 画在 670x78 的圆角底板中。</span>
                                 </div>
                                 <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>起始</span><input type="color" id="yikeCashGrad1" value="#FFFAEF"></div>
                                         <div class="color-picker-wrap"><span>终止</span><input type="color" id="yikeCashGrad2" value="#FEEFBA"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="yikeCashGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="yikeCashGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="yikeCashGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="yikeCashGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="yikeCashGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="yikeCashGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -646,6 +789,21 @@
                                             <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                     id="mySpaceGradColor2" value="#FFFFFF"></div>
                                         </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                            <input type="range" id="mySpaceBgGradAngle" min="0" max="360" value="135" style="flex: 1;">
+                                            <span id="mySpaceBgGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">135°</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                            <input type="range" id="mySpaceBgGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                            <span id="mySpaceBgGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                            <input type="range" id="mySpaceBgGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                            <span id="mySpaceBgGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -670,11 +828,26 @@
                                     style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
                                     <span
                                         style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色:</span>
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>起始</span><input type="color"
                                                 id="mySpaceBtnGrad1" value="#06A7FF"></div>
                                         <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                 id="mySpaceBtnGrad2" value="#0066FF"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="mySpaceBtnGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="mySpaceBtnGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="mySpaceBtnGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="mySpaceBtnGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="mySpaceBtnGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="mySpaceBtnGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -707,6 +880,21 @@
                                                     id="simpleScanGradColor1" value="#E5F3FF"></div>
                                             <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                     id="simpleScanGradColor2" value="#FFFFFF"></div>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                            <input type="range" id="simpleScanBgGradAngle" min="0" max="360" value="135" style="flex: 1;">
+                                            <span id="simpleScanBgGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">135°</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                            <input type="range" id="simpleScanBgGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                            <span id="simpleScanBgGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                            <input type="range" id="simpleScanBgGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                            <span id="simpleScanBgGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -745,11 +933,26 @@
                                     style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top:8px;">
                                     <span
                                         style="display:block; font-size:12px; color:#666; margin-bottom:8px;">按钮渐变色:</span>
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>起始</span><input type="color"
                                                 id="simpleScanBtnGrad1" value="#06A7FF"></div>
                                         <div class="color-picker-wrap"><span>终止</span><input type="color"
                                                 id="simpleScanBtnGrad2" value="#0066FF"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="simpleScanBtnGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="simpleScanBtnGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="simpleScanBtnGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="simpleScanBtnGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="simpleScanBtnGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="simpleScanBtnGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -769,11 +972,26 @@
                                 <div class="section-title">渐变底板颜色 (670x320)</div>
                                 <div
                                     style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>左上起始</span><input type="color"
                                                 id="myActivityGrad1" value="#9EED60"></div>
                                         <div class="color-picker-wrap"><span>右下终止</span><input type="color"
                                                 id="myActivityGrad2" value="#FCFF70"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="myActivityGradAngle" min="0" max="360" value="45" style="flex: 1;">
+                                        <span id="myActivityGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">45°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="myActivityGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="myActivityGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="myActivityGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="myActivityGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -836,11 +1054,26 @@
                                 <div class="section-title">渐变底板颜色 (670x320)</div>
                                 <div
                                     style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
-                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
                                         <div class="color-picker-wrap"><span>左上起始</span><input type="color"
                                                 id="peerSharingGrad1" value="#D16FFF"></div>
                                         <div class="color-picker-wrap"><span>右下终止</span><input type="color"
                                                 id="peerSharingGrad2" value="#5C6CFF"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="peerSharingGradAngle" min="0" max="360" value="45" style="flex: 1;">
+                                        <span id="peerSharingGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">45°</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
+                                        <input type="range" id="peerSharingGradStop1" min="0" max="100" value="0" style="flex: 1;">
+                                        <span id="peerSharingGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
+                                        <input type="range" id="peerSharingGradStop2" min="0" max="100" value="100" style="flex: 1;">
+                                        <span id="peerSharingGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
                                     </div>
                                 </div>
                             </div>
@@ -907,6 +1140,9 @@
         <canvas id="myPageCanvas"></canvas>
         <canvas id="myPageDarkCanvas"></canvas>
         <canvas id="feedBannerCanvas"></canvas>
+        <canvas id="membersChannelPage1ExportCanvas"></canvas>
+        <canvas id="membersChannelPage2ExportCanvas"></canvas>
+        <canvas id="membersChannelPage3ExportCanvas"></canvas>
         <canvas id="searchIconExportCanvas"></canvas>
         <canvas id="mySpaceExportCanvas"></canvas>
         <canvas id="simpleScanExportCanvas"></canvas>
@@ -971,6 +1207,16 @@
                     <label><input type="checkbox" id="chkMyPageBannerDark" class="export-item-chk" checked>
                         我的-Banner(夜间)</label>
                     <label><input type="checkbox" id="chkMyPagePhone" class="export-item-chk" checked> 我的-预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.9 NA - 会员频道下拉2楼 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkMembersChannelPage1Banner" class="export-item-chk" checked> 单列-独立切图</label>
+                    <label><input type="checkbox" id="chkMembersChannelPage1Page" class="export-item-chk" checked> 单列-页面预览</label>
+                    <label><input type="checkbox" id="chkMembersChannelPage2Banner" class="export-item-chk" checked> 双列-独立切图</label>
+                    <label><input type="checkbox" id="chkMembersChannelPage2Page" class="export-item-chk" checked> 双列-页面预览</label>
+                    <label><input type="checkbox" id="chkMembersChannelPage3Banner" class="export-item-chk" checked> 三列-独立切图</label>
+                    <label><input type="checkbox" id="chkMembersChannelPage3Page" class="export-item-chk" checked> 三列-页面预览</label>
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"
