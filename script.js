@@ -11,7 +11,7 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_7', text: 'A1.1.7 NA - 我的弹窗' },
         { value: 'dev_1_1_9', text: '【A级】A1.1.9 NA - 会员频道下拉2楼' },
         { value: 'dev_1_1_10', text: 'A1.1.10 NA - 共享页角标' },
-        { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上角标' },
+        { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上icon' },
         { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
         { value: 'dev_1_1_13', text: '【A级】A1.1.13 NA - 搜索框icon' },
         { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
@@ -78,7 +78,7 @@ const CHUHAI_PAGE_DIRECTORY = {
 };
 const IMPLEMENTED_RESOURCE_PRIORITY = {
     wangpan: {
-        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
+        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_11', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
     },
     yike: {
         NA: ['yike_4', 'yike_5', 'yike_7']
@@ -98,6 +98,7 @@ const config = {
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
     feedExampleImage: 'assets/feed-image.png',
     searchBoxPage: 'assets/search-box-page.png', searchBoxIcon: 'assets/search-box-icon.png',
+    videoAudioSharePage: 'assets/video-audio-share-page.png', videoAudioShareImage: 'assets/video-audio-share-image.png',
     mySpacePage: 'assets/my-space-page.png', simpleScanPage: 'assets/simple-banner-scan.png',
     membersChannelPage1: 'assets/members-only-channel-page1.png', membersChannelPage2: 'assets/members-only-channel-page2.png', membersChannelPage3: 'assets/members-only-channel-page3.png',
     membersChannelBanner1: 'assets/members-only-channel-banner1.svg', membersChannelBanner2: 'assets/members-only-channel-banner2.svg', membersChannelBanner3: 'assets/members-only-channel-banner3.svg',
@@ -129,6 +130,7 @@ const homeControls = document.getElementById('homeControls');
 const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
 const searchIconControls = document.getElementById('searchIconControls');
+const videoAudioShareControls = document.getElementById('videoAudioShareControls');
 const membersChannelControls = document.getElementById('membersChannelControls');
 const mySpaceControls = document.getElementById('mySpaceControls');
 const myActivityControls = document.getElementById('myActivityControls');
@@ -139,6 +141,7 @@ const homeView = document.getElementById('homeView');
 const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 const searchIconView = document.getElementById('searchIconView');
+const videoAudioShareView = document.getElementById('videoAudioShareView');
 const membersChannelView = document.getElementById('membersChannelView');
 const mySpaceView = document.getElementById('mySpaceView');
 const myActivityView = document.getElementById('myActivityView');
@@ -148,6 +151,7 @@ const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lig
 const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPageFullCtx = myPageFullCanvas?.getContext('2d');
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
 const searchPageCanvas = document.getElementById('searchPageCanvas'); const searchPageCtx = searchPageCanvas?.getContext('2d');
+const videoAudioSharePageCanvas = document.getElementById('videoAudioSharePageCanvas'); const videoAudioSharePageCtx = videoAudioSharePageCanvas?.getContext('2d');
 const membersChannelPage1Canvas = document.getElementById('membersChannelPage1Canvas'); const membersChannelPage1Ctx = membersChannelPage1Canvas?.getContext('2d');
 const membersChannelPage1ExportCanvas = document.getElementById('membersChannelPage1ExportCanvas'); const membersChannelPage1ExportCtx = membersChannelPage1ExportCanvas?.getContext('2d');
 const membersChannelPage2Canvas = document.getElementById('membersChannelPage2Canvas'); const membersChannelPage2Ctx = membersChannelPage2Canvas?.getContext('2d');
@@ -165,6 +169,7 @@ const myPageCanvas = document.getElementById('myPageCanvas'); const myPageCtx = 
 const myPageDarkCanvas = document.getElementById('myPageDarkCanvas'); const myPageDarkCtx = myPageDarkCanvas?.getContext('2d');
 const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feedBannerCtx = feedBannerCanvas?.getContext('2d');
 const searchIconExportCanvas = document.getElementById('searchIconExportCanvas'); const searchIconExportCtx = searchIconExportCanvas?.getContext('2d');
+const videoAudioShareExportCanvas = document.getElementById('videoAudioShareExportCanvas'); const videoAudioShareExportCtx = videoAudioShareExportCanvas?.getContext('2d');
 const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); const mySpaceExportCtx = mySpaceExportCanvas?.getContext('2d');
 const simpleScanExportCanvas = document.getElementById('simpleScanExportCanvas'); const simpleScanExportCtx = simpleScanExportCanvas?.getContext('2d');
 const myActivityExportCanvas = document.getElementById('myActivityExportCanvas'); const myActivityExportCtx = myActivityExportCanvas?.getContext('2d');
@@ -249,6 +254,7 @@ function getDefaultUploadPreviewSrc(selectedResource = document.querySelector('.
         return config.yikeEquipExampleImage;
     }
     if (selectedResource === 'dev_1_1_9') return config.feedExampleImage;
+    if (selectedResource === 'dev_1_1_11') return config.videoAudioShareImage;
     return config.heroImage;
 }
 function syncCurrentBusinessUploadState(selectedResource) {
@@ -281,6 +287,7 @@ const MODULE_INPUT_MAP = {
 };
 const MODULE_RENDER_FNS = {
     'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
+    'videoAudioShare': renderVideoAudioShareCanvas,
     'membersChannelPage1': renderMembersChannelPage1Canvas, 'membersChannelPage2': renderMembersChannelPage2Canvas, 'membersChannelPage3': renderMembersChannelPage3Canvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
@@ -291,6 +298,7 @@ const AI_RESOURCE_MATCHERS = [
     { resource: 'na_home', bu: 'wangpan', label: 'A1.1.3 NA - 13.14首页顶部沉浸banner', patterns: [/A\s*1\.1\.3/i, /13\.14\s*首页顶部沉浸\s*banner/i, /首页顶部沉浸\s*banner/i, /首页\s*banner\s*(尺寸|尺|A|宝宝相簿|宝宝相册)/i, /首页\s*banner[\s\S]{0,120}(沉浸式|宝宝相簿|宝宝相册|去创建|立即创建)/i, /沉浸式\s*banner/i, /首页\s*banner.*420\s*[×x*]\s*282/i] },
     { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/, /561\s*[×x*]\s*750/] },
     { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i, /我的(页面|页).*1182\s*[×x*]\s*(225|252)/] },
+    { resource: 'dev_1_1_11', bu: 'wangpan', label: 'A1.1.11 NA - 视频/音频/共享页右上icon', patterns: [/A\s*1\.1\.11/i, /视频.*音频.*共享页.*右上(?:icon|角标)/i, /右上(?:icon|角标)/i, /video[-_\s]?audio[-_\s]?share/i, /80\s*[×x*]\s*80/, /114\s*[×x*]\s*114/] },
     { resource: 'dev_1_1_9', bu: 'wangpan', label: 'A1.1.9 NA - 会员频道下拉2楼', patterns: [/A\s*1\.1\.9(?:\.[123])?/i, /会员频道.*(?:下拉|下2楼|2楼|单列|双列|三列)/i, /member[s-]?only[-\s]?channel[-_\s]?page[123]/i, /members[-_\s]?only[-_\s]?channel[-_\s]?banner[123]/i] },
     { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索词\s*icon/i, /搜索\s*icon/i, /204\s*[×x*]\s*204/] },
     { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /分享页\s*\/\s*任务中心/i, /任务中心\s*-?\s*banner/i, /简单扫描/i] },
@@ -304,6 +312,7 @@ const RESOURCE_VIEW_MAP = {
     na_home: 'homeView',
     na_mypage: 'myPageView',
     na_feed: 'feedView',
+    dev_1_1_11: 'videoAudioShareView',
     dev_1_1_9: 'membersChannelView',
     dev_1_1_13: 'searchIconView',
     dev_1_1_16: 'mySpaceView',
@@ -319,6 +328,7 @@ const RESOURCE_CONTROL_MAP = {
     homeLight: 'homeLightControlPanel',
     na_mypage: 'myPageControls',
     na_feed: 'feedControls',
+    dev_1_1_11: 'videoAudioShareControls',
     dev_1_1_9: 'membersChannelControls',
     membersChannelPage1: 'membersChannelPage1ControlPanel',
     membersChannelPage2: 'membersChannelPage2ControlPanel',
@@ -334,6 +344,7 @@ const RESOURCE_CONTROL_MAP = {
 const RESOURCE_PREVIEW_TARGET_MAP = {
     homeTop: 'topHomePageCanvas',
     homeLight: 'lightCanvas',
+    dev_1_1_11: 'videoAudioSharePageCanvas',
     membersChannelPage1: 'membersChannelPage1Canvas',
     membersChannelPage2: 'membersChannelPage2Canvas',
     membersChannelPage3: 'membersChannelPage3Canvas'
@@ -342,6 +353,7 @@ const VIEW_RESOURCE_MAP = {
     ...Object.fromEntries(Object.entries(RESOURCE_VIEW_MAP).map(([resource, viewId]) => [viewId, resource])),
     topHomePageCanvas: 'homeTop',
     lightCanvas: 'homeLight',
+    videoAudioSharePageCanvas: 'dev_1_1_11',
     membersChannelPage1Canvas: 'membersChannelPage1',
     membersChannelPage2Canvas: 'membersChannelPage2',
     membersChannelPage3Canvas: 'membersChannelPage3'
@@ -349,6 +361,7 @@ const VIEW_RESOURCE_MAP = {
 const RESOURCE_LIST_ACTIVE_MAP = {
     homeTop: 'na_home',
     homeLight: 'na_home',
+    dev_1_1_11: 'dev_1_1_11',
     membersChannelPage1: 'dev_1_1_9',
     membersChannelPage2: 'dev_1_1_9',
     membersChannelPage3: 'dev_1_1_9'
@@ -357,6 +370,7 @@ const RESOURCE_EXPORT_CHECKS = {
     na_home: ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'],
     na_mypage: ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'],
     na_feed: ['chkFeedBannerExport', 'chkFeedPhone'],
+    dev_1_1_11: ['chkVideoAudioShareIconExport', 'chkVideoAudioSharePageExport'],
     dev_1_1_9: ['chkMembersChannelPage1Banner', 'chkMembersChannelPage1Page', 'chkMembersChannelPage2Banner', 'chkMembersChannelPage2Page', 'chkMembersChannelPage3Banner', 'chkMembersChannelPage3Page'],
     dev_1_1_13: ['chkSearchIconExport', 'chkSearchPageExport'],
     dev_1_1_17: ['chkMyActivityExport', 'chkMyActivityPageExport'],
@@ -635,6 +649,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
 function applyLocalFallbackConfig(config, fallback) {
     ensureArrayConfig(config, 'home', fallback.home);
     ensureArrayConfig(config, 'feed', fallback.feed);
+    ensureArrayConfig(config, 'videoAudioShare', fallback.videoAudioShare);
     ensureArrayConfig(config, 'membersChannelPage1', fallback.membersChannelPage1);
     ensureArrayConfig(config, 'membersChannelPage2', fallback.membersChannelPage2);
     ensureArrayConfig(config, 'membersChannelPage3', fallback.membersChannelPage3);
@@ -676,6 +691,10 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('feedSubtitle', first.sub, 10);
         setLimitedInputValue('feedBtnText', first.btn, 4);
         safeRenderABTestSwitcher('feedControls', 'feed');
+    }
+    if (fallbackConfig.videoAudioShare?.length) {
+        window.abTestCopies.videoAudioShare = fallbackConfig.videoAudioShare;
+        window.abTestActiveIndex.videoAudioShare = 0;
     }
     if (fallbackConfig.membersChannelPage1?.length) {
         const first = fallbackConfig.membersChannelPage1[0];
@@ -1057,8 +1076,13 @@ async function showAiRecognizedPreview(resources, options = {}) {
     modules.forEach(resource => {
         const viewEl = document.getElementById(RESOURCE_VIEW_MAP[resource]);
         if (viewEl) viewEl.classList.add('active');
-        if (resource === 'na_home') setHomeAiPreviewCards({ homeSmallOnly: options.homeSmallOnly !== false });
-        if (resource === 'dev_1_1_16') {
+            if (resource === 'na_home') setHomeAiPreviewCards({ homeSmallOnly: options.homeSmallOnly !== false });
+            if (resource === 'dev_1_1_11') {
+                const videoAudioShareCard = document.getElementById('videoAudioSharePageCanvas')?.closest('.preview-card');
+                if (videoAudioShareCard) videoAudioShareCard.style.display = '';
+            }
+            if (resource === 'dev_1_1_16') {
+
             const spaceCard = document.getElementById('mySpacePageCanvas')?.closest('.preview-card');
             const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
             const showBothA116 = !options.foundMySpace && !options.foundSimpleScan;
@@ -1325,6 +1349,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
   说明：home 只表示普通帧/小图状态；大图主标题、大图副标题、标题图替换素材不要拆成另一套 home 文案，也不要拿来覆盖 home 的 line1/line2。
 - "A1.1.4" / "首页运营10出1" / "⾸⻚运营10出1banner" / "首页feed" -> "feed"
 - "A1.1.5" / "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
+- "A1.1.11" / "视频/音频/共享页右上icon" / "右上icon" / "video-audio-share" / "80×80" -> "videoAudioShare"
 - "A1.1.13" / "搜索框icon" / "搜索词icon" / "搜索icon" / "204×204" -> "searchIcon"
 - "A1.1.16" + "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
 - "A1.1.16" + "简单扫描" -> "simpleScan"
@@ -1797,6 +1822,53 @@ async function renderSearchIcon() {
             const drawY = (targetH - drawH) / 2;
             drawSharpenedImage(searchIconExportCtx, iconImg, drawX, drawY, drawW, drawH, 0.3);
         }
+    }
+}
+async function renderVideoAudioShareCanvas() {
+    if (!videoAudioSharePageCanvas || !videoAudioSharePageCtx || !videoAudioShareExportCanvas || !videoAudioShareExportCtx) return;
+    const bgImg = await loadImage(config.videoAudioSharePage);
+    const defaultIcon = await loadImage(config.videoAudioShareImage);
+    const iconImg = userImgObj || defaultIcon;
+    const pageW = bgImg?.width || 1170;
+    const pageH = bgImg?.height || 2532;
+    videoAudioSharePageCanvas.width = pageW;
+    videoAudioSharePageCanvas.height = pageH;
+    setupHighQualityContext(videoAudioSharePageCtx);
+    videoAudioSharePageCtx.clearRect(0, 0, pageW, pageH);
+    if (bgImg && bgImg.width) {
+        videoAudioSharePageCtx.drawImage(bgImg, 0, 0, pageW, pageH);
+    } else {
+        videoAudioSharePageCtx.fillStyle = '#F5F6FA';
+        videoAudioSharePageCtx.fillRect(0, 0, pageW, pageH);
+    }
+    const targetX = 907;
+    const targetY = 175;
+    const targetW = 80;
+    const targetH = 80;
+    if (iconImg && iconImg.width) {
+        videoAudioSharePageCtx.save();
+        const scale = Math.min(targetW / iconImg.width, targetH / iconImg.height);
+        const drawW = iconImg.width * scale;
+        const drawH = iconImg.height * scale;
+        const drawX = targetX + (targetW - drawW) / 2;
+        const drawY = targetY + (targetH - drawH) / 2;
+        drawSharpenedImage(videoAudioSharePageCtx, iconImg, drawX, drawY, drawW, drawH, 0.3);
+        videoAudioSharePageCtx.restore();
+    }
+    videoAudioSharePageCanvas._bannerBBox = { x: targetX, y: targetY, w: targetW, h: targetH };
+
+    const exportSize = 114;
+    videoAudioShareExportCanvas.width = exportSize;
+    videoAudioShareExportCanvas.height = exportSize;
+    setupHighQualityContext(videoAudioShareExportCtx);
+    videoAudioShareExportCtx.clearRect(0, 0, exportSize, exportSize);
+    if (iconImg && iconImg.width) {
+        const scale = Math.min(exportSize / iconImg.width, exportSize / iconImg.height);
+        const drawW = iconImg.width * scale;
+        const drawH = iconImg.height * scale;
+        const drawX = (exportSize - drawW) / 2;
+        const drawY = (exportSize - drawH) / 2;
+        drawSharpenedImage(videoAudioShareExportCtx, iconImg, drawX, drawY, drawW, drawH, 0.3);
     }
 }
 async function build1182Banner(opts) {
@@ -2588,6 +2660,7 @@ async function renderActiveBusinessCanvases() {
     if (renderedPages.home) await renderHomeCanvas();
     if (renderedPages.myPage) await renderMyPage();
     if (renderedPages.feed) await renderFeedCanvas();
+    if (renderedPages.videoAudioShare) await renderVideoAudioShareCanvas();
     if (renderedPages.membersChannelPage1) await renderMembersChannelPage1Canvas();
     if (renderedPages.membersChannelPage2) await renderMembersChannelPage2Canvas();
     if (renderedPages.membersChannelPage3) await renderMembersChannelPage3Canvas();
@@ -2602,6 +2675,7 @@ async function renderResourceCanvases(resources, options = {}) {
         if (resource === 'na_home') { await renderHomeCanvas(); renderedPages.home = true; }
         else if (resource === 'na_mypage') { await renderMyPage(); renderedPages.myPage = true; }
         else if (resource === 'na_feed') { await renderFeedCanvas(); renderedPages.feed = true; }
+        else if (resource === 'dev_1_1_11') { await renderVideoAudioShareCanvas(); renderedPages.videoAudioShare = true; }
         else if (resource === 'dev_1_1_9') {
             await renderMembersChannelPage1Canvas();
             await renderMembersChannelPage2Canvas();
@@ -2626,8 +2700,8 @@ async function renderResourceCanvases(resources, options = {}) {
 async function switchResourceView(selected, options = {}) {
     activeResourceValue = selected || null;
     if (!options.preserveAiResult) clearAiResultPreviewState();
-    [homeControls, myPageControls, feedControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, videoAudioShareControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, videoAudioShareView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.flexWrap = 'nowrap'; container.style.alignItems = 'center'; container.style.gap = '0px';
@@ -2637,7 +2711,7 @@ async function switchResourceView(selected, options = {}) {
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
-    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
+    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
@@ -2645,6 +2719,9 @@ async function switchResourceView(selected, options = {}) {
     if (selected === 'na_home') {
         homeControls.classList.add('active'); homeView.classList.add('active');
         if (!renderedPages.home) { await renderHomeCanvas(); renderedPages.home = true; }
+    } else if (selected === 'dev_1_1_11') {
+        videoAudioShareControls.classList.add('active'); videoAudioShareView.classList.add('active');
+        if (!renderedPages.videoAudioShare) { await renderVideoAudioShareCanvas(); renderedPages.videoAudioShare = true; }
     } else if (selected === 'na_mypage') {
         myPageControls.classList.add('active'); myPageView.classList.add('active');
         if (!renderedPages.myPage) { await renderMyPage(); renderedPages.myPage = true; }
@@ -2705,7 +2782,7 @@ function setActiveBusinessLine(bu, options = {}) {
     } else {
         document.documentElement.style.setProperty('--primary-color', '#87B4FF');
         wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');
-        [homeView, myPageView, feedView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+        [homeView, myPageView, feedView, videoAudioShareView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     }
 }
 buBtns.forEach(btn => {
@@ -2725,6 +2802,7 @@ const detailModal = document.getElementById('detailModal');
 const detailImagesBox = document.getElementById('detailImagesBox');
 const detailModalTitle = document.getElementById('detailModalTitle');
 function openDetailModal(targetType) {
+    detailImagesBox.classList.remove('dark-floor');
     detailImagesBox.innerHTML = '';
     if (targetType === 'homeTop') {
         detailModalTitle.innerText = '大图状态 Banner - 纯净图';
@@ -2738,16 +2816,22 @@ function openDetailModal(targetType) {
     } else if (targetType === 'feed') {
         detailModalTitle.innerText = 'Feed10出1卡片 - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立 Feed 卡片切图</div><img src="${feedBannerCanvas.toDataURL()}" style="max-height: 500px; width: auto;">`;
+    } else if (targetType === 'videoAudioShare') {
+        detailModalTitle.innerText = 'A1.1.11 NA - 视频/音频/共享页右上icon - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (114x114)</div><img src="${videoAudioShareExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'searchIcon') {
         detailModalTitle.innerText = '搜索框 icon - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (204x204)</div><img src="${searchIconExportCanvas.toDataURL()}" style="max-height: 204px; width: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'membersChannelPage1') {
+        detailImagesBox.classList.add('dark-floor');
         detailModalTitle.innerText = '会员频道 2 楼 - 单列 - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图</div><img src="${membersChannelPage1ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     } else if (targetType === 'membersChannelPage2') {
+        detailImagesBox.classList.add('dark-floor');
         detailModalTitle.innerText = '会员频道 2 楼 - 双列 - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图</div><img src="${membersChannelPage2ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     } else if (targetType === 'membersChannelPage3') {
+        detailImagesBox.classList.add('dark-floor');
         detailModalTitle.innerText = '会员频道 2 楼 - 三列 - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图</div><img src="${membersChannelPage3ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
     } else if (targetType === 'mySpace') {
@@ -3002,6 +3086,11 @@ function autoSelectExportItems() {
             if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
+    if (document.getElementById('videoAudioShareView')?.classList.contains('active')) {
+        ['chkVideoAudioShareIconExport', 'chkVideoAudioSharePageExport'].forEach(id => {
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
     if (document.getElementById('searchIconView')?.classList.contains('active')) {
         ['chkSearchIconExport', 'chkSearchPageExport'].forEach(id => {
             if (document.getElementById(id)) document.getElementById(id).checked = true;
@@ -3169,12 +3258,9 @@ function initExportModal() {
             let feedRefs = MODULE_INPUT_MAP['feed'];
             await exportCanvasOrMulti('chkFeedBannerExport', feedBannerCanvas, `首页-Feed10出1banner`, 'feed', bannerFolder, feedRefs, renderFeedCanvas);
             await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
-            let myPageRefs = MODULE_INPUT_MAP['myPage'];
-            await exportCanvasOrMulti('chkMyPageBannerLight', myPageCanvas, `我的-Banner(日间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
-            await exportCanvasOrMulti('chkMyPageBannerDark', myPageDarkCanvas, `我的-Banner(夜间)-${myPageColor}`, 'myPage', bannerFolder, myPageRefs, renderMyPage);
-            if (document.getElementById('chkMyPagePhone')?.checked && myPageFullCanvas) previewFolder.file(`我的-预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas));
-            if (document.getElementById('chkSearchIconExport')?.checked && searchIconExportCanvas) bannerFolder.file(`搜索框-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas));
-            if (document.getElementById('chkSearchPageExport')?.checked && searchPageCanvas) previewFolder.file(`搜索框-页面预览.png`, await canvasToBlob(searchPageCanvas));
+            if (document.getElementById('chkVideoAudioShareIconExport')?.checked && videoAudioShareExportCanvas) bannerFolder.file(`视频音频共享页-右上icon独立切图(114x114).png`, await canvasToBlob(videoAudioShareExportCanvas));
+            if (document.getElementById('chkVideoAudioSharePageExport')?.checked && videoAudioSharePageCanvas) previewFolder.file(`视频音频共享页-页面预览.png`, await canvasToBlob(videoAudioSharePageCanvas));
+
             if (document.getElementById('chkMembersChannelPage1Banner')?.checked && membersChannelPage1ExportCanvas) bannerFolder.file(`会员频道下拉2楼-单列-独立切图.png`, await canvasToBlob(membersChannelPage1ExportCanvas));
             if (document.getElementById('chkMembersChannelPage1Page')?.checked && membersChannelPage1Canvas) previewFolder.file(`会员频道下拉2楼-单列-页面预览.png`, await canvasToBlob(membersChannelPage1Canvas));
             if (document.getElementById('chkMembersChannelPage2Banner')?.checked && membersChannelPage2ExportCanvas) bannerFolder.file(`会员频道下拉2楼-双列-独立切图.png`, await canvasToBlob(membersChannelPage2ExportCanvas));

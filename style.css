@@ -697,11 +697,15 @@ body {
     padding: 32px 24px;
     overflow-y: auto;
     scrollbar-gutter: stable;
-    background: #130129;
+    background: #f7f8fc;
     display: flex;
     flex-direction: column;
     gap: 32px;
     align-items: center;
+}
+
+.detail-modal-body.dark-floor {
+    background: #130129;
 }
 
 .detail-modal-body img {
@@ -713,10 +717,14 @@ body {
 
 .banner-label {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: #333333;
     font-weight: bold;
     margin-bottom: 12px;
     text-align: center;
+}
+
+.detail-modal-body.dark-floor .banner-label {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* 导出弹窗 */

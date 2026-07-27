@@ -179,6 +179,19 @@
                     </div>
                 </div>
 
+                <div id="videoAudioShareView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看对应纯净版切图
+                    </div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">视频/音频/共享页右上 icon</div>
+                            <canvas id="videoAudioSharePageCanvas" class="phone-canvas zoomable-canvas"
+                                data-target="videoAudioShare"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图</div>
@@ -721,6 +734,19 @@
                     </div>
                 </div>
 
+                <div id="videoAudioShareControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">视频/音频/共享页右上 icon 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】本资源位仅需一张配图。<br>
+                                👉 请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                系统会自动按页面中的 80x80 位置缩放适配，并生成 114x114 纯净切图。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">搜索框 icon 配置</div>
@@ -1119,6 +1145,7 @@
         <canvas id="membersChannelPage1ExportCanvas"></canvas>
         <canvas id="membersChannelPage2ExportCanvas"></canvas>
         <canvas id="membersChannelPage3ExportCanvas"></canvas>
+        <canvas id="videoAudioShareExportCanvas"></canvas>
         <canvas id="searchIconExportCanvas"></canvas>
         <canvas id="mySpaceExportCanvas"></canvas>
         <canvas id="simpleScanExportCanvas"></canvas>
@@ -1193,6 +1220,14 @@
                     <label><input type="checkbox" id="chkMembersChannelPage2Page" class="export-item-chk" checked> 双列-页面预览</label>
                     <label><input type="checkbox" id="chkMembersChannelPage3Banner" class="export-item-chk" checked> 三列-独立切图</label>
                     <label><input type="checkbox" id="chkMembersChannelPage3Page" class="export-item-chk" checked> 三列-页面预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.11 NA - 视频/音频/共享页右上icon <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkVideoAudioShareIconExport" class="export-item-chk" checked> 右上icon-独立切图
+                        (114x114)</label>
+                    <label><input type="checkbox" id="chkVideoAudioSharePageExport" class="export-item-chk" checked>
+                        右上icon-页面预览</label>
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"
