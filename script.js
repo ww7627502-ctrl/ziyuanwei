@@ -268,9 +268,9 @@ const MODULE_INPUT_MAP = {
     'home': [{ id: 'textLine1', key: 'line1', limit: 6 }, { id: 'textLine2', key: 'line2', limit: 4 }],
     'myPage': [{ id: 'myPageTitle', key: 'title', limit: 9 }, { id: 'myPageSubtitle', key: 'sub', limit: 8 }, { id: 'textCapsule', key: 'capsule', limit: 4 }, { id: 'myPageHighlight', key: 'highlight', limit: 9 }],
     'feed': [{ id: 'feedTitle', key: 'title', limit: 7 }, { id: 'feedSubtitle', key: 'sub', limit: 10 }, { id: 'feedBtnText', key: 'btn', limit: 4 }],
-    'membersChannelPage1': [{ id: 'membersChannelPage1Title', key: 'title', limit: 11 }, { id: 'membersChannelPage1Sub', key: 'sub', limit: 8 }, { id: 'membersChannelPage1Btn', key: 'btn', limit: 4 }],
-    'membersChannelPage2': [{ id: 'membersChannelPage2Title', key: 'title', limit: 11 }, { id: 'membersChannelPage2Btn', key: 'btn', limit: 4 }],
-    'membersChannelPage3': [{ id: 'membersChannelPage3Title', key: 'title', limit: 7 }, { id: 'membersChannelPage3Btn', key: 'btn', limit: 4 }],
+    'membersChannelPage1': [{ id: 'membersChannelPage1Title', key: 'title', limit: 11 }, { id: 'membersChannelPage1Sub', key: 'sub', limit: 8 }, { id: 'membersChannelPage1Btn', key: 'btn', limit: 3 }],
+    'membersChannelPage2': [{ id: 'membersChannelPage2Title', key: 'title', limit: 10 }, { id: 'membersChannelPage2Btn', key: 'btn', limit: 4 }],
+    'membersChannelPage3': [{ id: 'membersChannelPage3Title', key: 'title', limit: 10 }, { id: 'membersChannelPage3Btn', key: 'btn', limit: 4 }],
     'mySpace': [{ id: 'mySpaceTitle', key: 'title', limit: 11 }, { id: 'mySpaceSub', key: 'sub', limit: 8 }, { id: 'mySpaceBtnText', key: 'btn', limit: 4 }],
     'simpleScan': [{ id: 'simpleScanTitle', key: 'title', limit: 11 }, { id: 'simpleScanSub', key: 'sub', limit: 8 }, { id: 'simpleScanBtnText', key: 'btn', limit: 4 }, { id: 'simpleScanHighlight', key: 'highlight', limit: 6 }],
     'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
@@ -315,9 +315,14 @@ const RESOURCE_VIEW_MAP = {
 };
 const RESOURCE_CONTROL_MAP = {
     na_home: 'homeControls',
+    homeTop: 'homeTopControlPanel',
+    homeLight: 'homeLightControlPanel',
     na_mypage: 'myPageControls',
     na_feed: 'feedControls',
     dev_1_1_9: 'membersChannelControls',
+    membersChannelPage1: 'membersChannelPage1ControlPanel',
+    membersChannelPage2: 'membersChannelPage2ControlPanel',
+    membersChannelPage3: 'membersChannelPage3ControlPanel',
     dev_1_1_13: 'searchIconControls',
     dev_1_1_16: 'mySpaceControls',
     dev_1_1_17: 'myActivityControls',
@@ -326,7 +331,28 @@ const RESOURCE_CONTROL_MAP = {
     yike_5: 'yikeEquipControls',
     yike_7: 'yikeCashControls'
 };
-const VIEW_RESOURCE_MAP = Object.fromEntries(Object.entries(RESOURCE_VIEW_MAP).map(([resource, viewId]) => [viewId, resource]));
+const RESOURCE_PREVIEW_TARGET_MAP = {
+    homeTop: 'topHomePageCanvas',
+    homeLight: 'lightCanvas',
+    membersChannelPage1: 'membersChannelPage1Canvas',
+    membersChannelPage2: 'membersChannelPage2Canvas',
+    membersChannelPage3: 'membersChannelPage3Canvas'
+};
+const VIEW_RESOURCE_MAP = {
+    ...Object.fromEntries(Object.entries(RESOURCE_VIEW_MAP).map(([resource, viewId]) => [viewId, resource])),
+    topHomePageCanvas: 'homeTop',
+    lightCanvas: 'homeLight',
+    membersChannelPage1Canvas: 'membersChannelPage1',
+    membersChannelPage2Canvas: 'membersChannelPage2',
+    membersChannelPage3Canvas: 'membersChannelPage3'
+};
+const RESOURCE_LIST_ACTIVE_MAP = {
+    homeTop: 'na_home',
+    homeLight: 'na_home',
+    membersChannelPage1: 'dev_1_1_9',
+    membersChannelPage2: 'dev_1_1_9',
+    membersChannelPage3: 'dev_1_1_9'
+};
 const RESOURCE_EXPORT_CHECKS = {
     na_home: ['chkTopHomePhone', 'chkTopHomeBanner', 'chkHomePhone', 'chkHomeBannerLight', 'chkHomeBannerDark', 'chkHomeKV'],
     na_mypage: ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'],
@@ -583,8 +609,8 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         fallback[key] = [item];
     };
     fillMembersChannelPage('dev_1_1_9', 'membersChannelPage1', 11, { withSub: true, pageIndex: 1 });
-    fillMembersChannelPage('dev_1_1_9', 'membersChannelPage2', 11, { pageIndex: 2 });
-    fillMembersChannelPage('dev_1_1_9', 'membersChannelPage3', 7, { pageIndex: 3 });
+    fillMembersChannelPage('dev_1_1_9', 'membersChannelPage2', 10, { pageIndex: 2 });
+    fillMembersChannelPage('dev_1_1_9', 'membersChannelPage3', 10, { pageIndex: 3 });
 
     const fillSquareBanner = (resource, key) => {
         if (!inferredResources.includes(resource)) return;
@@ -657,14 +683,14 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         window.abTestActiveIndex.membersChannelPage1 = 0;
         setLimitedInputValue('membersChannelPage1Title', first.title, 11);
         setLimitedInputValue('membersChannelPage1Sub', first.sub, 8);
-        setLimitedInputValue('membersChannelPage1Btn', first.btn, 4);
+        setLimitedInputValue('membersChannelPage1Btn', first.btn, 3);
         safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage1');
     }
     if (fallbackConfig.membersChannelPage2?.length) {
         const first = fallbackConfig.membersChannelPage2[0];
         window.abTestCopies.membersChannelPage2 = fallbackConfig.membersChannelPage2;
         window.abTestActiveIndex.membersChannelPage2 = 0;
-        setLimitedInputValue('membersChannelPage2Title', first.title, 11);
+        setLimitedInputValue('membersChannelPage2Title', first.title, 10);
         setLimitedInputValue('membersChannelPage2Btn', first.btn, 4);
         safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage2');
     }
@@ -672,7 +698,7 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         const first = fallbackConfig.membersChannelPage3[0];
         window.abTestCopies.membersChannelPage3 = fallbackConfig.membersChannelPage3;
         window.abTestActiveIndex.membersChannelPage3 = 0;
-        setLimitedInputValue('membersChannelPage3Title', first.title, 7);
+        setLimitedInputValue('membersChannelPage3Title', first.title, 10);
         setLimitedInputValue('membersChannelPage3Btn', first.btn, 4);
         safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage3');
     }
@@ -925,7 +951,11 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
     }
 }
 function getManagedViewElements() {
-    return [...new Set([...Object.values(RESOURCE_VIEW_MAP), 'viewDevelopingPrompt'])]
+    return [...new Set([
+        ...Object.values(RESOURCE_VIEW_MAP),
+        ...Object.values(RESOURCE_PREVIEW_TARGET_MAP),
+        'viewDevelopingPrompt'
+    ])]
         .map(id => document.getElementById(id))
         .filter(Boolean);
 }
@@ -966,21 +996,38 @@ function focusResourceControl(resource, options = {}) {
     const { scroll = true, highlight = true } = options;
     const ctrlEl = document.getElementById(RESOURCE_CONTROL_MAP[resource]);
     if (!ctrlEl) return;
-    getManagedControlElements().forEach(ctrl => ctrl.classList.remove('active'));
-    ctrlEl.classList.add('active');
-    markResourceListActive(resource);
+    const controlGroupEl = ctrlEl.classList.contains('control-group') ? ctrlEl : ctrlEl.closest('.control-group');
+    getManagedControlElements().forEach(ctrl => {
+        ctrl.classList.remove('active');
+        ctrl.style.boxShadow = 'none';
+        ctrl.style.transform = 'scale(1)';
+        ctrl.style.transition = '';
+        delete ctrl.dataset.highlightToken;
+    });
+    if (controlGroupEl) controlGroupEl.classList.add('active');
+    if (ctrlEl !== controlGroupEl) ctrlEl.classList.add('active');
+    markResourceListActive(RESOURCE_LIST_ACTIVE_MAP[resource] || resource);
     getManagedViewElements().forEach(view => view.classList.remove('ai-preview-selected'));
-    const viewEl = document.getElementById(RESOURCE_VIEW_MAP[resource]);
+    const viewEl = document.getElementById(RESOURCE_PREVIEW_TARGET_MAP[resource] || RESOURCE_VIEW_MAP[resource]);
     viewEl?.classList.add('ai-preview-selected');
     if (scroll) {
         const rightSidebar = document.querySelector('.right-sidebar');
-        if (rightSidebar) rightSidebar.scrollTo({ top: Math.max(ctrlEl.offsetTop - 20, 0), behavior: 'smooth' });
+        const targetScrollEl = ctrlEl;
+        if (rightSidebar) rightSidebar.scrollTo({ top: Math.max(targetScrollEl.offsetTop - 20, 0), behavior: 'smooth' });
     }
     if (highlight) {
+        const highlightToken = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        ctrlEl.dataset.highlightToken = highlightToken;
         ctrlEl.style.transition = 'all 0.3s ease';
         ctrlEl.style.boxShadow = '0 0 0 2px #258AFF, 0 8px 24px rgba(37,138,255,0.2)';
         ctrlEl.style.transform = 'scale(1.01)';
-        setTimeout(() => { ctrlEl.style.boxShadow = 'none'; ctrlEl.style.transform = 'scale(1)'; }, 800);
+        setTimeout(() => {
+            if (ctrlEl.dataset.highlightToken !== highlightToken) return;
+            ctrlEl.style.boxShadow = 'none';
+            ctrlEl.style.transform = 'scale(1)';
+            ctrlEl.style.transition = '';
+            delete ctrlEl.dataset.highlightToken;
+        }, 800);
     }
 }
 async function showAiRecognizedPreview(resources, options = {}) {
@@ -1030,8 +1077,10 @@ function bindCanvasClickToControl() {
     Object.keys(VIEW_RESOURCE_MAP).forEach(viewId => {
         const viewEl = document.getElementById(viewId);
         if (!viewEl) return;
-        viewEl.addEventListener('mousedown', () => {
+        viewEl.addEventListener('mousedown', (e) => {
             if (isSpacePressed) return;
+            if (viewEl.classList.contains('phone-canvas')) e.stopPropagation();
+            if (!viewEl.classList.contains('phone-canvas') && e.target.closest?.('.phone-canvas')) return;
             const resource = VIEW_RESOURCE_MAP[viewId];
             if (isAiResultPreviewMode && lastAiRecognizedModules.includes(resource)) {
                 focusResourceControl(resource);
@@ -1404,14 +1453,14 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             const first = config.membersChannelPage1[0];
             if (first.title) document.getElementById('membersChannelPage1Title').value = formatAndLimitText(first.title, 11);
             if (first.sub) document.getElementById('membersChannelPage1Sub').value = formatAndLimitText(first.sub, 8);
-            if (first.btn) document.getElementById('membersChannelPage1Btn').value = formatAndLimitText(first.btn, 4);
+            if (first.btn) document.getElementById('membersChannelPage1Btn').value = formatAndLimitText(first.btn, 3);
             safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage1');
         }
         if (config.membersChannelPage2 && config.membersChannelPage2.length > 0) {
             recognizedModules.add('dev_1_1_9');
             window.abTestCopies['membersChannelPage2'] = config.membersChannelPage2; window.abTestActiveIndex['membersChannelPage2'] = 0;
             const first = config.membersChannelPage2[0];
-            if (first.title) document.getElementById('membersChannelPage2Title').value = formatAndLimitText(first.title, 11);
+            if (first.title) document.getElementById('membersChannelPage2Title').value = formatAndLimitText(first.title, 10);
             if (first.btn) document.getElementById('membersChannelPage2Btn').value = formatAndLimitText(first.btn, 4);
             safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage2');
         }
@@ -1419,7 +1468,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             recognizedModules.add('dev_1_1_9');
             window.abTestCopies['membersChannelPage3'] = config.membersChannelPage3; window.abTestActiveIndex['membersChannelPage3'] = 0;
             const first = config.membersChannelPage3[0];
-            if (first.title) document.getElementById('membersChannelPage3Title').value = formatAndLimitText(first.title, 7);
+            if (first.title) document.getElementById('membersChannelPage3Title').value = formatAndLimitText(first.title, 10);
             if (first.btn) document.getElementById('membersChannelPage3Btn').value = formatAndLimitText(first.btn, 4);
             safeRenderABTestSwitcher('membersChannelControls', 'membersChannelPage3');
         }
@@ -2210,11 +2259,13 @@ const MEMBERS_CHANNEL_LAYOUTS = {
         titleInput: 'membersChannelPage1Title',
         subInput: 'membersChannelPage1Sub',
         btnInput: 'membersChannelPage1Btn',
+        outputSize: { w: 1053, h: 438 },
+
         pageBox: { x: 19, y: 874, w: 713, h: 296.57550048828125 },
-        imageBox: { x: 28.03, y: 29, w: 450, h: 380 },
-        titleBox: { x: 504, y: 74, font: 'normal 54px "FZLanTingHeiS-DB-GB", sans-serif', align: 'right', color: '#FFFFFF' },
-        subBox: { x: 672, y: 159, font: 'normal 42px "FZLanTingHeiS-R-GB", sans-serif', align: 'right', color: '#FFFFFF' },
-        buttonBox: { x: 692.66, y: 255, w: 301.2858581542969, h: 109, radius: 66 },
+        imageBox: { x: 28, y: 29, w: 450, h: 380 },
+        titleBox: { x: 993.46, y: 74, font: 'normal 54px "FZLanTingHeiS-DB-GB", sans-serif', align: 'right', color: '#FFFFFF' },
+        subBox: { x: 994.31, y: 159, font: 'normal 42px "FZLanTingHeiS-R-GB", sans-serif', align: 'right', color: '#FFFFFF' },
+        buttonBox: { x: 692.66, y: 255, w: 301.29, h: 109, radius: 66 },
         buttonText: { font: 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif', color: '#434446', align: 'center', baseline: 'middle' }
     },
     dev_1_1_9_2: {
@@ -2226,11 +2277,13 @@ const MEMBERS_CHANNEL_LAYOUTS = {
         exportCtxId: 'membersChannelPage2ExportCtx',
         titleInput: 'membersChannelPage2Title',
         btnInput: 'membersChannelPage2Btn',
+        outputSize: { w: 516, h: 435 },
+
         pageBox: { x: 23, y: 878, w: 340, h: 286.6278991699219 },
         imageBox: { x: 96, y: 10, w: 324, h: 229 },
-        titleBox: { x: 258, y: 252, font: 'normal 34px "FZLanTingHeiS-DB-GB", sans-serif', align: 'center', color: '#FFFFFF' },
-        buttonBox: { x: 180, y: 327, w: 156, h: 52, radius: 26 },
-        buttonText: { font: 'normal 24px "FZLanTingHeiS-DB-GB", sans-serif', color: '#434446', align: 'center', baseline: 'middle' }
+        titleBox: { x: 258, y: 252, font: 'normal 42px "FZLanTingHeiS-DB-GB", sans-serif', align: 'center', color: '#FFFFFF' },
+        buttonBox: { x: 107, y: 327, w: 301, h: 78, radius: 66 },
+        buttonText: { font: 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif', color: '#434446', align: 'center', baseline: 'middle' }
     },
     dev_1_1_9_3: {
         pageSrc: config.membersChannelPage3,
@@ -2241,11 +2294,13 @@ const MEMBERS_CHANNEL_LAYOUTS = {
         exportCtxId: 'membersChannelPage3ExportCtx',
         titleInput: 'membersChannelPage3Title',
         btnInput: 'membersChannelPage3Btn',
+        outputSize: { w: 405, h: 435 },
+
         pageBox: { x: 238, y: 872, w: 273, h: 293.22222900390625 },
-        imageBox: { x: 43.79, y: 15.92, w: 317.4740295410156, h: 222.92848205566406 },
-        titleBox: { x: 202.5, y: 252, font: 'normal 30px "FZLanTingHeiS-DB-GB", sans-serif', align: 'center', color: '#FFFFFF' },
-        buttonBox: { x: 145, y: 327, w: 115, h: 44, radius: 22 },
-        buttonText: { font: 'normal 20px "FZLanTingHeiS-DB-GB", sans-serif', color: '#434446', align: 'center', baseline: 'middle' }
+        imageBox: { x: 44, y: 16, w: 317, h: 223 },
+        titleBox: { x: 202.5, y: 252, font: 'normal 42px "FZLanTingHeiS-DB-GB", sans-serif', align: 'center', color: '#FFFFFF' },
+        buttonBox: { x: 54.75, y: 329.43, w: 299.56, h: 77.63, radius: 65.68 },
+        buttonText: { font: 'normal 36px "FZLanTingHeiS-DB-GB", sans-serif', color: '#434446', align: 'center', baseline: 'middle' }
     }
 };
 async function renderMembersChannelPage(resourceKey) {
@@ -2261,12 +2316,12 @@ async function renderMembersChannelPage(resourceKey) {
     if (!bannerImg || !bannerImg.width) return;
 
     const bannerCanvas = document.createElement('canvas');
-    bannerCanvas.width = bannerImg.width;
-    bannerCanvas.height = bannerImg.height;
+    bannerCanvas.width = layout.outputSize?.w || bannerImg.width;
+    bannerCanvas.height = layout.outputSize?.h || bannerImg.height;
     const bannerCtx = bannerCanvas.getContext('2d');
     setupHighQualityContext(bannerCtx);
     bannerCtx.clearRect(0, 0, bannerCanvas.width, bannerCanvas.height);
-    if (resourceKey !== 'dev_1_1_9_2') bannerCtx.drawImage(bannerImg, 0, 0);
+    if (resourceKey !== 'dev_1_1_9_2') bannerCtx.drawImage(bannerImg, 0, 0, bannerCanvas.width, bannerCanvas.height);
 
     if (resourceKey !== 'dev_1_1_9_1') {
         const pad = resourceKey === 'dev_1_1_9_3' ? 1.5 : 0.5;
@@ -2306,7 +2361,7 @@ async function renderMembersChannelPage(resourceKey) {
         angle: membersChannelBtnGradAngle?.value || 90,
         startStop: membersChannelBtnGradStop1?.value || 0,
         endStop: membersChannelBtnGradStop2?.value || 100,
-        radius: layout.buttonBox.radius || 66
+        radius: Math.min(layout.buttonBox.radius || 66, layout.buttonBox.w / 2, layout.buttonBox.h / 2)
     });
     const buttonValue = document.getElementById(layout.btnInput)?.value || '';
     bannerCtx.textAlign = layout.buttonText.align;

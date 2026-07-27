@@ -295,7 +295,7 @@
 
                 <!-- 以下控件区完全保持原样不动 -->
                 <div id="homeControls" class="control-group active">
-                    <div class="panel-group">
+                    <div id="homeTopControlPanel" class="panel-group">
                         <div class="panel-group-header">大图状态Banner 配置</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
@@ -369,7 +369,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-group">
+                    <div id="homeLightControlPanel" class="panel-group">
                         <div class="panel-group-header">小图状态Banner 配置</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
@@ -514,59 +514,35 @@
 
                 <div id="membersChannelControls" class="control-group">
                     <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
-                        👉 三个页面共用最上方<b>【全局基础配图】</b>区域上传的主图，也共用下面这套按钮渐变参数，系统会按各自画框等比适配。
+                        👉 三个页面共用最上方<b>【全局基础配图】</b>区域上传的主图，系统会按各自画框等比适配。
                     </div>
-                    <div class="sidebar-section" style="margin-bottom: 20px;">
-                        <div class="section-title">按钮渐变配置</div>
-                        <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 10px;">
-                            <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
-                                <div class="color-picker-wrap"><span>起始</span><input type="color" id="membersChannelBtnGrad1" value="#FFFDED"></div>
-                                <div class="color-picker-wrap"><span>终止</span><input type="color" id="membersChannelBtnGrad2" value="#FBF6F3"></div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
-                                <input type="range" id="membersChannelBtnGradAngle" min="0" max="360" value="90" style="flex: 1;">
-                                <span id="membersChannelBtnGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                <span style="font-size: 12px; color: #666; width: 40px;">占比1</span>
-                                <input type="range" id="membersChannelBtnGradStop1" min="0" max="100" value="0" style="flex: 1;">
-                                <span id="membersChannelBtnGradStop1Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">0%</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 12px; color: #666; width: 40px;">占比2</span>
-                                <input type="range" id="membersChannelBtnGradStop2" min="0" max="100" value="100" style="flex: 1;">
-                                <span id="membersChannelBtnGradStop2Val" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">100%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-group">
+                    <div id="membersChannelPage1ControlPanel" class="panel-group">
                         <div class="panel-group-header">会员频道下拉2楼 - 单列</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
                                 <div class="section-title">文案配置</div>
                                 <div class="input-group"><span>主标题 (最多11字):</span><input type="text" id="membersChannelPage1Title" value="主标题最多11个字" maxlength="11"></div>
                                 <div class="input-group"><span>副标题 (最多8字):</span><input type="text" id="membersChannelPage1Sub" value="副标题最多8个字" maxlength="8"></div>
-                                <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage1Btn" value="去查看" maxlength="4"></div>
+                                <div class="input-group"><span>按钮文案 (最多3字):</span><input type="text" id="membersChannelPage1Btn" value="去查看" maxlength="3"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="panel-group" style="margin-top: 24px;">
+                    <div id="membersChannelPage2ControlPanel" class="panel-group" style="margin-top: 24px;">
                         <div class="panel-group-header">会员频道下拉2楼 - 双列</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
                                 <div class="section-title">文案配置</div>
-                                <div class="input-group"><span>主标题 (最多11字):</span><input type="text" id="membersChannelPage2Title" value="主标题最多11个字" maxlength="11"></div>
+                                <div class="input-group"><span>主标题 (最多10字):</span><input type="text" id="membersChannelPage2Title" value="主标题最多10个字" maxlength="10"></div>
                                 <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage2Btn" value="去查看" maxlength="4"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="panel-group" style="margin-top: 24px;">
+                    <div id="membersChannelPage3ControlPanel" class="panel-group" style="margin-top: 24px;">
                         <div class="panel-group-header">会员频道下拉2楼 - 三列</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
                                 <div class="section-title">文案配置</div>
-                                <div class="input-group"><span>主标题 (最多7字):</span><input type="text" id="membersChannelPage3Title" value="主标题最多7个字" maxlength="7"></div>
+                                <div class="input-group"><span>主标题 (最多10字):</span><input type="text" id="membersChannelPage3Title" value="主标题最多10个字" maxlength="10"></div>
                                 <div class="input-group"><span>按钮文案 (最多4字):</span><input type="text" id="membersChannelPage3Btn" value="去查看" maxlength="4"></div>
                             </div>
                         </div>

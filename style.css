@@ -516,21 +516,25 @@ body {
 }
 
 .members-channel-grid {
-    flex-wrap: nowrap !important;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 40px;
-    overflow-x: auto;
-    padding-bottom: 12px;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 28px;
+    width: 100%;
+    overflow: visible;
+    padding: 0 12px 12px;
+    box-sizing: border-box;
 }
 
 .members-channel-grid .preview-card {
-    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
 }
 
 .members-channel-grid .phone-canvas {
-    max-height: 58vh;
-    max-width: 30vw;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
 }
 
 .text-center {
@@ -571,7 +575,8 @@ body {
     cursor: pointer;
 }
 
-.ai-result-preview-mode .view-section.ai-preview-selected .phone-canvas {
+.ai-result-preview-mode .view-section.ai-preview-selected .phone-canvas,
+.ai-result-preview-mode .phone-canvas.ai-preview-selected {
     outline: 3px solid #258AFF;
     outline-offset: 8px;
     box-shadow: 0 18px 48px rgba(37, 138, 255, 0.22);
@@ -692,7 +697,7 @@ body {
     padding: 32px 24px;
     overflow-y: auto;
     scrollbar-gutter: stable;
-    background: #f8fafc;
+    background: #130129;
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -702,13 +707,13 @@ body {
 .detail-modal-body img {
     max-width: 100%;
     border-radius: 6px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .banner-label {
     font-size: 14px;
-    color: #444;
+    color: rgba(255, 255, 255, 0.9);
     font-weight: bold;
     margin-bottom: 12px;
     text-align: center;
