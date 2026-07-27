@@ -1672,7 +1672,20 @@ async function renderMyPageBanner() {
 async function renderMyPageFullCanvas() {
     if (!myPageFullCanvas || !myPageFullCtx) return;
     try {
-        const bgImg = await loadImage(config.myPageBg); if (!bgImg || !bgImg.width) return; myPageFullCanvas.width = bgImg.width; myPageFullCanvas.height = bgImg.height; setupHighQualityContext(myPageFullCtx); myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height); myPageFullCtx.drawImage(bgImg, 0, 0); if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); }
+        const bgImg = await loadImage(config.myPageBg);
+        const fullW = bgImg?.width || 1170;
+        const fullH = bgImg?.height || 2532;
+        myPageFullCanvas.width = fullW;
+        myPageFullCanvas.height = fullH;
+        setupHighQualityContext(myPageFullCtx);
+        myPageFullCtx.clearRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height);
+        if (bgImg && bgImg.width) {
+            myPageFullCtx.drawImage(bgImg, 0, 0);
+        } else {
+            myPageFullCtx.fillStyle = '#F5F6FA';
+            myPageFullCtx.fillRect(0, 0, myPageFullCanvas.width, myPageFullCanvas.height);
+        }
+        if (myPageCanvas.width > 0) { myPageFullCtx.save(); drawRoundRect(myPageFullCtx, config.myPageX + 24, config.myPageY, myPageCanvas.width - 48, myPageCanvas.height, 36); myPageFullCtx.clip(); myPageFullCtx.drawImage(myPageCanvas, Math.floor(config.myPageX), Math.floor(config.myPageY)); myPageFullCtx.restore(); }
         myPageFullCanvas._bannerBBox = { x: config.myPageX + 24, y: config.myPageY, w: myPageCanvas.width - 48, h: myPageCanvas.height };
     } catch (e) { }
 }
