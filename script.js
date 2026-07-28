@@ -1,7 +1,7 @@
 // ==================== 1. 目录结构数据与全局配置 ====================
 // 部署加速：把 USE_ASSET_CDN 改为 true 可让 assets 走 jsDelivr CDN（仓库需为 public）。
 // 加载失败会自动回退到本地相对路径，本地/localhost 调试时保持关闭即可。
-const USE_ASSET_CDN = false;
+const USE_ASSET_CDN = true;
 const ASSET_CDN_BASE = 'https://cdn.jsdelivr.net/gh/ww7627502-ctrl/ziyuanwei@main/';
 function cdnUrl(src) { return (USE_ASSET_CDN && typeof src === 'string' && src.indexOf('assets/') === 0) ? ASSET_CDN_BASE + src : src; }
 const PAGE_DIRECTORY = {
