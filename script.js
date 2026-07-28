@@ -1959,7 +1959,9 @@ async function renderMembershipChannelCardCanvas() {
     if (!membershipChannelCardPageCanvas || !membershipChannelCardPageCtx || !membershipChannelCardExportCanvas || !membershipChannelCardExportCtx) return;
     const exportW = 1092;
     const exportH = 597;
-    const defaultImage = await loadImage(config.membershipChannelCardImage);
+    const defaultImagePromise = loadImage(config.membershipChannelCardImage);
+    const pageImgPromise = loadImage(config.membershipChannelCardPage);
+    const defaultImage = await defaultImagePromise;
     const imageImg = userImgObj || defaultImage;
 
     membershipChannelCardExportCanvas.width = exportW;
@@ -2036,25 +2038,34 @@ async function renderMembershipChannelCardCanvas() {
     membershipChannelCardExportCtx.textBaseline = 'middle';
     membershipChannelCardExportCtx.fillText(membershipChannelCardBtnText?.value || '', btnX + btnW / 2, btnY + btnH / 2 + 1);
 
-    const pageImg = await loadImage(config.membershipChannelCardPage);
-    if (pageImg && pageImg.width) {
-        membershipChannelCardPageCanvas.width = pageImg.width;
-        membershipChannelCardPageCanvas.height = pageImg.height;
-        setupHighQualityContext(membershipChannelCardPageCtx);
-        membershipChannelCardPageCtx.clearRect(0, 0, membershipChannelCardPageCanvas.width, membershipChannelCardPageCanvas.height);
-        membershipChannelCardPageCtx.drawImage(pageImg, 0, 0);
-        // 预览图位置与圆角（导出切图本身无圆角）
-        const drawX = 36.74;
-        const drawY = 852.06;
-        const drawW = exportW;
-        const drawH = exportH;
+    const pageW = 1170;
+    const pageH = 2533;
+    membershipChannelCardPageCanvas.width = pageW;
+    membershipChannelCardPageCanvas.height = pageH;
+    setupHighQualityContext(membershipChannelCardPageCtx);
+    const drawX = 36.74;
+    const drawY = 852.06;
+    const drawW = exportW;
+    const drawH = exportH;
+    const drawPreviewBanner = () => {
         membershipChannelCardPageCtx.save();
         drawRoundRect(membershipChannelCardPageCtx, drawX, drawY, drawW, drawH, 49.46);
         membershipChannelCardPageCtx.clip();
         membershipChannelCardPageCtx.drawImage(membershipChannelCardExportCanvas, drawX, drawY, drawW, drawH);
         membershipChannelCardPageCtx.restore();
-        membershipChannelCardPageCanvas._bannerBBox = { x: drawX, y: drawY, w: drawW, h: drawH };
+    };
+    membershipChannelCardPageCtx.clearRect(0, 0, pageW, pageH);
+    membershipChannelCardPageCtx.fillStyle = '#F5F6FA';
+    membershipChannelCardPageCtx.fillRect(0, 0, pageW, pageH);
+    // 先把 banner 画出来，避免底图加载慢时整块空白
+    drawPreviewBanner();
+    const pageImg = await pageImgPromise;
+    if (pageImg && pageImg.width) {
+        membershipChannelCardPageCtx.clearRect(0, 0, pageW, pageH);
+        membershipChannelCardPageCtx.drawImage(pageImg, 0, 0);
+        drawPreviewBanner();
     }
+    membershipChannelCardPageCanvas._bannerBBox = { x: drawX, y: drawY, w: drawW, h: drawH };
 }
 const TIER_BASED_REWARDS_LAYOUTS = {
     tierBasedRewardsProductImagesPage1: {
@@ -2500,6 +2511,20 @@ function drawContainedImage(ctx, img, box) {
     drawSharpenedImage(ctx, img, drawX, drawY, drawW, drawH, 0.3);
     ctx.restore();
 }
+function drawCoveredImage(ctx, img, box) {
+    if (!ctx || !img || !img.width || !box) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(box.x, box.y, box.w, box.h);
+    ctx.clip();
+    const scale = Math.max(box.w / img.width, box.h / img.height);
+    const drawW = img.width * scale;
+    const drawH = img.height * scale;
+    const drawX = box.x + (box.w - drawW) / 2;
+    const drawY = box.y + (box.h - drawH) / 2;
+    drawSharpenedImage(ctx, img, drawX, drawY, drawW, drawH, 0.3);
+    ctx.restore();
+}
 function clampGradientStop(value, fallback) {
     const num = parseFloat(value);
     if (Number.isNaN(num)) return fallback;
@@ -2659,7 +2684,15 @@ async function renderMembersChannelPage(resourceKey) {
     }
 
     const exampleImg = userImgObj || await loadImage(config.feedExampleImage);
-    drawContainedImage(bannerCtx, exampleImg, layout.imageBox);
+    if (resourceKey === 'dev_1_1_9_1' && userImgObj) {
+        bannerCtx.save();
+        bannerCtx.fillStyle = '#FFFFFF';
+        bannerCtx.fillRect(layout.imageBox.x, layout.imageBox.y, layout.imageBox.w, layout.imageBox.h);
+        bannerCtx.restore();
+        drawCoveredImage(bannerCtx, exampleImg, layout.imageBox);
+    } else {
+        drawContainedImage(bannerCtx, exampleImg, layout.imageBox);
+    }
 
     const titleValue = document.getElementById(layout.titleInput)?.value || '';
     bannerCtx.textAlign = layout.titleBox.align;
