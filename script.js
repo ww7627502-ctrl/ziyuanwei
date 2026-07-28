@@ -1,4 +1,9 @@
 // ==================== 1. 目录结构数据与全局配置 ====================
+// 部署加速：把 USE_ASSET_CDN 改为 true 可让 assets 走 jsDelivr CDN（仓库需为 public）。
+// 加载失败会自动回退到本地相对路径，本地/localhost 调试时保持关闭即可。
+const USE_ASSET_CDN = false;
+const ASSET_CDN_BASE = 'https://cdn.jsdelivr.net/gh/ww7627502-ctrl/ziyuanwei@main/';
+function cdnUrl(src) { return (USE_ASSET_CDN && typeof src === 'string' && src.indexOf('assets/') === 0) ? ASSET_CDN_BASE + src : src; }
 const PAGE_DIRECTORY = {
     'NA': [
         { value: 'dev_1_1_1', text: 'A1.1.1 NA - 开屏' },
@@ -11,10 +16,10 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_7', text: 'A1.1.7 NA - 我的弹窗' },
         { value: 'dev_1_1_9', text: '【A级】A1.1.9 NA - 会员频道下拉2楼' },
         { value: 'dev_1_1_10', text: 'A1.1.10 NA - 共享页角标' },
-        { value: 'dev_1_1_11', text: 'A1.1.11 NA - 视频/音频/共享页右上icon' },
-        { value: 'dev_1_1_12', text: 'A1.1.12 NA - 等级福利商品图' },
+        { value: 'dev_1_1_11', text: '【A级】A1.1.11 NA - 视频/音频/共享页右上icon' },
+        { value: 'dev_1_1_12', text: '【A级】A1.1.12 NA - 等级福利商品图' },
         { value: 'dev_1_1_13', text: '【A级】A1.1.13 NA - 搜索框icon' },
-        { value: 'dev_1_1_15', text: 'A1.1.15 NA - 会员频道大卡' },
+        { value: 'dev_1_1_15', text: '【A级】A1.1.15 NA - 会员频道大卡' },
         { value: 'dev_1_1_16', text: '【A级】A1.1.16 NA - 我的空间/简单扫描banner' },
         { value: 'dev_1_1_17', text: '【A级】A1.1.17 NA - 活动中心' },
         { value: 'dev_1_1_18', text: '【A级】A1.1.18 NA - 共享点对点' },
@@ -78,7 +83,7 @@ const CHUHAI_PAGE_DIRECTORY = {
 };
 const IMPLEMENTED_RESOURCE_PRIORITY = {
     wangpan: {
-        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_11', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
+        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_11', 'dev_1_1_12', 'dev_1_1_13', 'dev_1_1_15', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
     },
     yike: {
         NA: ['yike_4', 'yike_5', 'yike_7']
@@ -89,7 +94,7 @@ const IMPLEMENTED_RESOURCE_PRIORITY = {
 };
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 8 };
 const config = {
-    baseUI: 'assets/home-light.png', baseUIDark: 'assets/home-dark.png',
+    baseUI: 'assets/home-light.jpg', baseUIDark: 'assets/home-dark.png',
     topHomePageUI: 'assets/top-of-the-home-page.png',
     homeMainBanner: 'assets/home-page-main-banner.png',
     topBannerTitleImg: 'assets/top-banner-w.png',
@@ -97,21 +102,23 @@ const config = {
     banner2Svg: 'assets/banner2.svg', bannerX: 90, bannerY: 120,
     feedBg: 'assets/home-feed.jpg', feedBanner: 'assets/home-feed-banner.png', feedBannerX: 587, feedBannerY: 1336,
     feedExampleImage: 'assets/feed-image.png',
-    searchBoxPage: 'assets/search-box-page.png', searchBoxIcon: 'assets/search-box-icon.png',
-    videoAudioSharePage: 'assets/video-audio-share-page.png', videoAudioShareImage: 'assets/video-audio-share-image.png',
-    mySpacePage: 'assets/my-space-page.png', simpleScanPage: 'assets/simple-banner-scan.png',
-    membersChannelPage1: 'assets/members-only-channel-page1.png', membersChannelPage2: 'assets/members-only-channel-page2.png', membersChannelPage3: 'assets/members-only-channel-page3.png',
+    searchBoxPage: 'assets/search-box-page.jpg', searchBoxIcon: 'assets/search-box-icon.png',
+    videoAudioSharePage: 'assets/video-audio-share-page.jpg', videoAudioShareImage: 'assets/video-audio-share-image.png',
+    tierBasedRewardsProductImagesPage1: 'assets/tier-based-rewards-product-images-page1.jpg', tierBasedRewardsProductImagesPage2: 'assets/tier-based-rewards-product-images-page2.jpg', tierBasedRewardsProductImagesPage3: 'assets/tier-based-rewards-product-images-page3.jpg', tierBasedRewardsProductImagesImage: 'assets/tier-based-rewards-product-images-image.png',
+    membershipChannelCardPage: 'assets/membership-channel-card-page.jpg', membershipChannelCardImage: 'assets/membership-channel-card-image.png',
+    mySpacePage: 'assets/my-space-page.jpg', simpleScanPage: 'assets/simple-banner-scan.jpg',
+    membersChannelPage1: 'assets/members-only-channel-page1.jpg', membersChannelPage2: 'assets/members-only-channel-page2.jpg', membersChannelPage3: 'assets/members-only-channel-page3.jpg',
     membersChannelBanner1: 'assets/members-only-channel-banner1.svg', membersChannelBanner2: 'assets/members-only-channel-banner2.svg', membersChannelBanner3: 'assets/members-only-channel-banner3.svg',
     searchBtSvg: 'assets/search-bt.svg', searchArrowSvg: 'assets/search-arrow.svg',
     mySpaceExampleImage: 'assets/search-banner-image.png', simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
-    myActivityPage: 'assets/my-activity-enter-banner.png', peerSharingPage: 'assets/peer-to-peer-sharing.png',
+    myActivityPage: 'assets/my-activity-enter-banner.jpg', peerSharingPage: 'assets/peer-to-peer-sharing.jpg',
     peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png',
     yikeEquipPage: 'assets/photo-equipment-page.png',
     yikeEquipExampleImage: 'assets/photo-equipment-image.png',
     yikeHomePage: 'assets/photo-home-page.png',
     yikeHomeExampleImage: 'assets/photo-home-image.png',
     yikeHomeBottomSvg: 'assets/photo-home-jianbian.svg',
-    yikeCashPage: 'assets/photo-cash-page.png',
+    yikeCashPage: 'assets/photo-cash-page.jpg',
     yikeCashExampleImage: 'assets/photo-cash- image.png',
     colors: { blue: 'assets/blue.svg', green: 'assets/green.svg', orange: 'assets/orange.svg', red: 'assets/red.svg', purple: 'assets/purple.svg' },
     colorsDark: { blue: 'assets/blue-y.svg', green: 'assets/green-y.svg', orange: 'assets/orange-y.svg', red: 'assets/red-y.svg', purple: 'assets/purple-y.svg' },
@@ -131,6 +138,8 @@ const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
 const searchIconControls = document.getElementById('searchIconControls');
 const videoAudioShareControls = document.getElementById('videoAudioShareControls');
+const membershipChannelCardControls = document.getElementById('membershipChannelCardControls');
+const tierBasedRewardsProductImagesControls = document.getElementById('tierBasedRewardsProductImagesControls');
 const membersChannelControls = document.getElementById('membersChannelControls');
 const mySpaceControls = document.getElementById('mySpaceControls');
 const myActivityControls = document.getElementById('myActivityControls');
@@ -142,6 +151,8 @@ const myPageView = document.getElementById('myPageView');
 const feedView = document.getElementById('feedView');
 const searchIconView = document.getElementById('searchIconView');
 const videoAudioShareView = document.getElementById('videoAudioShareView');
+const membershipChannelCardView = document.getElementById('membershipChannelCardView');
+const tierBasedRewardsProductImagesView = document.getElementById('tierBasedRewardsProductImagesView');
 const membersChannelView = document.getElementById('membersChannelView');
 const mySpaceView = document.getElementById('mySpaceView');
 const myActivityView = document.getElementById('myActivityView');
@@ -152,6 +163,10 @@ const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPa
 const feedCanvas = document.getElementById('feedCanvas'); const feedCtx = feedCanvas?.getContext('2d');
 const searchPageCanvas = document.getElementById('searchPageCanvas'); const searchPageCtx = searchPageCanvas?.getContext('2d');
 const videoAudioSharePageCanvas = document.getElementById('videoAudioSharePageCanvas'); const videoAudioSharePageCtx = videoAudioSharePageCanvas?.getContext('2d');
+const membershipChannelCardPageCanvas = document.getElementById('membershipChannelCardPageCanvas'); const membershipChannelCardPageCtx = membershipChannelCardPageCanvas?.getContext('2d');
+const tierBasedRewardsProductImagesPage1Canvas = document.getElementById('tierBasedRewardsProductImagesPage1Canvas'); const tierBasedRewardsProductImagesPage1Ctx = tierBasedRewardsProductImagesPage1Canvas?.getContext('2d');
+const tierBasedRewardsProductImagesPage2Canvas = document.getElementById('tierBasedRewardsProductImagesPage2Canvas'); const tierBasedRewardsProductImagesPage2Ctx = tierBasedRewardsProductImagesPage2Canvas?.getContext('2d');
+const tierBasedRewardsProductImagesPage3Canvas = document.getElementById('tierBasedRewardsProductImagesPage3Canvas'); const tierBasedRewardsProductImagesPage3Ctx = tierBasedRewardsProductImagesPage3Canvas?.getContext('2d');
 const membersChannelPage1Canvas = document.getElementById('membersChannelPage1Canvas'); const membersChannelPage1Ctx = membersChannelPage1Canvas?.getContext('2d');
 const membersChannelPage1ExportCanvas = document.getElementById('membersChannelPage1ExportCanvas'); const membersChannelPage1ExportCtx = membersChannelPage1ExportCanvas?.getContext('2d');
 const membersChannelPage2Canvas = document.getElementById('membersChannelPage2Canvas'); const membersChannelPage2Ctx = membersChannelPage2Canvas?.getContext('2d');
@@ -170,6 +185,8 @@ const myPageDarkCanvas = document.getElementById('myPageDarkCanvas'); const myPa
 const feedBannerCanvas = document.getElementById('feedBannerCanvas'); const feedBannerCtx = feedBannerCanvas?.getContext('2d');
 const searchIconExportCanvas = document.getElementById('searchIconExportCanvas'); const searchIconExportCtx = searchIconExportCanvas?.getContext('2d');
 const videoAudioShareExportCanvas = document.getElementById('videoAudioShareExportCanvas'); const videoAudioShareExportCtx = videoAudioShareExportCanvas?.getContext('2d');
+const membershipChannelCardExportCanvas = document.getElementById('membershipChannelCardExportCanvas'); const membershipChannelCardExportCtx = membershipChannelCardExportCanvas?.getContext('2d');
+const tierBasedRewardsProductImagesExportCanvas = document.getElementById('tierBasedRewardsProductImagesExportCanvas'); const tierBasedRewardsProductImagesExportCtx = tierBasedRewardsProductImagesExportCanvas?.getContext('2d');
 const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); const mySpaceExportCtx = mySpaceExportCanvas?.getContext('2d');
 const simpleScanExportCanvas = document.getElementById('simpleScanExportCanvas'); const simpleScanExportCtx = simpleScanExportCanvas?.getContext('2d');
 const myActivityExportCanvas = document.getElementById('myActivityExportCanvas'); const myActivityExportCtx = myActivityExportCanvas?.getContext('2d');
@@ -188,6 +205,10 @@ const feedGradAngle = document.getElementById('feedGradAngle'); const feedGradAn
 const feedTitleInput = document.getElementById('feedTitle'); const feedTitleColor = document.getElementById('feedTitleColor');
 const feedSubtitleInput = document.getElementById('feedSubtitle'); const feedSubtitleColor = document.getElementById('feedSubtitleColor');
 const feedBtnTextInput = document.getElementById('feedBtnText');
+const membershipChannelCardTitle = document.getElementById('membershipChannelCardTitle');
+const membershipChannelCardTitleLine2 = document.getElementById('membershipChannelCardTitleLine2');
+const membershipChannelCardSub = document.getElementById('membershipChannelCardSub');
+const membershipChannelCardBtnText = document.getElementById('membershipChannelCardBtnText');
 const membersChannelBtnGrad1 = document.getElementById('membersChannelBtnGrad1'); const membersChannelBtnGrad2 = document.getElementById('membersChannelBtnGrad2');
 const membersChannelBtnGradAngle = document.getElementById('membersChannelBtnGradAngle'); const membersChannelBtnGradAngleVal = document.getElementById('membersChannelBtnGradAngleVal'); const membersChannelBtnGradStop1 = document.getElementById('membersChannelBtnGradStop1'); const membersChannelBtnGradStop1Val = document.getElementById('membersChannelBtnGradStop1Val'); const membersChannelBtnGradStop2 = document.getElementById('membersChannelBtnGradStop2'); const membersChannelBtnGradStop2Val = document.getElementById('membersChannelBtnGradStop2Val');
 const mySpaceBgModeRadios = document.getElementsByName('mySpaceBgMode');
@@ -255,6 +276,8 @@ function getDefaultUploadPreviewSrc(selectedResource = document.querySelector('.
     }
     if (selectedResource === 'dev_1_1_9') return config.feedExampleImage;
     if (selectedResource === 'dev_1_1_11') return config.videoAudioShareImage;
+    if (selectedResource === 'dev_1_1_12') return config.tierBasedRewardsProductImagesImage;
+    if (selectedResource === 'dev_1_1_15') return config.membershipChannelCardImage;
     return config.heroImage;
 }
 function syncCurrentBusinessUploadState(selectedResource) {
@@ -274,6 +297,7 @@ const MODULE_INPUT_MAP = {
     'home': [{ id: 'textLine1', key: 'line1', limit: 6 }, { id: 'textLine2', key: 'line2', limit: 4 }],
     'myPage': [{ id: 'myPageTitle', key: 'title', limit: 9 }, { id: 'myPageSubtitle', key: 'sub', limit: 8 }, { id: 'textCapsule', key: 'capsule', limit: 4 }, { id: 'myPageHighlight', key: 'highlight', limit: 9 }],
     'feed': [{ id: 'feedTitle', key: 'title', limit: 7 }, { id: 'feedSubtitle', key: 'sub', limit: 10 }, { id: 'feedBtnText', key: 'btn', limit: 4 }],
+    'membershipChannelCard': [{ id: 'membershipChannelCardTitle', key: 'title', limit: 6 }, { id: 'membershipChannelCardTitleLine2', key: 'title2', limit: 6 }, { id: 'membershipChannelCardSub', key: 'sub', limit: 9 }, { id: 'membershipChannelCardBtnText', key: 'btn', limit: 3 }],
     'membersChannelPage1': [{ id: 'membersChannelPage1Title', key: 'title', limit: 11 }, { id: 'membersChannelPage1Sub', key: 'sub', limit: 8 }, { id: 'membersChannelPage1Btn', key: 'btn', limit: 3 }],
     'membersChannelPage2': [{ id: 'membersChannelPage2Title', key: 'title', limit: 10 }, { id: 'membersChannelPage2Btn', key: 'btn', limit: 4 }],
     'membersChannelPage3': [{ id: 'membersChannelPage3Title', key: 'title', limit: 10 }, { id: 'membersChannelPage3Btn', key: 'btn', limit: 4 }],
@@ -287,7 +311,7 @@ const MODULE_INPUT_MAP = {
 };
 const MODULE_RENDER_FNS = {
     'home': renderHomeCanvas, 'myPage': renderMyPage, 'feed': renderFeedCanvas,
-    'videoAudioShare': renderVideoAudioShareCanvas,
+    'videoAudioShare': renderVideoAudioShareCanvas, 'membershipChannelCard': renderMembershipChannelCardCanvas,
     'membersChannelPage1': renderMembersChannelPage1Canvas, 'membersChannelPage2': renderMembersChannelPage2Canvas, 'membersChannelPage3': renderMembersChannelPage3Canvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
@@ -299,6 +323,8 @@ const AI_RESOURCE_MATCHERS = [
     { resource: 'na_feed', bu: 'wangpan', label: 'A1.1.4 NA - 首页feed 10出1', patterns: [/A\s*1\.1\.4/i, /首页\s*feed/i, /首页运营\s*10\s*出\s*1/i, /10\s*出\s*1/, /561\s*[×x*]\s*750/] },
     { resource: 'na_mypage', bu: 'wangpan', label: 'A1.1.5 NA - 我的页面banner', patterns: [/A\s*1\.1\.5/i, /我的(页面|页).*banner/i, /我的页轮播\s*banner/i, /我的(页面|页).*1182\s*[×x*]\s*(225|252)/] },
     { resource: 'dev_1_1_11', bu: 'wangpan', label: 'A1.1.11 NA - 视频/音频/共享页右上icon', patterns: [/A\s*1\.1\.11/i, /视频.*音频.*共享页.*右上(?:icon|角标)/i, /右上(?:icon|角标)/i, /video[-_\s]?audio[-_\s]?share/i, /80\s*[×x*]\s*80/, /114\s*[×x*]\s*114/] },
+    { resource: 'dev_1_1_12', bu: 'wangpan', label: 'A1.1.12 NA - 等级福利商品图', patterns: [/A\s*1\.1\.12/i, /等级福利商品图/i, /tier[-_\s]?based[-_\s]?rewards[-_\s]?product[-_\s]?images/i, /342\s*[×x*]\s*342/] },
+    { resource: 'dev_1_1_15', bu: 'wangpan', label: 'A1.1.15 NA - 会员频道大卡', patterns: [/A\s*1\.1\.15/i, /会员频道大卡/i, /membership[-_\s]?channel[-_\s]?card/i, /F4F476/i, /83FFE6/i] },
     { resource: 'dev_1_1_9', bu: 'wangpan', label: 'A1.1.9 NA - 会员频道下拉2楼', patterns: [/A\s*1\.1\.9(?:\.[123])?/i, /会员频道.*(?:下拉|下2楼|2楼|单列|双列|三列)/i, /member[s-]?only[-\s]?channel[-_\s]?page[123]/i, /members[-_\s]?only[-_\s]?channel[-_\s]?banner[123]/i] },
     { resource: 'dev_1_1_13', bu: 'wangpan', label: 'A1.1.13 NA - 搜索框icon', patterns: [/A\s*1\.1\.13/i, /搜索框\s*icon/i, /搜索词\s*icon/i, /搜索\s*icon/i, /204\s*[×x*]\s*204/] },
     { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /分享页\s*\/\s*任务中心/i, /任务中心\s*-?\s*banner/i, /简单扫描/i] },
@@ -313,6 +339,8 @@ const RESOURCE_VIEW_MAP = {
     na_mypage: 'myPageView',
     na_feed: 'feedView',
     dev_1_1_11: 'videoAudioShareView',
+    dev_1_1_12: 'tierBasedRewardsProductImagesView',
+    dev_1_1_15: 'membershipChannelCardView',
     dev_1_1_9: 'membersChannelView',
     dev_1_1_13: 'searchIconView',
     dev_1_1_16: 'mySpaceView',
@@ -329,6 +357,11 @@ const RESOURCE_CONTROL_MAP = {
     na_mypage: 'myPageControls',
     na_feed: 'feedControls',
     dev_1_1_11: 'videoAudioShareControls',
+    dev_1_1_12: 'tierBasedRewardsProductImagesControls',
+    dev_1_1_15: 'membershipChannelCardControls',
+    tierBasedRewardsProductImagesPage1: 'tierBasedRewardsProductImagesPage1ControlPanel',
+    tierBasedRewardsProductImagesPage2: 'tierBasedRewardsProductImagesPage2ControlPanel',
+    tierBasedRewardsProductImagesPage3: 'tierBasedRewardsProductImagesPage3ControlPanel',
     dev_1_1_9: 'membersChannelControls',
     membersChannelPage1: 'membersChannelPage1ControlPanel',
     membersChannelPage2: 'membersChannelPage2ControlPanel',
@@ -345,6 +378,11 @@ const RESOURCE_PREVIEW_TARGET_MAP = {
     homeTop: 'topHomePageCanvas',
     homeLight: 'lightCanvas',
     dev_1_1_11: 'videoAudioSharePageCanvas',
+    dev_1_1_12: 'tierBasedRewardsProductImagesView',
+    dev_1_1_15: 'membershipChannelCardPageCanvas',
+    tierBasedRewardsProductImagesPage1: 'tierBasedRewardsProductImagesPage1Canvas',
+    tierBasedRewardsProductImagesPage2: 'tierBasedRewardsProductImagesPage2Canvas',
+    tierBasedRewardsProductImagesPage3: 'tierBasedRewardsProductImagesPage3Canvas',
     membersChannelPage1: 'membersChannelPage1Canvas',
     membersChannelPage2: 'membersChannelPage2Canvas',
     membersChannelPage3: 'membersChannelPage3Canvas'
@@ -354,6 +392,10 @@ const VIEW_RESOURCE_MAP = {
     topHomePageCanvas: 'homeTop',
     lightCanvas: 'homeLight',
     videoAudioSharePageCanvas: 'dev_1_1_11',
+    membershipChannelCardPageCanvas: 'dev_1_1_15',
+    tierBasedRewardsProductImagesPage1Canvas: 'tierBasedRewardsProductImagesPage1',
+    tierBasedRewardsProductImagesPage2Canvas: 'tierBasedRewardsProductImagesPage2',
+    tierBasedRewardsProductImagesPage3Canvas: 'tierBasedRewardsProductImagesPage3',
     membersChannelPage1Canvas: 'membersChannelPage1',
     membersChannelPage2Canvas: 'membersChannelPage2',
     membersChannelPage3Canvas: 'membersChannelPage3'
@@ -362,6 +404,11 @@ const RESOURCE_LIST_ACTIVE_MAP = {
     homeTop: 'na_home',
     homeLight: 'na_home',
     dev_1_1_11: 'dev_1_1_11',
+    dev_1_1_12: 'dev_1_1_12',
+    dev_1_1_15: 'dev_1_1_15',
+    tierBasedRewardsProductImagesPage1: 'dev_1_1_12',
+    tierBasedRewardsProductImagesPage2: 'dev_1_1_12',
+    tierBasedRewardsProductImagesPage3: 'dev_1_1_12',
     membersChannelPage1: 'dev_1_1_9',
     membersChannelPage2: 'dev_1_1_9',
     membersChannelPage3: 'dev_1_1_9'
@@ -371,6 +418,8 @@ const RESOURCE_EXPORT_CHECKS = {
     na_mypage: ['chkMyPageBannerLight', 'chkMyPageBannerDark', 'chkMyPagePhone'],
     na_feed: ['chkFeedBannerExport', 'chkFeedPhone'],
     dev_1_1_11: ['chkVideoAudioShareIconExport', 'chkVideoAudioSharePageExport'],
+    dev_1_1_12: ['chkTierBasedRewardsProductImagesExport', 'chkTierBasedRewardsProductImagesPage1Export', 'chkTierBasedRewardsProductImagesPage2Export', 'chkTierBasedRewardsProductImagesPage3Export'],
+    dev_1_1_15: ['chkMembershipChannelCardExport', 'chkMembershipChannelCardPageExport'],
     dev_1_1_9: ['chkMembersChannelPage1Banner', 'chkMembersChannelPage1Page', 'chkMembersChannelPage2Banner', 'chkMembersChannelPage2Page', 'chkMembersChannelPage3Banner', 'chkMembersChannelPage3Page'],
     dev_1_1_13: ['chkSearchIconExport', 'chkSearchPageExport'],
     dev_1_1_17: ['chkMyActivityExport', 'chkMyActivityPageExport'],
@@ -528,7 +577,7 @@ function normalizeHomeCopies(config) {
 }
 function normalizeRecognizedConfig(config) {
     normalizeHomeCopies(config);
-    ['feed', 'mypage', 'myPage', 'mySpace', 'simpleScan', 'yikeEquip', 'membersChannelPage1', 'membersChannelPage2', 'membersChannelPage3'].forEach(key => {
+    ['feed', 'mypage', 'myPage', 'mySpace', 'simpleScan', 'yikeEquip', 'membershipChannelCard', 'membersChannelPage1', 'membersChannelPage2', 'membersChannelPage3'].forEach(key => {
         if (Array.isArray(config[key])) config[key].forEach(normalizeTextBannerCopy);
     });
     ['activity', 'peerSharing'].forEach(key => {
@@ -600,6 +649,19 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         if (title || sub || btn) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || '去创建', 4) }];
     }
 
+    if (inferredResources.includes('dev_1_1_15')) {
+        let [title, sub, btn] = pickFirstTextMatch(normalized, [
+            /会员频道大卡[\s\S]{0,260}(?:主标题|标题)[:：]?([^，,。；;\n]{2,16})[\s\S]{0,80}(?:副标题|次标题)[:：]?([^，,。；;\n]{2,18})[\s\S]{0,60}(?:按钮(?:文案)?|btn)[:：]?([^，,。；;\n]{2,8})/i,
+            /membership[-_\s]?channel[-_\s]?card[\s\S]{0,260}(?:title)[:：]?([^，,。；;\n]{2,16})[\s\S]{0,80}(?:sub|subtitle)[:：]?([^，,。；;\n]{2,18})[\s\S]{0,60}(?:button|btn)[:：]?([^，,。；;\n]{2,8})/i,
+            /会员频道大卡[\s\S]{0,220}(?:主标题|标题)[:：]?([^，,。；;\n]{2,16})[\s\S]{0,80}(?:按钮(?:文案)?|btn)[:：]?([^，,。；;\n]{2,8})/i
+        ]);
+        if (title && !btn && sub && isActionButtonCopy(sub)) {
+            btn = sub;
+            sub = '';
+        }
+        if (title || sub || btn) fallback.membershipChannelCard = [{ title: cleanFallbackCopy(title, 12), sub: cleanFallbackCopy(sub, 9), btn: cleanFallbackCopy(btn || '去领取', 3) }];
+    }
+
     const fillMembersChannelPage = (resource, key, titleLimit, options = {}) => {
         if (!inferredResources.includes(resource)) return;
         const patterns = options.withSub ? [
@@ -650,6 +712,7 @@ function applyLocalFallbackConfig(config, fallback) {
     ensureArrayConfig(config, 'home', fallback.home);
     ensureArrayConfig(config, 'feed', fallback.feed);
     ensureArrayConfig(config, 'videoAudioShare', fallback.videoAudioShare);
+    ensureArrayConfig(config, 'membershipChannelCard', fallback.membershipChannelCard);
     ensureArrayConfig(config, 'membersChannelPage1', fallback.membersChannelPage1);
     ensureArrayConfig(config, 'membersChannelPage2', fallback.membersChannelPage2);
     ensureArrayConfig(config, 'membersChannelPage3', fallback.membersChannelPage3);
@@ -692,9 +755,15 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('feedBtnText', first.btn, 4);
         safeRenderABTestSwitcher('feedControls', 'feed');
     }
-    if (fallbackConfig.videoAudioShare?.length) {
-        window.abTestCopies.videoAudioShare = fallbackConfig.videoAudioShare;
-        window.abTestActiveIndex.videoAudioShare = 0;
+    if (fallbackConfig.membershipChannelCard?.length) {
+        const first = fallbackConfig.membershipChannelCard[0];
+        window.abTestCopies.membershipChannelCard = fallbackConfig.membershipChannelCard;
+        window.abTestActiveIndex.membershipChannelCard = 0;
+        setLimitedInputValue('membershipChannelCardTitle', (first.title || '').slice(0, 6), 6);
+        setLimitedInputValue('membershipChannelCardTitleLine2', (first.title || '').slice(6, 12), 6);
+        setLimitedInputValue('membershipChannelCardSub', first.sub, 9);
+        setLimitedInputValue('membershipChannelCardBtnText', first.btn, 3);
+        safeRenderABTestSwitcher('membershipChannelCardControls', 'membershipChannelCard');
     }
     if (fallbackConfig.membersChannelPage1?.length) {
         const first = fallbackConfig.membersChannelPage1[0];
@@ -1351,6 +1420,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 - "A1.1.5" / "我的页" / "我的⻚" / "我的页面banner" / "我的⻚轮播banner" -> "mypage"
 - "A1.1.11" / "视频/音频/共享页右上icon" / "右上icon" / "video-audio-share" / "80×80" -> "videoAudioShare"
 - "A1.1.13" / "搜索框icon" / "搜索词icon" / "搜索icon" / "204×204" -> "searchIcon"
+- "A1.1.15" / "会员频道大卡" / "membership-channel-card" / "F4F476" / "83FFE6" -> "membershipChannelCard"
 - "A1.1.16" + "任务中心" / "任务中⼼" / "任务中心-banner" / "分享页" / "我的空间" -> "mySpace"
 - "A1.1.16" + "简单扫描" -> "simpleScan"
 - "A1.1.17" / "活动中心" -> "activity"
@@ -1379,6 +1449,7 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "home": [ { "line1": "第一行主标题", "line2": "第二行按钮" } ],
     "mypage": [ { "capsule": "胶囊词", "title": "主标题", "highlight": "需要高亮的词", "sub": "副标题" } ],
     "feed": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
+    "membershipChannelCard": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "mySpace": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
@@ -1440,6 +1511,18 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         if (config.theme) triggerThemeSwitch(config.theme, getActiveBusinessLineKey());
         if (config.searchIcon && config.searchIcon.length > 0) {
             recognizedModules.add('dev_1_1_13');
+        }
+        if (config.membershipChannelCard && config.membershipChannelCard.length > 0) {
+            recognizedModules.add('dev_1_1_15');
+            window.abTestCopies['membershipChannelCard'] = config.membershipChannelCard; window.abTestActiveIndex['membershipChannelCard'] = 0;
+            const first = config.membershipChannelCard[0];
+            if (first.title) {
+                document.getElementById('membershipChannelCardTitle').value = formatAndLimitText(String(first.title).slice(0, 6), 6);
+                document.getElementById('membershipChannelCardTitleLine2').value = formatAndLimitText(String(first.title).slice(6, 12), 6);
+            }
+            if (first.sub) document.getElementById('membershipChannelCardSub').value = formatAndLimitText(first.sub, 9);
+            if (first.btn) document.getElementById('membershipChannelCardBtnText').value = formatAndLimitText(first.btn, 3);
+            safeRenderABTestSwitcher('membershipChannelCardControls', 'membershipChannelCard');
         }
         if (config.home && config.home.length > 0) {
             recognizedModules.add('na_home');
@@ -1624,7 +1707,8 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
 async function loadImage(src) {
     if (!src) return null; if (globalImageCache[src]) return globalImageCache[src];
     if (src.startsWith('data:')) { return new Promise(resolve => { const img = new Image(); img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => resolve(new Image()); img.src = src; }); }
-    try { const response = await fetch(src); const blob = await response.blob(); return new Promise((resolve) => { const reader = new FileReader(); reader.onloadend = () => { const img = new Image(); img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => resolve(new Image()); img.src = reader.result; }; reader.readAsDataURL(blob); }); } catch (e) { return new Promise((resolve) => { const img = new Image(); img.crossOrigin = 'Anonymous'; img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => { const fallback = new Image(); fallback.onload = () => { globalImageCache[src] = fallback; resolve(fallback); }; fallback.onerror = () => resolve(new Image()); fallback.src = src; }; img.src = src; }); }
+    const netSrc = cdnUrl(src);
+    try { const response = await fetch(netSrc); const blob = await response.blob(); return new Promise((resolve) => { const reader = new FileReader(); reader.onloadend = () => { const img = new Image(); img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => resolve(new Image()); img.src = reader.result; }; reader.readAsDataURL(blob); }); } catch (e) { return new Promise((resolve) => { const img = new Image(); img.crossOrigin = 'Anonymous'; img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => { const fallback = new Image(); fallback.onload = () => { globalImageCache[src] = fallback; resolve(fallback); }; fallback.onerror = () => resolve(new Image()); fallback.src = src; }; img.src = netSrc; }); }
 }
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url]; if (!txt) { try { const res = await fetch(url); if (!res.ok) return new Image(); txt = await res.text(); globalSvgTextCache[url] = txt; } catch (e) { return new Image(); } }
@@ -1869,6 +1953,172 @@ async function renderVideoAudioShareCanvas() {
         const drawX = (exportSize - drawW) / 2;
         const drawY = (exportSize - drawH) / 2;
         drawSharpenedImage(videoAudioShareExportCtx, iconImg, drawX, drawY, drawW, drawH, 0.3);
+    }
+}
+async function renderMembershipChannelCardCanvas() {
+    if (!membershipChannelCardPageCanvas || !membershipChannelCardPageCtx || !membershipChannelCardExportCanvas || !membershipChannelCardExportCtx) return;
+    const exportW = 1092;
+    const exportH = 597;
+    const defaultImage = await loadImage(config.membershipChannelCardImage);
+    const imageImg = userImgObj || defaultImage;
+
+    membershipChannelCardExportCanvas.width = exportW;
+    membershipChannelCardExportCanvas.height = exportH;
+    setupHighQualityContext(membershipChannelCardExportCtx);
+    membershipChannelCardExportCtx.clearRect(0, 0, exportW, exportH);
+
+    const exportGrad = addTwoStopGradient(
+        createGradientByAngle(membershipChannelCardExportCtx, { x: 0, y: 0, w: exportW, h: exportH }, 90),
+        '#F4F476',
+        0,
+        '#83FFE6',
+        100
+    );
+    membershipChannelCardExportCtx.fillStyle = exportGrad;
+    membershipChannelCardExportCtx.fillRect(0, 0, exportW, exportH);
+
+    // 配图安全区 395x330，顶边对齐
+    const imageBox = { x: 100, y: 133, w: 395, h: 330 };
+    if (imageImg && imageImg.width) {
+        membershipChannelCardExportCtx.save();
+        membershipChannelCardExportCtx.beginPath();
+        membershipChannelCardExportCtx.rect(imageBox.x, imageBox.y, imageBox.w, imageBox.h);
+        membershipChannelCardExportCtx.clip();
+        const scale = Math.min(imageBox.w / imageImg.width, imageBox.h / imageImg.height);
+        const drawW = imageImg.width * scale;
+        const drawH = imageImg.height * scale;
+        const drawX = imageBox.x + (imageBox.w - drawW) / 2;
+        const drawY = imageBox.y;
+        drawSharpenedImage(membershipChannelCardExportCtx, imageImg, drawX, drawY, drawW, drawH, 0.3);
+        membershipChannelCardExportCtx.restore();
+    }
+
+    const textX = 566;
+    const textColor = '#074400';
+    membershipChannelCardExportCtx.textAlign = 'left';
+    membershipChannelCardExportCtx.textBaseline = 'top';
+
+    // 第一行 副标题：方正兰亭黑 39.66px，Top 142.19，≤9字
+    membershipChannelCardExportCtx.fillStyle = textColor;
+    membershipChannelCardExportCtx.font = 'normal 39.66px "FZLanTingHeiS-R-GB", "FZLanTingHeiS-R", sans-serif';
+    membershipChannelCardExportCtx.fillText(membershipChannelCardSub?.value || '', textX, 142.19);
+
+    // 第二、三行 主标题：方正兰亭中黑 66.11px，2 行独立
+    membershipChannelCardExportCtx.fillStyle = textColor;
+    membershipChannelCardExportCtx.font = 'normal 66.11px "FZLanTingHeiS-DB-GB", "FZLanTingHeiS-DB", sans-serif';
+    const titleLines = [membershipChannelCardTitle?.value || '', membershipChannelCardTitleLine2?.value || ''];
+    const titleTops = [199.79, 285.73];
+    titleLines.forEach((line, idx) => {
+        if (line) membershipChannelCardExportCtx.fillText(line, textX, titleTops[idx]);
+    });
+
+    // 第四行 描边按钮：W254.99 H77.44 Top391.52 Left566 Radius46.28 Border2.83 #074400
+    const btnX = 566;
+    const btnY = 391.52;
+    const btnW = 254.99;
+    const btnH = 77.44;
+    const btnRadius = 46.28;
+    const btnBorder = 2.83;
+    const innerW = btnW - btnBorder;
+    const innerH = btnH - btnBorder;
+    const btnDrawRadius = Math.min(btnRadius, innerW / 2, innerH / 2);
+    membershipChannelCardExportCtx.save();
+    membershipChannelCardExportCtx.lineWidth = btnBorder;
+    membershipChannelCardExportCtx.strokeStyle = textColor;
+    drawRoundRect(membershipChannelCardExportCtx, btnX + btnBorder / 2, btnY + btnBorder / 2, innerW, innerH, btnDrawRadius);
+    membershipChannelCardExportCtx.stroke();
+    membershipChannelCardExportCtx.restore();
+
+    // 按钮字：方正兰亭中黑 45.33px，基于按钮居中，≤3字
+    membershipChannelCardExportCtx.fillStyle = textColor;
+    membershipChannelCardExportCtx.font = 'normal 45.33px "FZLanTingHeiS-DB-GB", "FZLanTingHeiS-DB", sans-serif';
+    membershipChannelCardExportCtx.textAlign = 'center';
+    membershipChannelCardExportCtx.textBaseline = 'middle';
+    membershipChannelCardExportCtx.fillText(membershipChannelCardBtnText?.value || '', btnX + btnW / 2, btnY + btnH / 2 + 1);
+
+    const pageImg = await loadImage(config.membershipChannelCardPage);
+    if (pageImg && pageImg.width) {
+        membershipChannelCardPageCanvas.width = pageImg.width;
+        membershipChannelCardPageCanvas.height = pageImg.height;
+        setupHighQualityContext(membershipChannelCardPageCtx);
+        membershipChannelCardPageCtx.clearRect(0, 0, membershipChannelCardPageCanvas.width, membershipChannelCardPageCanvas.height);
+        membershipChannelCardPageCtx.drawImage(pageImg, 0, 0);
+        // 预览图位置与圆角（导出切图本身无圆角）
+        const drawX = 36.74;
+        const drawY = 852.06;
+        const drawW = exportW;
+        const drawH = exportH;
+        membershipChannelCardPageCtx.save();
+        drawRoundRect(membershipChannelCardPageCtx, drawX, drawY, drawW, drawH, 49.46);
+        membershipChannelCardPageCtx.clip();
+        membershipChannelCardPageCtx.drawImage(membershipChannelCardExportCanvas, drawX, drawY, drawW, drawH);
+        membershipChannelCardPageCtx.restore();
+        membershipChannelCardPageCanvas._bannerBBox = { x: drawX, y: drawY, w: drawW, h: drawH };
+    }
+}
+const TIER_BASED_REWARDS_LAYOUTS = {
+    tierBasedRewardsProductImagesPage1: {
+        pageSrc: config.tierBasedRewardsProductImagesPage1,
+        pageCanvasId: 'tierBasedRewardsProductImagesPage1Canvas',
+        pageCtxId: 'tierBasedRewardsProductImagesPage1Ctx',
+        pageBox: { x: 936, y: 600, w: 108, h: 108 },
+        imageBox: { x: 945.79, y: 610.42, w: 88.42, h: 88.42 },
+        pageWidth: 1170,
+        pageHeight: 2532
+    },
+    tierBasedRewardsProductImagesPage2: {
+        pageSrc: config.tierBasedRewardsProductImagesPage2,
+        pageCanvasId: 'tierBasedRewardsProductImagesPage2Canvas',
+        pageCtxId: 'tierBasedRewardsProductImagesPage2Ctx',
+        pageBox: { x: 56, y: 1862, w: 188, h: 188 },
+        imageBox: { x: 72.95, y: 1880.04, w: 153.1, h: 153.1 },
+        pageWidth: 1170,
+        pageHeight: 2533
+    },
+    tierBasedRewardsProductImagesPage3: {
+        pageSrc: config.tierBasedRewardsProductImagesPage3,
+        pageCanvasId: 'tierBasedRewardsProductImagesPage3Canvas',
+        pageCtxId: 'tierBasedRewardsProductImagesPage3Ctx',
+        pageBox: { x: 35, y: 1676, w: 342, h: 342 },
+        imageBox: { x: 66, y: 1709, w: 280, h: 280 },
+        pageWidth: 1170,
+        pageHeight: 2532
+    }
+};
+async function renderTierBasedRewardsProductImagesCanvas() {
+    if (!tierBasedRewardsProductImagesExportCanvas || !tierBasedRewardsProductImagesExportCtx) return;
+    const defaultImg = await loadImage(config.tierBasedRewardsProductImagesImage);
+    const iconImg = userImgObj || defaultImg;
+    const exportSize = 342;
+    tierBasedRewardsProductImagesExportCanvas.width = exportSize;
+    tierBasedRewardsProductImagesExportCanvas.height = exportSize;
+    setupHighQualityContext(tierBasedRewardsProductImagesExportCtx);
+    tierBasedRewardsProductImagesExportCtx.clearRect(0, 0, exportSize, exportSize);
+    if (iconImg && iconImg.width) {
+        drawContainedImage(tierBasedRewardsProductImagesExportCtx, iconImg, { x: 31, y: 33, w: 280, h: 280 });
+    }
+
+    for (const [pageKey, layout] of Object.entries(TIER_BASED_REWARDS_LAYOUTS)) {
+        const pageCanvas = document.getElementById(layout.pageCanvasId);
+        const pageCtx = document.getElementById(layout.pageCtxId)?.getContext('2d') || pageCanvas?.getContext('2d');
+        if (!pageCanvas || !pageCtx) continue;
+        const pageImg = await loadImage(layout.pageSrc);
+        const pageW = pageImg?.width || layout.pageWidth;
+        const pageH = pageImg?.height || layout.pageHeight;
+        pageCanvas.width = pageW;
+        pageCanvas.height = pageH;
+        setupHighQualityContext(pageCtx);
+        pageCtx.clearRect(0, 0, pageW, pageH);
+        if (pageImg && pageImg.width) {
+            pageCtx.drawImage(pageImg, 0, 0, pageW, pageH);
+        } else {
+            pageCtx.fillStyle = '#F5F6FA';
+            pageCtx.fillRect(0, 0, pageW, pageH);
+        }
+        if (iconImg && iconImg.width) {
+            drawContainedImage(pageCtx, iconImg, layout.imageBox);
+        }
+        pageCanvas._bannerBBox = { x: layout.pageBox.x, y: layout.pageBox.y, w: layout.pageBox.w, h: layout.pageBox.h };
     }
 }
 async function build1182Banner(opts) {
@@ -2661,6 +2911,8 @@ async function renderActiveBusinessCanvases() {
     if (renderedPages.myPage) await renderMyPage();
     if (renderedPages.feed) await renderFeedCanvas();
     if (renderedPages.videoAudioShare) await renderVideoAudioShareCanvas();
+    if (renderedPages.membershipChannelCard) await renderMembershipChannelCardCanvas();
+    if (renderedPages.tierBasedRewardsProductImages) await renderTierBasedRewardsProductImagesCanvas();
     if (renderedPages.membersChannelPage1) await renderMembersChannelPage1Canvas();
     if (renderedPages.membersChannelPage2) await renderMembersChannelPage2Canvas();
     if (renderedPages.membersChannelPage3) await renderMembersChannelPage3Canvas();
@@ -2676,6 +2928,8 @@ async function renderResourceCanvases(resources, options = {}) {
         else if (resource === 'na_mypage') { await renderMyPage(); renderedPages.myPage = true; }
         else if (resource === 'na_feed') { await renderFeedCanvas(); renderedPages.feed = true; }
         else if (resource === 'dev_1_1_11') { await renderVideoAudioShareCanvas(); renderedPages.videoAudioShare = true; }
+        else if (resource === 'dev_1_1_15') { await renderMembershipChannelCardCanvas(); renderedPages.membershipChannelCard = true; }
+        else if (resource === 'dev_1_1_12') { await renderTierBasedRewardsProductImagesCanvas(); renderedPages.tierBasedRewardsProductImages = true; }
         else if (resource === 'dev_1_1_9') {
             await renderMembersChannelPage1Canvas();
             await renderMembersChannelPage2Canvas();
@@ -2700,8 +2954,8 @@ async function renderResourceCanvases(resources, options = {}) {
 async function switchResourceView(selected, options = {}) {
     activeResourceValue = selected || null;
     if (!options.preserveAiResult) clearAiResultPreviewState();
-    [homeControls, myPageControls, feedControls, videoAudioShareControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, videoAudioShareView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, videoAudioShareControls, membershipChannelCardControls, tierBasedRewardsProductImagesControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, videoAudioShareView, membershipChannelCardView, tierBasedRewardsProductImagesView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.flexWrap = 'nowrap'; container.style.alignItems = 'center'; container.style.gap = '0px';
@@ -2711,7 +2965,7 @@ async function switchResourceView(selected, options = {}) {
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
-    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
+    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_15', 'dev_1_1_12', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
@@ -2722,6 +2976,12 @@ async function switchResourceView(selected, options = {}) {
     } else if (selected === 'dev_1_1_11') {
         videoAudioShareControls.classList.add('active'); videoAudioShareView.classList.add('active');
         if (!renderedPages.videoAudioShare) { await renderVideoAudioShareCanvas(); renderedPages.videoAudioShare = true; }
+    } else if (selected === 'dev_1_1_15') {
+        membershipChannelCardControls?.classList.add('active'); membershipChannelCardView?.classList.add('active');
+        if (!renderedPages.membershipChannelCard) { await renderMembershipChannelCardCanvas(); renderedPages.membershipChannelCard = true; }
+    } else if (selected === 'dev_1_1_12') {
+        tierBasedRewardsProductImagesControls.classList.add('active'); tierBasedRewardsProductImagesView.classList.add('active');
+        if (!renderedPages.tierBasedRewardsProductImages) { await renderTierBasedRewardsProductImagesCanvas(); renderedPages.tierBasedRewardsProductImages = true; }
     } else if (selected === 'na_mypage') {
         myPageControls.classList.add('active'); myPageView.classList.add('active');
         if (!renderedPages.myPage) { await renderMyPage(); renderedPages.myPage = true; }
@@ -2782,7 +3042,7 @@ function setActiveBusinessLine(bu, options = {}) {
     } else {
         document.documentElement.style.setProperty('--primary-color', '#87B4FF');
         wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');
-        [homeView, myPageView, feedView, videoAudioShareView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+        [homeView, myPageView, feedView, videoAudioShareView, tierBasedRewardsProductImagesView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     }
 }
 buBtns.forEach(btn => {
@@ -2819,6 +3079,12 @@ function openDetailModal(targetType) {
     } else if (targetType === 'videoAudioShare') {
         detailModalTitle.innerText = 'A1.1.11 NA - 视频/音频/共享页右上icon - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (114x114)</div><img src="${videoAudioShareExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'membershipChannelCard') {
+        detailModalTitle.innerText = 'A1.1.15 NA - 会员频道大卡 - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (1092x597)</div><img src="${membershipChannelCardExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'tierBasedRewardsProductImages') {
+        detailModalTitle.innerText = 'A1.1.12 NA - 等级福利商品图 - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (342x342)</div><img src="${tierBasedRewardsProductImagesExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'searchIcon') {
         detailModalTitle.innerText = '搜索框 icon - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (204x204)</div><img src="${searchIconExportCanvas.toDataURL()}" style="max-height: 204px; width: auto; border: 1px dashed #ccc;">`;
@@ -2891,6 +3157,10 @@ textCapsuleInput?.addEventListener('input', renderMyPage);
 myPageTitle?.addEventListener('input', renderMyPage);
 myPageHighlight?.addEventListener('input', renderMyPage);
 myPageSubtitle?.addEventListener('input', renderMyPage);
+membershipChannelCardTitle?.addEventListener('input', renderMembershipChannelCardCanvas);
+membershipChannelCardTitleLine2?.addEventListener('input', renderMembershipChannelCardCanvas);
+membershipChannelCardSub?.addEventListener('input', renderMembershipChannelCardCanvas);
+membershipChannelCardBtnText?.addEventListener('input', renderMembershipChannelCardCanvas);
 topBgModeRadios.forEach(r => r.addEventListener('change', async e => {
     currentTopBgMode = e.target.value; topBgModeImage.classList.add('hidden'); topBgModeGradient.classList.add('hidden'); topBgModeSolid.classList.add('hidden');
     if (currentTopBgMode === 'image') topBgModeImage.classList.remove('hidden'); else if (currentTopBgMode === 'gradient') topBgModeGradient.classList.remove('hidden'); else if (currentTopBgMode === 'solid') topBgModeSolid.classList.remove('hidden');
@@ -3091,6 +3361,16 @@ function autoSelectExportItems() {
             if (document.getElementById(id)) document.getElementById(id).checked = true;
         });
     }
+    if (document.getElementById('membershipChannelCardView')?.classList.contains('active')) {
+        ['chkMembershipChannelCardExport', 'chkMembershipChannelCardPageExport'].forEach(id => {
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
+    if (document.getElementById('tierBasedRewardsProductImagesView')?.classList.contains('active')) {
+        ['chkTierBasedRewardsProductImagesExport', 'chkTierBasedRewardsProductImagesPage1Export', 'chkTierBasedRewardsProductImagesPage2Export', 'chkTierBasedRewardsProductImagesPage3Export'].forEach(id => {
+            if (document.getElementById(id)) document.getElementById(id).checked = true;
+        });
+    }
     if (document.getElementById('searchIconView')?.classList.contains('active')) {
         ['chkSearchIconExport', 'chkSearchPageExport'].forEach(id => {
             if (document.getElementById(id)) document.getElementById(id).checked = true;
@@ -3260,6 +3540,12 @@ function initExportModal() {
             await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
             if (document.getElementById('chkVideoAudioShareIconExport')?.checked && videoAudioShareExportCanvas) bannerFolder.file(`视频音频共享页-右上icon独立切图(114x114).png`, await canvasToBlob(videoAudioShareExportCanvas));
             if (document.getElementById('chkVideoAudioSharePageExport')?.checked && videoAudioSharePageCanvas) previewFolder.file(`视频音频共享页-页面预览.png`, await canvasToBlob(videoAudioSharePageCanvas));
+            if (document.getElementById('chkMembershipChannelCardExport')?.checked && membershipChannelCardExportCanvas) bannerFolder.file(`会员频道大卡-独立切图(1092x597).png`, await canvasToBlob(membershipChannelCardExportCanvas));
+            if (document.getElementById('chkMembershipChannelCardPageExport')?.checked && membershipChannelCardPageCanvas) previewFolder.file(`会员频道大卡-页面预览.png`, await canvasToBlob(membershipChannelCardPageCanvas));
+            if (document.getElementById('chkTierBasedRewardsProductImagesExport')?.checked && tierBasedRewardsProductImagesExportCanvas) bannerFolder.file(`等级福利商品图-独立切图(342x342).png`, await canvasToBlob(tierBasedRewardsProductImagesExportCanvas));
+            if (document.getElementById('chkTierBasedRewardsProductImagesPage1Export')?.checked && tierBasedRewardsProductImagesPage1Canvas) previewFolder.file(`等级福利商品图-页面1预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage1Canvas));
+            if (document.getElementById('chkTierBasedRewardsProductImagesPage2Export')?.checked && tierBasedRewardsProductImagesPage2Canvas) previewFolder.file(`等级福利商品图-页面2预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage2Canvas));
+            if (document.getElementById('chkTierBasedRewardsProductImagesPage3Export')?.checked && tierBasedRewardsProductImagesPage3Canvas) previewFolder.file(`等级福利商品图-页面3预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage3Canvas));
 
             if (document.getElementById('chkMembersChannelPage1Banner')?.checked && membersChannelPage1ExportCanvas) bannerFolder.file(`会员频道下拉2楼-单列-独立切图.png`, await canvasToBlob(membersChannelPage1ExportCanvas));
             if (document.getElementById('chkMembersChannelPage1Page')?.checked && membersChannelPage1Canvas) previewFolder.file(`会员频道下拉2楼-单列-页面预览.png`, await canvasToBlob(membersChannelPage1Canvas));

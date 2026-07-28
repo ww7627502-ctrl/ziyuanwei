@@ -192,6 +192,41 @@
                     </div>
                 </div>
 
+                <div id="membershipChannelCardView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看纯净版大图 (1092x597)
+                    </div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">会员频道大卡 <span style="color:#258AFF;font-size:12px;">【A级】</span></div>
+                            <canvas id="membershipChannelCardPageCanvas" class="phone-canvas zoomable-canvas" data-target="membershipChannelCard"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tierBasedRewardsProductImagesView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看对应纯净版切图
+                    </div>
+                    <div class="preview-grid flex-center tier-based-rewards-grid">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">等级福利商品图 - 页面1</div>
+                            <canvas id="tierBasedRewardsProductImagesPage1Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="tierBasedRewardsProductImages"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">等级福利商品图 - 页面2</div>
+                            <canvas id="tierBasedRewardsProductImagesPage2Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="tierBasedRewardsProductImages"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">等级福利商品图 - 页面3</div>
+                            <canvas id="tierBasedRewardsProductImagesPage3Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="tierBasedRewardsProductImages"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
                         提示：点击下方手机预览图可查看纯净版切图</div>
@@ -747,6 +782,66 @@
                     </div>
                 </div>
 
+                <div id="membershipChannelCardControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">会员频道大卡 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                预览图保持圆角，导出切图为 1092x597 直角版本，背景渐变固定为 #F4F476 → #83FFE6。<br>
+                                配图安全区 395x330（顶边对齐），背景边距较大不可填充重视觉元素。
+                            </div>
+                            <div class="input-group" style="margin-top: 12px;">
+                                <span style="margin-bottom: 4px; display: block;">主标题第1行 (≤6字):</span>
+                                <input type="text" id="membershipChannelCardTitle" value="SVIP月卡" maxlength="6">
+                            </div>
+                            <div class="input-group">
+                                <span style="margin-bottom: 4px; display: block;">主标题第2行 (≤6字):</span>
+                                <input type="text" id="membershipChannelCardTitleLine2" value="福利" maxlength="6">
+                            </div>
+                            <div class="input-group">
+                                <span style="margin-bottom: 4px; display: block;">副标题 (≤9字):</span>
+                                <input type="text" id="membershipChannelCardSub" value="限时领取会员好礼" maxlength="9">
+                            </div>
+                            <div class="input-group">
+                                <span style="margin-bottom: 4px; display: block;">按钮文案 (≤3字):</span>
+                                <input type="text" id="membershipChannelCardBtnText" value="去领取" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tierBasedRewardsProductImagesControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">等级福利商品图 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】本资源位仅需一张配图。<br>
+                                👉 请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                系统会自动按三张页面中的不同位置等比适配，并生成 342x342 纯净切图。
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tierBasedRewardsProductImagesPage1ControlPanel" class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">等级福利商品图 - 页面1</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">外层范围：x 936 / y 600，大小：108 × 108<br>图片内框：x 945.79 / y 610.42，大小：88.42 × 88.42</div>
+                        </div>
+                    </div>
+                    <div id="tierBasedRewardsProductImagesPage2ControlPanel" class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">等级福利商品图 - 页面2</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">外层范围：x 56 / y 1862，大小：188 × 188<br>图片内框：x 72.95 / y 1880.04，大小：153.1 × 153.1</div>
+                        </div>
+                    </div>
+                    <div id="tierBasedRewardsProductImagesPage3ControlPanel" class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">等级福利商品图 - 页面3</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">外层范围：x 35 / y 1676，大小：342 × 342<br>图片内框：x 66 / y 1709，大小：280 × 280</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="searchIconControls" class="control-group">
                     <div class="panel-group">
                         <div class="panel-group-header">搜索框 icon 配置</div>
@@ -1146,6 +1241,9 @@
         <canvas id="membersChannelPage2ExportCanvas"></canvas>
         <canvas id="membersChannelPage3ExportCanvas"></canvas>
         <canvas id="videoAudioShareExportCanvas"></canvas>
+        <canvas id="membershipChannelCardExportCanvas"></canvas>
+
+        <canvas id="tierBasedRewardsProductImagesExportCanvas"></canvas>
         <canvas id="searchIconExportCanvas"></canvas>
         <canvas id="mySpaceExportCanvas"></canvas>
         <canvas id="simpleScanExportCanvas"></canvas>
@@ -1228,6 +1326,29 @@
                         (114x114)</label>
                     <label><input type="checkbox" id="chkVideoAudioSharePageExport" class="export-item-chk" checked>
                         右上icon-页面预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.15 NA - 会员频道大卡 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkMembershipChannelCardExport" class="export-item-chk" checked> 大卡-独立切图
+                        (1092x597)</label>
+                    <label><input type="checkbox" id="chkMembershipChannelCardPageExport" class="export-item-chk" checked>
+                        大卡-页面预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.12 NA - 等级福利商品图 <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
+                        【A级资源】导出为 342×342 留白版切图，图片不会顶满外框。
+                    </div>
+                    <label><input type="checkbox" id="chkTierBasedRewardsProductImagesExport" class="export-item-chk" checked>
+                        等级福利商品图-独立切图 (342x342，留白版)</label>
+                    <label><input type="checkbox" id="chkTierBasedRewardsProductImagesPage1Export" class="export-item-chk" checked>
+                        等级福利商品图-页面1预览</label>
+                    <label><input type="checkbox" id="chkTierBasedRewardsProductImagesPage2Export" class="export-item-chk" checked>
+                        等级福利商品图-页面2预览</label>
+                    <label><input type="checkbox" id="chkTierBasedRewardsProductImagesPage3Export" class="export-item-chk" checked>
+                        等级福利商品图-页面3预览</label>
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"

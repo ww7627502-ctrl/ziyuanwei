@@ -537,6 +537,28 @@ body {
     max-height: none;
 }
 
+.tier-based-rewards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 28px;
+    width: 100%;
+    overflow: visible;
+    padding: 0 12px 12px;
+    box-sizing: border-box;
+}
+
+.tier-based-rewards-grid .preview-card {
+    width: 100%;
+    min-width: 0;
+}
+
+.tier-based-rewards-grid .phone-canvas {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+}
+
 .text-center {
     text-align: center !important;
 }
