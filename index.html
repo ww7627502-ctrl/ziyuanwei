@@ -1414,6 +1414,14 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // 注册 Service Worker：二次加载资源走本地缓存，避免每次都慢慢下载
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+    </script>
 </body>
 
 </html>
