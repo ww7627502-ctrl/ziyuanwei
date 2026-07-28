@@ -1,0 +1,9 @@
+# Cloudflare Pages 缓存规则
+# 图片等静态资源长期缓存，浏览器无需每次回源验证，二次访问秒开。
+# 更新了某张图想立刻生效时，改动 sw.js 的缓存版本号即可（Service Worker 会后台刷新）。
+/assets/*
+  Cache-Control: public, max-age=2592000
+
+# 字体、svg 图标同理
+/*.svg
+  Cache-Control: public, max-age=2592000

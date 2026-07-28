@@ -1,6 +1,6 @@
 // 资源缓存 Service Worker：首次访问后，图片/脚本/样式走本地缓存，二次加载秒开。
 // 换了资源想强制刷新时，把 CACHE 版本号 +1 即可。
-const CACHE = 'ziyuanwei-v1';
+const CACHE = 'ziyuanwei-v2';
 const CORE = ['./', './index.html', './script.js', './style.css'];
 
 self.addEventListener('install', (e) => {
