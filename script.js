@@ -23,9 +23,9 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_16', text: '【A级】A1.1.16 NA - 我的空间/简单扫描banner' },
         { value: 'dev_1_1_17', text: '【A级】A1.1.17 NA - 活动中心' },
         { value: 'dev_1_1_18', text: '【A级】A1.1.18 NA - 共享点对点' },
-        { value: 'dev_1_1_19', text: 'A1.1.19 NA - 共享点对点icon（push）' },
-        { value: 'dev_1_1_20', text: 'A1.1.20 NA - 网盘商城feed流长banner' },
-        { value: 'dev_1_1_21', text: 'A1.1.21 NA - 商城feed流宽banner' },
+        { value: 'dev_1_1_19', text: '【A级】A1.1.19 NA - 共享点对点icon（push）' },
+        { value: 'dev_1_1_20', text: '【A级】A1.1.20 NA - 网盘商城feed流长banner' },
+        { value: 'dev_1_1_21', text: '【A级】A1.1.21 NA - 商城feed流宽banner' },
         { value: 'dev_1_1_23', text: 'A1.1.23 NA - 支付结果页推荐banner' },
         { value: 'dev_1_1_24', text: 'A1.1.24 NA - 付费引导皮肤' },
         { value: 'dev_1_1_25', text: 'A1.1.25 NA - 动因收银台皮肤' },
@@ -83,7 +83,7 @@ const CHUHAI_PAGE_DIRECTORY = {
 };
 const IMPLEMENTED_RESOURCE_PRIORITY = {
     wangpan: {
-        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_11', 'dev_1_1_12', 'dev_1_1_13', 'dev_1_1_15', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18']
+        NA: ['na_home', 'na_feed', 'na_mypage', 'dev_1_1_9', 'dev_1_1_11', 'dev_1_1_12', 'dev_1_1_13', 'dev_1_1_15', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'dev_1_1_19', 'dev_1_1_20', 'dev_1_1_21']
     },
     yike: {
         NA: ['yike_4', 'yike_5', 'yike_7']
@@ -93,6 +93,7 @@ const IMPLEMENTED_RESOURCE_PRIORITY = {
     }
 };
 const TEXT_LIMITS = { homeLine1: 6, homeLine2: 4, capsule: 4, myPageTitle: 9, myPageSubtitle: 8 };
+const SHARED_BANNER_EXAMPLE_IMAGE = 'assets/search-banner-image.png';
 const config = {
     baseUI: 'assets/home-light.jpg', baseUIDark: 'assets/home-dark.png',
     topHomePageUI: 'assets/top-of-the-home-page.png',
@@ -110,9 +111,19 @@ const config = {
     membersChannelPage1: 'assets/members-only-channel-page1.jpg', membersChannelPage2: 'assets/members-only-channel-page2.jpg', membersChannelPage3: 'assets/members-only-channel-page3.jpg',
     membersChannelBanner1: 'assets/members-only-channel-banner1.svg', membersChannelBanner2: 'assets/members-only-channel-banner2.svg', membersChannelBanner3: 'assets/members-only-channel-banner3.svg',
     searchBtSvg: 'assets/search-bt.svg', searchArrowSvg: 'assets/search-arrow.svg',
-    mySpaceExampleImage: 'assets/search-banner-image.png', simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
+    mySpaceExampleImage: SHARED_BANNER_EXAMPLE_IMAGE, simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
     myActivityPage: 'assets/my-activity-enter-banner.jpg', peerSharingPage: 'assets/peer-to-peer-sharing.jpg',
-    peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png',
+    peerSharingExampleImage: 'assets/peer-to-peer-sharing-image.png', peerSharingIconPushPage: 'assets/share-peer-to-peer-icon-push.jpg',
+    peerSharingIconPushExampleImage: SHARED_BANNER_EXAMPLE_IMAGE,
+    mallFeedWideBannerPage1: 'assets/mal-eed-wide-banner-page1.jpg',
+    mallFeedWideBannerPage2: 'assets/mal-eed-wide-banner-page2.jpg',
+    mallFeedWideBannerExampleImage: SHARED_BANNER_EXAMPLE_IMAGE,
+    cloudStoreFeedLongBannerPage: 'assets/long-banner-in-the-cloud-store-feed.jpg',
+    cloudStoreFeedLongBannerBanner: 'assets/long-banner-in-the-cloud-store-feed-banner.png',
+    cloudStoreFeedLongBannerExampleImage: 'assets/long-banner-in-the-cloud-store-feed-image.jpg',
+    paymentResultBannerPage: 'assets/rd-banner-on-the-payment-results-page.jpg',
+    paymentResultBannerColors: { blue: 'assets/rd-blue.svg', green: 'assets/rd-blue-1.svg', purple: 'assets/rd-purple.svg', red: 'assets/rd-red.svg', yelloworange: 'assets/rd-yelloworange.svg' },
+    paymentResultBannerExampleImage: 'assets/membership-channel-card-image.png',
     yikeEquipPage: 'assets/photo-equipment-page.png',
     yikeEquipExampleImage: 'assets/photo-equipment-image.png',
     yikeHomePage: 'assets/photo-home-page.png',
@@ -144,6 +155,10 @@ const membersChannelControls = document.getElementById('membersChannelControls')
 const mySpaceControls = document.getElementById('mySpaceControls');
 const myActivityControls = document.getElementById('myActivityControls');
 const peerSharingControls = document.getElementById('peerSharingControls');
+const peerSharingIconPushControls = document.getElementById('peerSharingIconPushControls');
+const cloudStoreFeedLongBannerControls = document.getElementById('cloudStoreFeedLongBannerControls');
+const mallFeedWideBannerControls = document.getElementById('mallFeedWideBannerControls');
+const paymentResultBannerControls = document.getElementById('paymentResultBannerControls');
 const developingPrompt = document.getElementById('developingPrompt');
 const viewDevelopingPrompt = document.getElementById('viewDevelopingPrompt');
 const homeView = document.getElementById('homeView');
@@ -157,6 +172,10 @@ const membersChannelView = document.getElementById('membersChannelView');
 const mySpaceView = document.getElementById('mySpaceView');
 const myActivityView = document.getElementById('myActivityView');
 const peerSharingView = document.getElementById('peerSharingView');
+const peerSharingIconPushView = document.getElementById('peerSharingIconPushView');
+const cloudStoreFeedLongBannerView = document.getElementById('cloudStoreFeedLongBannerView');
+const mallFeedWideBannerView = document.getElementById('mallFeedWideBannerView');
+const paymentResultBannerView = document.getElementById('paymentResultBannerView');
 const topHomePageCanvas = document.getElementById('topHomePageCanvas'); const topHomePageCtx = topHomePageCanvas?.getContext('2d');
 const lightCanvas = document.getElementById('lightCanvas'); const lightCtx = lightCanvas?.getContext('2d');
 const myPageFullCanvas = document.getElementById('myPageFullCanvas'); const myPageFullCtx = myPageFullCanvas?.getContext('2d');
@@ -177,6 +196,11 @@ const mySpacePageCanvas = document.getElementById('mySpacePageCanvas'); const my
 const simpleScanPageCanvas = document.getElementById('simpleScanPageCanvas'); const simpleScanPageCtx = simpleScanPageCanvas?.getContext('2d');
 const myActivityPageCanvas = document.getElementById('myActivityPageCanvas'); const myActivityPageCtx = myActivityPageCanvas?.getContext('2d');
 const peerSharingPageCanvas = document.getElementById('peerSharingPageCanvas'); const peerSharingPageCtx = peerSharingPageCanvas?.getContext('2d');
+const peerSharingIconPushPageCanvas = document.getElementById('peerSharingIconPushPageCanvas'); const peerSharingIconPushPageCtx = peerSharingIconPushPageCanvas?.getContext('2d');
+const cloudStoreFeedLongBannerPageCanvas = document.getElementById('cloudStoreFeedLongBannerPageCanvas'); const cloudStoreFeedLongBannerPageCtx = cloudStoreFeedLongBannerPageCanvas?.getContext('2d');
+const mallFeedWideBannerPage1Canvas = document.getElementById('mallFeedWideBannerPage1Canvas'); const mallFeedWideBannerPage1Ctx = mallFeedWideBannerPage1Canvas?.getContext('2d');
+const mallFeedWideBannerPage2Canvas = document.getElementById('mallFeedWideBannerPage2Canvas'); const mallFeedWideBannerPage2Ctx = mallFeedWideBannerPage2Canvas?.getContext('2d');
+const paymentResultBannerPageCanvas = document.getElementById('paymentResultBannerPageCanvas'); const paymentResultBannerPageCtx = paymentResultBannerPageCanvas?.getContext('2d');
 const topHomeBannerCanvas = document.getElementById('topHomeBannerCanvas'); const topHomeBannerCtx = topHomeBannerCanvas?.getContext('2d');
 const lightBannerCanvas = document.getElementById('lightBannerCanvas'); const lightBannerCtx = lightBannerCanvas?.getContext('2d');
 const darkBannerCanvas = document.getElementById('darkBannerCanvas'); const darkBannerCtx = darkBannerCanvas?.getContext('2d');
@@ -191,6 +215,10 @@ const mySpaceExportCanvas = document.getElementById('mySpaceExportCanvas'); cons
 const simpleScanExportCanvas = document.getElementById('simpleScanExportCanvas'); const simpleScanExportCtx = simpleScanExportCanvas?.getContext('2d');
 const myActivityExportCanvas = document.getElementById('myActivityExportCanvas'); const myActivityExportCtx = myActivityExportCanvas?.getContext('2d');
 const peerSharingExportCanvas = document.getElementById('peerSharingExportCanvas'); const peerSharingExportCtx = peerSharingExportCanvas?.getContext('2d');
+const peerSharingIconPushExportCanvas = document.getElementById('peerSharingIconPushExportCanvas'); const peerSharingIconPushExportCtx = peerSharingIconPushExportCanvas?.getContext('2d');
+const cloudStoreFeedLongBannerExportCanvas = document.getElementById('cloudStoreFeedLongBannerExportCanvas'); const cloudStoreFeedLongBannerExportCtx = cloudStoreFeedLongBannerExportCanvas?.getContext('2d');
+const mallFeedWideBannerExportCanvas = document.getElementById('mallFeedWideBannerExportCanvas'); const mallFeedWideBannerExportCtx = mallFeedWideBannerExportCanvas?.getContext('2d');
+const paymentResultBannerExportCanvas = document.getElementById('paymentResultBannerExportCanvas'); const paymentResultBannerExportCtx = paymentResultBannerExportCanvas?.getContext('2d');
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
 const homeColorRadios = document.getElementsByName('homeColor'); const myPageColorRadios = document.getElementsByName('myPageColor');
@@ -207,6 +235,9 @@ const feedSubtitleInput = document.getElementById('feedSubtitle'); const feedSub
 const feedBtnTextInput = document.getElementById('feedBtnText');
 const membershipChannelCardTitle = document.getElementById('membershipChannelCardTitle');
 const membershipChannelCardTitleLine2 = document.getElementById('membershipChannelCardTitleLine2');
+const membershipChannelCardBgColor1 = document.getElementById('membershipChannelCardBgColor1');
+const membershipChannelCardBgColor2 = document.getElementById('membershipChannelCardBgColor2');
+const membershipChannelCardTextColor = document.getElementById('membershipChannelCardTextColor');
 const membershipChannelCardSub = document.getElementById('membershipChannelCardSub');
 const membershipChannelCardBtnText = document.getElementById('membershipChannelCardBtnText');
 const membersChannelBtnGrad1 = document.getElementById('membersChannelBtnGrad1'); const membersChannelBtnGrad2 = document.getElementById('membersChannelBtnGrad2');
@@ -227,6 +258,12 @@ const myActivityBtnText = document.getElementById('myActivityBtnText'); const my
 const peerSharingGrad1 = document.getElementById('peerSharingGrad1'); const peerSharingGrad2 = document.getElementById('peerSharingGrad2');
 const peerSharingSub = document.getElementById('peerSharingSub'); const peerSharingTitle1 = document.getElementById('peerSharingTitle1'); const peerSharingTitle2 = document.getElementById('peerSharingTitle2');
 const peerSharingBtnText = document.getElementById('peerSharingBtnText'); const peerSharingSubColor = document.getElementById('peerSharingSubColor'); const peerSharingTitle1Color = document.getElementById('peerSharingTitle1Color'); const peerSharingTitle2Color = document.getElementById('peerSharingTitle2Color'); const peerSharingBtnColor = document.getElementById('peerSharingBtnColor');
+const cloudStoreFeedLongBannerTitle = document.getElementById('cloudStoreFeedLongBannerTitle'); const cloudStoreFeedLongBannerSub = document.getElementById('cloudStoreFeedLongBannerSub'); const cloudStoreFeedLongBannerBtnText = document.getElementById('cloudStoreFeedLongBannerBtnText');
+const mallFeedWideBannerTitle = document.getElementById('mallFeedWideBannerTitle'); const mallFeedWideBannerSub = document.getElementById('mallFeedWideBannerSub'); const mallFeedWideBannerBtnText = document.getElementById('mallFeedWideBannerBtnText');
+const mallFeedWideBannerGrad1 = document.getElementById('mallFeedWideBannerGrad1'); const mallFeedWideBannerGrad2 = document.getElementById('mallFeedWideBannerGrad2');
+const mallFeedWideBannerTitleColor = document.getElementById('mallFeedWideBannerTitleColor'); const mallFeedWideBannerSubColor = document.getElementById('mallFeedWideBannerSubColor'); const mallFeedWideBannerBtnColor = document.getElementById('mallFeedWideBannerBtnColor');
+const paymentResultBannerTitle = document.getElementById('paymentResultBannerTitle'); const paymentResultBannerSub = document.getElementById('paymentResultBannerSub'); const paymentResultBannerBtnText = document.getElementById('paymentResultBannerBtnText');
+const paymentResultBannerColorSelect = document.getElementById('paymentResultBannerColorSelect');
 const yikeEquipView = document.getElementById('yikeEquipView');
 const yikeEquipControls = document.getElementById('yikeEquipControls');
 const yikeEquipPageCanvas = document.getElementById('yikeEquipPageCanvas');
@@ -278,6 +315,9 @@ function getDefaultUploadPreviewSrc(selectedResource = document.querySelector('.
     if (selectedResource === 'dev_1_1_11') return config.videoAudioShareImage;
     if (selectedResource === 'dev_1_1_12') return config.tierBasedRewardsProductImagesImage;
     if (selectedResource === 'dev_1_1_15') return config.membershipChannelCardImage;
+    if (selectedResource === 'dev_1_1_19') return config.peerSharingIconPushExampleImage;
+    if (selectedResource === 'dev_1_1_20') return config.cloudStoreFeedLongBannerExampleImage;
+    if (selectedResource === 'dev_1_1_21') return config.mallFeedWideBannerExampleImage;
     return config.heroImage;
 }
 function syncCurrentBusinessUploadState(selectedResource) {
@@ -289,7 +329,67 @@ function syncCurrentBusinessUploadState(selectedResource) {
 let currentTopBgMode = 'image'; let currentFeedBgMode = 'image';
 let homeColor = 'blue'; let myPageColor = 'blue';
 let currentMySpaceBgMode = 'solid'; let currentSimpleScanBgMode = 'solid';
+let currentPaymentResultBannerColor = 'blue';
 const globalImageCache = {}; const globalSvgTextCache = {};
+async function renderPaymentResultBannerCanvas() {
+    if (!paymentResultBannerPageCanvas || !paymentResultBannerPageCtx || !paymentResultBannerExportCanvas || !paymentResultBannerExportCtx) return;
+    const exportW = 522;
+    const exportH = 240;
+    const imageBox = { x: 25, y: 35, w: 170, h: 170 };
+    const pagePlacement = { x: 30, y: 1878 };
+    const colorKey = paymentResultBannerColorSelect?.value || currentPaymentResultBannerColor || 'blue';
+    currentPaymentResultBannerColor = colorKey;
+    const bannerSrc = config.paymentResultBannerColors[colorKey] || config.paymentResultBannerColors.blue;
+
+    if (!globalImageCache[bannerSrc]) globalImageCache[bannerSrc] = await loadImage(bannerSrc);
+    if (!globalImageCache[config.paymentResultBannerExampleImage]) globalImageCache[config.paymentResultBannerExampleImage] = await loadImage(config.paymentResultBannerExampleImage);
+    if (!globalImageCache[config.paymentResultBannerPage]) globalImageCache[config.paymentResultBannerPage] = await loadImage(config.paymentResultBannerPage);
+
+    const bannerImg = globalImageCache[bannerSrc];
+    const exampleImg = userImgObj || globalImageCache[config.paymentResultBannerExampleImage];
+    const pageImg = globalImageCache[config.paymentResultBannerPage];
+
+    paymentResultBannerExportCanvas.width = exportW;
+    paymentResultBannerExportCanvas.height = exportH;
+    setupHighQualityContext(paymentResultBannerExportCtx);
+    paymentResultBannerExportCtx.clearRect(0, 0, exportW, exportH);
+    if (bannerImg && bannerImg.width) paymentResultBannerExportCtx.drawImage(bannerImg, 0, 0, exportW, exportH);
+    if (exampleImg && exampleImg.width) drawContainedImage(paymentResultBannerExportCtx, exampleImg, imageBox);
+
+    const ctx = paymentResultBannerExportCtx;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    ctx.fillStyle = '#000000';
+    ctx.font = 'normal 39px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+    ctx.fillText(paymentResultBannerTitle?.value || '主标题最多七字', 215, 47);
+    ctx.fillStyle = '#787878';
+    ctx.font = 'normal 33px "FZLanTingHeiS-R-GB", "Microsoft YaHei", sans-serif';
+    ctx.fillText(paymentResultBannerSub?.value || '副标题最多八个字', 215, 97);
+
+    const buttonBox = { x: 215, y: 152, w: 145, h: 47 };
+    ctx.save();
+    ctx.lineWidth = 1.35;
+    ctx.strokeStyle = '#000000';
+    drawRoundRect(ctx, buttonBox.x + ctx.lineWidth / 2, buttonBox.y + ctx.lineWidth / 2, buttonBox.w - ctx.lineWidth, buttonBox.h - ctx.lineWidth, (buttonBox.h - ctx.lineWidth) / 2);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#000000';
+    ctx.font = 'normal 36px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(paymentResultBannerBtnText?.value || '三个字', buttonBox.x + buttonBox.w / 2, buttonBox.y + buttonBox.h / 2);
+
+    if (pageImg && pageImg.width) {
+        paymentResultBannerPageCanvas.width = pageImg.width;
+        paymentResultBannerPageCanvas.height = pageImg.height;
+        setupHighQualityContext(paymentResultBannerPageCtx);
+        paymentResultBannerPageCtx.clearRect(0, 0, pageImg.width, pageImg.height);
+        paymentResultBannerPageCtx.drawImage(pageImg, 0, 0);
+        paymentResultBannerPageCtx.drawImage(paymentResultBannerExportCanvas, 0, 0, exportW, exportH, pagePlacement.x, pagePlacement.y, exportW, exportH);
+        paymentResultBannerPageCanvas._bannerBBox = { x: pagePlacement.x, y: pagePlacement.y, w: exportW, h: exportH };
+    }
+}
 // ==================== ✨ A/B 测试核心状态库与字典映射 ====================
 window.abTestCopies = {};
 window.abTestActiveIndex = {};
@@ -305,6 +405,9 @@ const MODULE_INPUT_MAP = {
     'simpleScan': [{ id: 'simpleScanTitle', key: 'title', limit: 11 }, { id: 'simpleScanSub', key: 'sub', limit: 8 }, { id: 'simpleScanBtnText', key: 'btn', limit: 4 }, { id: 'simpleScanHighlight', key: 'highlight', limit: 6 }],
     'activity': [{ id: 'myActivityTitle1', key: 'title1', limit: 7 }, { id: 'myActivityTitle2', key: 'title2', limit: 7 }, { id: 'myActivitySub', key: 'sub', limit: 8 }, { id: 'myActivityBtnText', key: 'btn', limit: 4 }],
     'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }],
+    'cloudStoreFeedLongBanner': [{ id: 'cloudStoreFeedLongBannerTitle', key: 'title', limit: 8 }, { id: 'cloudStoreFeedLongBannerSub', key: 'sub', limit: 8 }, { id: 'cloudStoreFeedLongBannerBtnText', key: 'btn', limit: 3 }],
+    'mallFeedWideBanner': [{ id: 'mallFeedWideBannerTitle', key: 'title', limit: 8 }, { id: 'mallFeedWideBannerSub', key: 'sub', limit: 8 }, { id: 'mallFeedWideBannerBtnText', key: 'btn', limit: 3 }],
+    'paymentResultBanner': [{ id: 'paymentResultBannerTitle', key: 'title', limit: 7 }, { id: 'paymentResultBannerSub', key: 'sub', limit: 8 }, { id: 'paymentResultBannerBtnText', key: 'btn', limit: 3 }],
     'yikeEquip': [{ id: 'yikeEquipTitle', key: 'title', limit: 9 }, { id: 'yikeEquipSub', key: 'sub', limit: 12 }, { id: 'yikeEquipBtnText', key: 'btn', limit: 4 }],
     'yikeHome': [{ id: 'yikeHomeTitle', key: 'title', limit: 8 }, { id: 'yikeHomeSub', key: 'sub', limit: 11 }, { id: 'yikeHomeSubHighlight', key: 'highlight', limit: 11 }, { id: 'yikeHomeTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeHomeSubColor', key: 'subColor', limit: 7 }, { id: 'yikeHomeSubHighlightColor', key: 'highlightColor', limit: 7 }],
     'yikeCash': [{ id: 'yikeCashTitle', key: 'title', limit: 12 }, { id: 'yikeCashHighlight', key: 'highlight', limit: 12 }, { id: 'yikeCashTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeCashHighlightColor', key: 'highlightColor', limit: 7 }, { id: 'yikeCashGrad1', key: 'grad1', limit: 7 }, { id: 'yikeCashGrad2', key: 'grad2', limit: 7 }],
@@ -315,6 +418,9 @@ const MODULE_RENDER_FNS = {
     'membersChannelPage1': renderMembersChannelPage1Canvas, 'membersChannelPage2': renderMembersChannelPage2Canvas, 'membersChannelPage3': renderMembersChannelPage3Canvas,
     'mySpace': renderMySpaceCanvas, 'simpleScan': renderSimpleScanCanvas,
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
+    'cloudStoreFeedLongBanner': renderCloudStoreFeedLongBannerCanvas,
+    'mallFeedWideBanner': renderMallFeedWideBannerCanvas,
+    'paymentResultBanner': renderPaymentResultBannerCanvas,
     'yikeEquip': renderYikeEquipCanvas, 'yikeHome': renderYikeHomeCanvas,
     'yikeCash': renderYikeCashCanvas
 };
@@ -330,6 +436,9 @@ const AI_RESOURCE_MATCHERS = [
     { resource: 'dev_1_1_16', bu: 'wangpan', label: 'A1.1.16 NA - 我的空间banner', patterns: [/A\s*1\.1\.16/i, /我的空间/i, /任务中心/i, /分享页/i, /分享页\s*\/\s*任务中心/i, /任务中心\s*-?\s*banner/i, /简单扫描/i] },
     { resource: 'dev_1_1_17', bu: 'wangpan', label: 'A1.1.17 NA - 活动中心', patterns: [/A\s*1\.1\.17/i, /活动中心/i, /670\s*[×x*]\s*320/] },
     { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i, /1023\s*[×x*]\s*488/] },
+    { resource: 'dev_1_1_19', bu: 'wangpan', label: 'A1.1.19 NA - 共享点对点icon（push）', patterns: [/A\s*1\.1\.19/i, /共享点对点icon/i, /share[-_\s]?peer[-_\s]?to[-_\s]?peer[-_\s]?icon[-_\s]?push/i, /300\s*[×x*]\s*300/i, /300\s*[×x*]\s*330/i] },
+    { resource: 'dev_1_1_20', bu: 'wangpan', label: 'A1.1.20 NA - 网盘商城feed流长banner', patterns: [/A\s*1\.1\.20/i, /网盘商城\s*feed流长\s*banner/i, /网盘商城\s*feed.*长\s*banner/i, /long[-_\s]?banner[-_\s]?in[-_\s]?the[-_\s]?cloud[-_\s]?store[-_\s]?feed/i, /522\s*[×x*]\s*837/i] },
+    { resource: 'dev_1_1_21', bu: 'wangpan', label: 'A1.1.21 NA - 商城feed流宽banner', patterns: [/A\s*1\.1\.21/i, /商城\s*feed流\s*宽\s*banner/i, /商城\s*feed.*宽\s*banner/i, /mall[-_\s]?feed[-_\s]?wide[-_\s]?banner/i, /mal[-_\s]?eed[-_\s]?wide[-_\s]?banner/i, /522\s*[×x*]\s*336/i, /page\s*1|page\s*2/i] },
     { resource: 'yike_4', bu: 'yike', label: 'B1.1.4 NA - 首页banner', patterns: [/B\s*1\.1\.4/i, /一刻.*首页\s*banner/i, /一刻相册.*首页/i] },
     { resource: 'yike_5', bu: 'yike', label: 'B1.1.5 NA - 设备banner', patterns: [/B\s*1\.1\.5/i, /一刻.*设备\s*banner/i] },
     { resource: 'yike_7', bu: 'yike', label: 'B1.1.7 NA - 收银台banner', patterns: [/B\s*1\.1\.7/i, /一刻.*收银台\s*banner/i, /一刻.*收银台/i] }
@@ -346,6 +455,10 @@ const RESOURCE_VIEW_MAP = {
     dev_1_1_16: 'mySpaceView',
     dev_1_1_17: 'myActivityView',
     dev_1_1_18: 'peerSharingView',
+    dev_1_1_19: 'peerSharingIconPushView',
+    dev_1_1_20: 'cloudStoreFeedLongBannerView',
+    dev_1_1_21: 'mallFeedWideBannerView',
+    dev_1_1_23: 'paymentResultBannerView',
     yike_4: 'yikeHomeView',
     yike_5: 'yikeEquipView',
     yike_7: 'yikeCashView'
@@ -370,6 +483,10 @@ const RESOURCE_CONTROL_MAP = {
     dev_1_1_16: 'mySpaceControls',
     dev_1_1_17: 'myActivityControls',
     dev_1_1_18: 'peerSharingControls',
+    dev_1_1_19: 'peerSharingIconPushControls',
+    dev_1_1_20: 'cloudStoreFeedLongBannerControls',
+    dev_1_1_21: 'mallFeedWideBannerControls',
+    dev_1_1_23: 'paymentResultBannerControls',
     yike_4: 'yikeHomeControls',
     yike_5: 'yikeEquipControls',
     yike_7: 'yikeCashControls'
@@ -385,7 +502,11 @@ const RESOURCE_PREVIEW_TARGET_MAP = {
     tierBasedRewardsProductImagesPage3: 'tierBasedRewardsProductImagesPage3Canvas',
     membersChannelPage1: 'membersChannelPage1Canvas',
     membersChannelPage2: 'membersChannelPage2Canvas',
-    membersChannelPage3: 'membersChannelPage3Canvas'
+    membersChannelPage3: 'membersChannelPage3Canvas',
+    dev_1_1_19: 'peerSharingIconPushPageCanvas',
+    dev_1_1_20: 'cloudStoreFeedLongBannerPageCanvas',
+    dev_1_1_21: 'mallFeedWideBannerView',
+    dev_1_1_23: 'paymentResultBannerPageCanvas'
 };
 const VIEW_RESOURCE_MAP = {
     ...Object.fromEntries(Object.entries(RESOURCE_VIEW_MAP).map(([resource, viewId]) => [viewId, resource])),
@@ -398,7 +519,10 @@ const VIEW_RESOURCE_MAP = {
     tierBasedRewardsProductImagesPage3Canvas: 'tierBasedRewardsProductImagesPage3',
     membersChannelPage1Canvas: 'membersChannelPage1',
     membersChannelPage2Canvas: 'membersChannelPage2',
-    membersChannelPage3Canvas: 'membersChannelPage3'
+    membersChannelPage3Canvas: 'membersChannelPage3',
+    peerSharingIconPushPageCanvas: 'dev_1_1_19',
+    cloudStoreFeedLongBannerPageCanvas: 'dev_1_1_20',
+    paymentResultBannerPageCanvas: 'dev_1_1_23'
 };
 const RESOURCE_LIST_ACTIVE_MAP = {
     homeTop: 'na_home',
@@ -406,6 +530,9 @@ const RESOURCE_LIST_ACTIVE_MAP = {
     dev_1_1_11: 'dev_1_1_11',
     dev_1_1_12: 'dev_1_1_12',
     dev_1_1_15: 'dev_1_1_15',
+    peerSharingIconPushPageCanvas: 'dev_1_1_19',
+    cloudStoreFeedLongBannerPageCanvas: 'dev_1_1_20',
+    paymentResultBannerPageCanvas: 'dev_1_1_23',
     tierBasedRewardsProductImagesPage1: 'dev_1_1_12',
     tierBasedRewardsProductImagesPage2: 'dev_1_1_12',
     tierBasedRewardsProductImagesPage3: 'dev_1_1_12',
@@ -424,6 +551,9 @@ const RESOURCE_EXPORT_CHECKS = {
     dev_1_1_13: ['chkSearchIconExport', 'chkSearchPageExport'],
     dev_1_1_17: ['chkMyActivityExport', 'chkMyActivityPageExport'],
     dev_1_1_18: ['chkPeerSharingExport', 'chkPeerSharingPageExport'],
+    dev_1_1_19: ['chkPeerSharingIconPushExport', 'chkPeerSharingIconPushPageExport'],
+    dev_1_1_20: ['chkCloudStoreFeedLongBannerExport'],
+    dev_1_1_21: ['chkMallFeedWideBannerExport'],
     yike_4: ['chkYikeHomeExport', 'chkYikeHomePageExport'],
     yike_5: ['chkYikeEquipExport', 'chkYikeEquipPageExport'],
     yike_7: ['chkYikeCashExport', 'chkYikeCashPageExport']
@@ -577,7 +707,7 @@ function normalizeHomeCopies(config) {
 }
 function normalizeRecognizedConfig(config) {
     normalizeHomeCopies(config);
-    ['feed', 'mypage', 'myPage', 'mySpace', 'simpleScan', 'yikeEquip', 'membershipChannelCard', 'membersChannelPage1', 'membersChannelPage2', 'membersChannelPage3'].forEach(key => {
+    ['feed', 'mypage', 'myPage', 'mySpace', 'simpleScan', 'cloudStoreFeedLongBanner', 'mallFeedWideBanner', 'yikeEquip', 'membershipChannelCard', 'membersChannelPage1', 'membersChannelPage2', 'membersChannelPage3'].forEach(key => {
         if (Array.isArray(config[key])) config[key].forEach(normalizeTextBannerCopy);
     });
     ['activity', 'peerSharing'].forEach(key => {
@@ -705,6 +835,31 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
     fillSquareBanner('dev_1_1_17', 'activity');
     fillSquareBanner('dev_1_1_18', 'peerSharing');
 
+    if (inferredResources.includes('dev_1_1_19')) fallback.peerSharingIconPush = [{ matched: true }];
+    if (inferredResources.includes('dev_1_1_20')) {
+        const feedLongBannerPatterns = [
+            /(?:网盘商城feed流长banner|long[-_\s]?banner[-_\s]?in[-_\s]?the[-_\s]?cloud[-_\s]?store[-_\s]?feed)[\s\S]{0,240}(?:第一行|主标题|title)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第二行|副标题|sub)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第三行|按钮|btn)[:：]?([^，,。；;\n]{1,10})/i,
+            /(?:第一行|主标题|title)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第二行|副标题|sub)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第三行|按钮|btn)[:：]?([^，,。；;\n]{1,10})/i
+        ];
+        const match = pickFirstTextMatch(normalized, feedLongBannerPatterns);
+        if (match.length >= 3) {
+            fallback.cloudStoreFeedLongBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || '按钮字', 3) }];
+        } else {
+            fallback.cloudStoreFeedLongBanner = [{ title: '主标题最多8个字', sub: '副标题最多8个字', btn: '按钮字' }];
+        }
+    }
+    if (inferredResources.includes('dev_1_1_21')) {
+        const mallWideBannerPatterns = [
+            /(?:商城feed流宽banner|mall[-_\s]?feed[-_\s]?wide[-_\s]?banner|mal[-_\s]?eed[-_\s]?wide[-_\s]?banner)[\s\S]{0,240}(?:第一行|主标题|title)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第二行|副标题|sub)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第三行|按钮|btn)[:：]?([^，,。；;\n]{1,10})/i,
+            /(?:第一行|主标题|title)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第二行|副标题|sub)[:：]?([^，,。；;\n]{1,20})[\s\S]{0,120}(?:第三行|按钮|btn)[:：]?([^，,。；;\n]{1,10})/i
+        ];
+        const match = pickFirstTextMatch(normalized, mallWideBannerPatterns);
+        if (match.length >= 3) {
+            fallback.mallFeedWideBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || '按钮字', 3) }];
+        } else {
+            fallback.mallFeedWideBanner = [{ title: '主标题最多8个字', sub: '副标题最多8个字', btn: '按钮字' }];
+        }
+    }
     if (inferredResources.includes('dev_1_1_13')) fallback.searchIcon = [{ matched: true }];
     return normalizeRecognizedConfig(fallback);
 }
@@ -720,6 +875,9 @@ function applyLocalFallbackConfig(config, fallback) {
     ensureArrayConfig(config, 'mySpace', fallback.mySpace);
     ensureArrayConfig(config, 'activity', fallback.activity);
     ensureArrayConfig(config, 'peerSharing', fallback.peerSharing);
+    ensureArrayConfig(config, 'peerSharingIconPush', fallback.peerSharingIconPush);
+    ensureArrayConfig(config, 'cloudStoreFeedLongBanner', fallback.cloudStoreFeedLongBanner);
+    ensureArrayConfig(config, 'mallFeedWideBanner', fallback.mallFeedWideBanner);
     ensureArrayConfig(config, 'searchIcon', fallback.searchIcon);
 }
 function setLimitedInputValue(inputId, value, limit) {
@@ -828,6 +986,15 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
         setLimitedInputValue('peerSharingSub', first.sub, 8);
         setLimitedInputValue('peerSharingBtnText', first.btn, 4);
         safeRenderABTestSwitcher('peerSharingControls', 'peerSharing');
+    }
+    if (fallbackConfig.mallFeedWideBanner?.length) {
+        const first = fallbackConfig.mallFeedWideBanner[0];
+        window.abTestCopies.mallFeedWideBanner = fallbackConfig.mallFeedWideBanner;
+        window.abTestActiveIndex.mallFeedWideBanner = 0;
+        setLimitedInputValue('mallFeedWideBannerTitle', first.title, 8);
+        setLimitedInputValue('mallFeedWideBannerSub', first.sub, 8);
+        setLimitedInputValue('mallFeedWideBannerBtnText', first.btn, 3);
+        safeRenderABTestSwitcher('mallFeedWideBannerControls', 'mallFeedWideBanner');
     }
 
     const targetBU = getDominantBusinessFromResources(modules);
@@ -1011,6 +1178,7 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
             'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
             'peerSharingGrad1': matchedTheme.grad1, 'peerSharingGrad2': matchedTheme.grad2,
             'peerSharingTitle1Color': '#000000', 'peerSharingTitle2Color': '#000000', 'peerSharingSubColor': '#777777',
+            'membershipChannelCardBgColor1': matchedTheme.grad1, 'membershipChannelCardBgColor2': matchedTheme.grad2, 'membershipChannelCardTextColor': matchedTheme.darkGrad2,
         },
         yike: {
             'yikeEquipGrad1': matchedTheme.grad1, 'yikeEquipGrad2': matchedTheme.grad2,
@@ -1454,10 +1622,12 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
     "simpleScan": [ { "title": "主标题", "highlight": "高亮词", "sub": "副标题", "btn": "按钮文字" } ],
     "activity": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
     "peerSharing": [ { "title1": "中间大字第一行", "title2": "中间大字第二行", "sub": "最上面的副标题", "btn": "最下面的按钮字" } ],
+    "cloudStoreFeedLongBanner": [ { "title": "主标题最多8个字", "sub": "副标题最多8个字", "btn": "按钮字" } ],
     "membersChannelPage1": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "membersChannelPage2": [ { "title": "主标题", "btn": "按钮文字" } ],
     "membersChannelPage3": [ { "title": "主标题", "btn": "按钮文字" } ],
     "searchIcon": [ { "matched": true } ],
+    "peerSharingIconPush": [ { "matched": true } ],
     "yikeHome": [ { "title": "主标题", "sub": "副标题", "highlight": "高亮词", "titleColor": "#000000", "subColor": "#000000", "highlightColor": "#E63F00" } ],
     "yikeEquip": [ { "title": "主标题", "sub": "副标题", "btn": "按钮文字" } ],
     "yikeCash": [ { "title": "主标题", "highlight": "高亮词", "titleColor": "#000000", "highlightColor": "#EE3A31", "grad1": "#FFFAEF", "grad2": "#FEEFBA" } ]
@@ -1511,6 +1681,27 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
         if (config.theme) triggerThemeSwitch(config.theme, getActiveBusinessLineKey());
         if (config.searchIcon && config.searchIcon.length > 0) {
             recognizedModules.add('dev_1_1_13');
+        }
+        if (config.peerSharingIconPush && config.peerSharingIconPush.length > 0) {
+            recognizedModules.add('dev_1_1_19');
+        }
+        if (config.cloudStoreFeedLongBanner && config.cloudStoreFeedLongBanner.length > 0) {
+            recognizedModules.add('dev_1_1_20');
+            window.abTestCopies['cloudStoreFeedLongBanner'] = config.cloudStoreFeedLongBanner; window.abTestActiveIndex['cloudStoreFeedLongBanner'] = 0;
+            const first = config.cloudStoreFeedLongBanner[0];
+            if (first.title) document.getElementById('cloudStoreFeedLongBannerTitle').value = formatAndLimitText(first.title, 8);
+            if (first.sub) document.getElementById('cloudStoreFeedLongBannerSub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('cloudStoreFeedLongBannerBtnText').value = formatAndLimitText(first.btn, 3);
+            safeRenderABTestSwitcher('cloudStoreFeedLongBannerControls', 'cloudStoreFeedLongBanner');
+        }
+        if (config.mallFeedWideBanner && config.mallFeedWideBanner.length > 0) {
+            recognizedModules.add('dev_1_1_21');
+            window.abTestCopies['mallFeedWideBanner'] = config.mallFeedWideBanner; window.abTestActiveIndex['mallFeedWideBanner'] = 0;
+            const first = config.mallFeedWideBanner[0];
+            if (first.title) document.getElementById('mallFeedWideBannerTitle').value = formatAndLimitText(first.title, 8);
+            if (first.sub) document.getElementById('mallFeedWideBannerSub').value = formatAndLimitText(first.sub, 8);
+            if (first.btn) document.getElementById('mallFeedWideBannerBtnText').value = formatAndLimitText(first.btn, 3);
+            safeRenderABTestSwitcher('mallFeedWideBannerControls', 'mallFeedWideBanner');
         }
         if (config.membershipChannelCard && config.membershipChannelCard.length > 0) {
             recognizedModules.add('dev_1_1_15');
@@ -1963,6 +2154,9 @@ async function renderMembershipChannelCardCanvas() {
     const pageImgPromise = loadImage(config.membershipChannelCardPage);
     const defaultImage = await defaultImagePromise;
     const imageImg = userImgObj || defaultImage;
+    const bgColor1 = membershipChannelCardBgColor1?.value || '#F4F476';
+    const bgColor2 = membershipChannelCardBgColor2?.value || '#83FFE6';
+    const textColor = membershipChannelCardTextColor?.value || '#074400';
 
     membershipChannelCardExportCanvas.width = exportW;
     membershipChannelCardExportCanvas.height = exportH;
@@ -1971,9 +2165,9 @@ async function renderMembershipChannelCardCanvas() {
 
     const exportGrad = addTwoStopGradient(
         createGradientByAngle(membershipChannelCardExportCtx, { x: 0, y: 0, w: exportW, h: exportH }, 90),
-        '#F4F476',
+        bgColor1,
         0,
-        '#83FFE6',
+        bgColor2,
         100
     );
     membershipChannelCardExportCtx.fillStyle = exportGrad;
@@ -1996,7 +2190,6 @@ async function renderMembershipChannelCardCanvas() {
     }
 
     const textX = 566;
-    const textColor = '#074400';
     membershipChannelCardExportCtx.textAlign = 'left';
     membershipChannelCardExportCtx.textBaseline = 'top';
 
@@ -2074,6 +2267,7 @@ const TIER_BASED_REWARDS_LAYOUTS = {
         pageCtxId: 'tierBasedRewardsProductImagesPage1Ctx',
         pageBox: { x: 936, y: 600, w: 108, h: 108 },
         imageBox: { x: 945.79, y: 610.42, w: 88.42, h: 88.42 },
+        imageBg: '#FFD9AD',
         pageWidth: 1170,
         pageHeight: 2532
     },
@@ -2083,6 +2277,7 @@ const TIER_BASED_REWARDS_LAYOUTS = {
         pageCtxId: 'tierBasedRewardsProductImagesPage2Ctx',
         pageBox: { x: 56, y: 1862, w: 188, h: 188 },
         imageBox: { x: 72.95, y: 1880.04, w: 153.1, h: 153.1 },
+        imageBg: '#F5F5F5',
         pageWidth: 1170,
         pageHeight: 2533
     },
@@ -2092,6 +2287,7 @@ const TIER_BASED_REWARDS_LAYOUTS = {
         pageCtxId: 'tierBasedRewardsProductImagesPage3Ctx',
         pageBox: { x: 35, y: 1676, w: 342, h: 342 },
         imageBox: { x: 66, y: 1709, w: 280, h: 280 },
+        imageBg: '#FFFFFF',
         pageWidth: 1170,
         pageHeight: 2532
     }
@@ -2127,6 +2323,10 @@ async function renderTierBasedRewardsProductImagesCanvas() {
             pageCtx.fillRect(0, 0, pageW, pageH);
         }
         if (iconImg && iconImg.width) {
+            if (layout.imageBg) {
+                pageCtx.fillStyle = layout.imageBg;
+                pageCtx.fillRect(layout.imageBox.x, layout.imageBox.y, layout.imageBox.w, layout.imageBox.h);
+            }
             drawContainedImage(pageCtx, iconImg, layout.imageBox);
         }
         pageCanvas._bannerBBox = { x: layout.pageBox.x, y: layout.pageBox.y, w: layout.pageBox.w, h: layout.pageBox.h };
@@ -2497,6 +2697,234 @@ async function renderPeerSharingCanvas() {
         }
     }
 }
+async function renderCloudStoreFeedLongBannerCanvas() {
+    if (!cloudStoreFeedLongBannerPageCanvas || !cloudStoreFeedLongBannerPageCtx || !cloudStoreFeedLongBannerExportCanvas || !cloudStoreFeedLongBannerExportCtx) return;
+    const exportW = 522;
+    const exportH = 837;
+    const outerRadius = 30;
+    const safeBox = { x: 0, y: 0, w: 522, h: 522 };
+    const pagePlacement = { x: 46, y: 1021 };
+
+    if (!globalImageCache[config.cloudStoreFeedLongBannerBanner]) {
+        globalImageCache[config.cloudStoreFeedLongBannerBanner] = await loadImage(config.cloudStoreFeedLongBannerBanner);
+    }
+    if (!globalImageCache[config.cloudStoreFeedLongBannerExampleImage]) {
+        globalImageCache[config.cloudStoreFeedLongBannerExampleImage] = await loadImage(config.cloudStoreFeedLongBannerExampleImage);
+    }
+    if (config.cloudStoreFeedLongBannerPage && !globalImageCache[config.cloudStoreFeedLongBannerPage]) {
+        globalImageCache[config.cloudStoreFeedLongBannerPage] = await loadImage(config.cloudStoreFeedLongBannerPage);
+    }
+    const bannerImg = globalImageCache[config.cloudStoreFeedLongBannerBanner];
+    const imageImg = userImgObj || globalImageCache[config.cloudStoreFeedLongBannerExampleImage];
+    const pageImg = config.cloudStoreFeedLongBannerPage ? globalImageCache[config.cloudStoreFeedLongBannerPage] : null;
+    const titleText = cloudStoreFeedLongBannerTitle?.value || '主标题最多8个字';
+    const subText = cloudStoreFeedLongBannerSub?.value || '副标题最多8个字';
+    const btnText = cloudStoreFeedLongBannerBtnText?.value || '按钮字';
+    const drawExportCanvas = (canvas, ctx) => {
+        if (!canvas || !ctx) return;
+        canvas.width = exportW;
+        canvas.height = exportH;
+        setupHighQualityContext(ctx);
+        ctx.clearRect(0, 0, exportW, exportH);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, exportW, exportH);
+        ctx.save();
+        drawRoundRect(ctx, 0, 0, exportW, exportH, outerRadius);
+        ctx.clip();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, exportW, exportH);
+        if (bannerImg && bannerImg.width) {
+            ctx.drawImage(bannerImg, 0, 0, exportW, exportH);
+        } else {
+            ctx.fillStyle = '#FC8825';
+            drawRoundRect(ctx, 24.002, 695.002, 236.998, 85, 42.5);
+            ctx.fill();
+        }
+        if (imageImg && imageImg.width) {
+            drawContainedImage(ctx, imageImg, safeBox);
+        }
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#000000';
+        ctx.font = 'normal 46px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+        ctx.fillText(titleText, 23, 550);
+        ctx.fillStyle = '#FC8825';
+        ctx.font = 'normal 38px "FZLanTingHeiS-R-GB", "Microsoft YaHei", sans-serif';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+        ctx.fillText(subText, 24.99, 621);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'normal 42px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(btnText, 142.5, 737.5);
+        ctx.restore();
+        canvas._bannerBBox = { x: 0, y: 0, w: exportW, h: exportH };
+    };
+    drawExportCanvas(cloudStoreFeedLongBannerExportCanvas, cloudStoreFeedLongBannerExportCtx);
+    if (pageImg && pageImg.width) {
+        cloudStoreFeedLongBannerPageCanvas.width = pageImg.width;
+        cloudStoreFeedLongBannerPageCanvas.height = pageImg.height;
+        setupHighQualityContext(cloudStoreFeedLongBannerPageCtx);
+        cloudStoreFeedLongBannerPageCtx.clearRect(0, 0, pageImg.width, pageImg.height);
+        cloudStoreFeedLongBannerPageCtx.drawImage(pageImg, 0, 0);
+        cloudStoreFeedLongBannerPageCtx.save();
+        drawRoundRect(cloudStoreFeedLongBannerPageCtx, pagePlacement.x, pagePlacement.y, exportW, exportH, outerRadius);
+        cloudStoreFeedLongBannerPageCtx.clip();
+        cloudStoreFeedLongBannerPageCtx.drawImage(cloudStoreFeedLongBannerExportCanvas, 0, 0, exportW, exportH, pagePlacement.x, pagePlacement.y, exportW, exportH);
+        cloudStoreFeedLongBannerPageCtx.restore();
+        cloudStoreFeedLongBannerPageCanvas._bannerBBox = { x: pagePlacement.x, y: pagePlacement.y, w: exportW, h: exportH };
+    } else {
+        drawExportCanvas(cloudStoreFeedLongBannerPageCanvas, cloudStoreFeedLongBannerPageCtx);
+    }
+}
+async function renderMallFeedWideBannerCanvas() {
+    if (!mallFeedWideBannerPage1Canvas || !mallFeedWideBannerPage1Ctx || !mallFeedWideBannerPage2Canvas || !mallFeedWideBannerPage2Ctx || !mallFeedWideBannerExportCanvas || !mallFeedWideBannerExportCtx) return;
+    const exportW = 522;
+    const exportH = 336;
+    const bannerRadius = 28;
+    const imageBox = { x: 313, y: 127, w: 180, h: 180 };
+    const pageBoxes = [
+        { canvas: mallFeedWideBannerPage1Canvas, ctx: mallFeedWideBannerPage1Ctx, pageSrc: config.mallFeedWideBannerPage1, x: 572.26, y: 1195 },
+        { canvas: mallFeedWideBannerPage2Canvas, ctx: mallFeedWideBannerPage2Ctx, pageSrc: config.mallFeedWideBannerPage2, x: 22, y: 1332 }
+    ];
+    const titleText = mallFeedWideBannerTitle?.value || '主标题最多8个字';
+    const subText = mallFeedWideBannerSub?.value || '副标题最多8个字';
+    const btnText = mallFeedWideBannerBtnText?.value || '按钮字';
+    const titleColor = mallFeedWideBannerTitleColor?.value || '#FFFFFF';
+    const subColor = mallFeedWideBannerSubColor?.value || '#FFFFFF';
+    const btnColor = mallFeedWideBannerBtnColor?.value || '#FFFFFF';
+
+    if (!globalImageCache[config.mallFeedWideBannerExampleImage]) {
+        globalImageCache[config.mallFeedWideBannerExampleImage] = await loadImage(config.mallFeedWideBannerExampleImage);
+    }
+    for (const box of pageBoxes) {
+        if (!globalImageCache[box.pageSrc]) globalImageCache[box.pageSrc] = await loadImage(box.pageSrc);
+    }
+    const visualImg = userImgObj || globalImageCache[config.mallFeedWideBannerExampleImage];
+
+    const drawBanner = (ctx) => {
+        if (!ctx) return;
+        mallFeedWideBannerExportCanvas.width = exportW;
+        mallFeedWideBannerExportCanvas.height = exportH;
+        setupHighQualityContext(ctx);
+        ctx.clearRect(0, 0, exportW, exportH);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, exportW, exportH);
+        ctx.save();
+        drawRoundRect(ctx, 0, 0, exportW, exportH, bannerRadius);
+        ctx.clip();
+        const grad = buildGradientFromControls(ctx, { x: 0, y: 0, w: exportW, h: exportH }, {
+            color1Id: 'mallFeedWideBannerGrad1',
+            color2Id: 'mallFeedWideBannerGrad2',
+            angleId: 'mallFeedWideBannerGradAngle',
+            defaultAngle: 90,
+            defaultColor1: '#FF288F',
+            defaultColor2: '#FF993C'
+        });
+        ctx.fillStyle = grad || '#FF288F';
+        ctx.fillRect(0, 0, exportW, exportH);
+        if (visualImg && visualImg.width) {
+            drawContainedImage(ctx, visualImg, imageBox);
+        }
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+        const fitFont = (text, maxWidth, startSize, minSize, fontFamily) => {
+            let size = startSize;
+            const safeText = String(text || '');
+            while (size > minSize) {
+                ctx.font = `normal ${size}px ${fontFamily}`;
+                if (ctx.measureText(safeText).width <= maxWidth) break;
+                size -= 1;
+            }
+            ctx.font = `normal ${size}px ${fontFamily}`;
+        };
+    const titleBox = { x: 29.58, y: 66, w: 272, h: 57.07060623168945 };
+    const subBox = { x: 29.58, y: 131, w: 252, h: 44.054500579833984 };
+    const btnBox = { x: 29.58, y: 217.55, w: 197.75460815429688, h: 61.999996185302734 };
+    const btnTextBox = { x: 73.95, y: 227.8, w: 108, h: 42.052024841308594 };
+    ctx.fillStyle = titleColor;
+    ctx.font = 'normal 48px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    ctx.fillText(titleText, titleBox.x, titleBox.y);
+    ctx.fillStyle = subColor;
+    ctx.font = 'normal 38px "FZLanTingHeiS-R-GB", "Microsoft YaHei", sans-serif';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    ctx.fillText(subText, subBox.x, subBox.y);
+    ctx.save();
+    drawRoundRect(ctx, btnBox.x, btnBox.y, btnBox.w, btnBox.h, Math.min(38.95, btnBox.h / 2, btnBox.w / 2));
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = btnColor;
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = btnColor;
+    ctx.font = 'normal 36px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(btnText, btnTextBox.x + btnTextBox.w / 2, btnTextBox.y + btnTextBox.h / 2 + 0.5);
+        ctx.restore();
+    };
+
+    const drawPagePreview = async ({ canvas, ctx, pageSrc, x, y }) => {
+        if (!canvas || !ctx) return;
+        const pageImg = globalImageCache[pageSrc];
+        canvas.width = pageImg?.width || 1125;
+        canvas.height = pageImg?.height || 2436;
+        setupHighQualityContext(ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (pageImg && pageImg.width) {
+            ctx.drawImage(pageImg, 0, 0);
+        } else {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        ctx.save();
+        drawRoundRect(ctx, x, y, exportW, exportH, bannerRadius);
+        ctx.clip();
+        ctx.drawImage(mallFeedWideBannerExportCanvas, 0, 0, exportW, exportH, x, y, exportW, exportH);
+        ctx.restore();
+        canvas._bannerBBox = { x, y, w: exportW, h: exportH };
+    };
+
+    drawBanner(mallFeedWideBannerExportCtx);
+    await drawPagePreview(pageBoxes[0]);
+    await drawPagePreview(pageBoxes[1]);
+}
+async function renderPeerSharingIconPushCanvas() {
+    if (!peerSharingIconPushPageCanvas || !peerSharingIconPushPageCtx || !peerSharingIconPushExportCanvas || !peerSharingIconPushExportCtx) return;
+    const exportSize = 300;
+    const pageBox = { x: 248, y: 1167, w: 167, h: 167 };
+    if (!globalImageCache[config.peerSharingIconPushExampleImage]) {
+        globalImageCache[config.peerSharingIconPushExampleImage] = await loadImage(config.peerSharingIconPushExampleImage);
+    }
+    if (!globalImageCache[config.peerSharingIconPushPage]) {
+        globalImageCache[config.peerSharingIconPushPage] = await loadImage(config.peerSharingIconPushPage);
+    }
+    const iconImg = userImgObj || globalImageCache[config.peerSharingIconPushExampleImage];
+    const pageImg = globalImageCache[config.peerSharingIconPushPage];
+
+    peerSharingIconPushExportCanvas.width = exportSize;
+    peerSharingIconPushExportCanvas.height = exportSize;
+    setupHighQualityContext(peerSharingIconPushExportCtx);
+    peerSharingIconPushExportCtx.clearRect(0, 0, exportSize, exportSize);
+    if (iconImg && iconImg.width) {
+        drawContainedImage(peerSharingIconPushExportCtx, iconImg, { x: 0, y: 0, w: exportSize, h: exportSize });
+    }
+
+    if (pageImg && pageImg.width) {
+        peerSharingIconPushPageCanvas.width = pageImg.width;
+        peerSharingIconPushPageCanvas.height = pageImg.height;
+        setupHighQualityContext(peerSharingIconPushPageCtx);
+        peerSharingIconPushPageCtx.clearRect(0, 0, peerSharingIconPushPageCanvas.width, peerSharingIconPushPageCanvas.height);
+        peerSharingIconPushPageCtx.drawImage(pageImg, 0, 0);
+        if (iconImg && iconImg.width) {
+            drawContainedImage(peerSharingIconPushPageCtx, iconImg, pageBox);
+        }
+        peerSharingIconPushPageCanvas._bannerBBox = pageBox;
+    }
+}
 function drawContainedImage(ctx, img, box) {
     if (!ctx || !img || !img.width || !box) return;
     ctx.save();
@@ -2684,15 +3112,7 @@ async function renderMembersChannelPage(resourceKey) {
     }
 
     const exampleImg = userImgObj || await loadImage(config.feedExampleImage);
-    if (resourceKey === 'dev_1_1_9_1' && userImgObj) {
-        bannerCtx.save();
-        bannerCtx.fillStyle = '#FFFFFF';
-        bannerCtx.fillRect(layout.imageBox.x, layout.imageBox.y, layout.imageBox.w, layout.imageBox.h);
-        bannerCtx.restore();
-        drawCoveredImage(bannerCtx, exampleImg, layout.imageBox);
-    } else {
-        drawContainedImage(bannerCtx, exampleImg, layout.imageBox);
-    }
+    drawContainedImage(bannerCtx, exampleImg, layout.imageBox);
 
     const titleValue = document.getElementById(layout.titleInput)?.value || '';
     bannerCtx.textAlign = layout.titleBox.align;
@@ -2953,6 +3373,9 @@ async function renderActiveBusinessCanvases() {
     if (renderedPages.mySpace) { await renderMySpaceCanvas(); await renderSimpleScanCanvas(); }
     if (renderedPages.myActivity) await renderMyActivityCanvas();
     if (renderedPages.peerSharing) await renderPeerSharingCanvas();
+    if (renderedPages.peerSharingIconPush) await renderPeerSharingIconPushCanvas();
+    if (renderedPages.cloudStoreFeedLongBanner) await renderCloudStoreFeedLongBannerCanvas();
+    if (renderedPages.mallFeedWideBanner) await renderMallFeedWideBannerCanvas();
 }
 async function renderResourceCanvases(resources, options = {}) {
     const uniqueResources = [...new Set(resources)];
@@ -2979,6 +3402,9 @@ async function renderResourceCanvases(resources, options = {}) {
             renderedPages.mySpace = true;
         } else if (resource === 'dev_1_1_17') { await renderMyActivityCanvas(); renderedPages.myActivity = true; }
         else if (resource === 'dev_1_1_18') { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+        else if (resource === 'dev_1_1_19') { await renderPeerSharingIconPushCanvas(); renderedPages.peerSharingIconPush = true; }
+        else if (resource === 'dev_1_1_20') { await renderCloudStoreFeedLongBannerCanvas(); renderedPages.cloudStoreFeedLongBanner = true; }
+        else if (resource === 'dev_1_1_21') { await renderMallFeedWideBannerCanvas(); renderedPages.mallFeedWideBanner = true; }
         else if (resource === 'yike_4') { await renderYikeHomeCanvas(); renderedPages.yikeHome = true; }
         else if (resource === 'yike_5') { await renderYikeEquipCanvas(); renderedPages.yikeEquip = true; }
         else if (resource === 'yike_7') { await renderYikeCashCanvas(); renderedPages.yikeCash = true; }
@@ -2987,8 +3413,8 @@ async function renderResourceCanvases(resources, options = {}) {
 async function switchResourceView(selected, options = {}) {
     activeResourceValue = selected || null;
     if (!options.preserveAiResult) clearAiResultPreviewState();
-    [homeControls, myPageControls, feedControls, videoAudioShareControls, membershipChannelCardControls, tierBasedRewardsProductImagesControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
-    [homeView, myPageView, feedView, videoAudioShareView, membershipChannelCardView, tierBasedRewardsProductImagesView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, videoAudioShareControls, membershipChannelCardControls, tierBasedRewardsProductImagesControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, peerSharingIconPushControls, cloudStoreFeedLongBannerControls, mallFeedWideBannerControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeView, myPageView, feedView, videoAudioShareView, membershipChannelCardView, tierBasedRewardsProductImagesView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, peerSharingIconPushView, cloudStoreFeedLongBannerView, mallFeedWideBannerView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
     container.style.flexDirection = 'column'; container.style.flexWrap = 'nowrap'; container.style.alignItems = 'center'; container.style.gap = '0px';
@@ -2998,7 +3424,7 @@ async function switchResourceView(selected, options = {}) {
     const scanCard = document.getElementById('simpleScanPageCanvas')?.closest('.preview-card');
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
-    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_15', 'dev_1_1_12', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
+    if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_15', 'dev_1_1_12', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'dev_1_1_19', 'dev_1_1_20', 'dev_1_1_21', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
         baseGlobalPicArea.style.display = 'block';
     } else {
         baseGlobalPicArea.style.display = 'none';
@@ -3038,6 +3464,15 @@ async function switchResourceView(selected, options = {}) {
     } else if (selected === 'dev_1_1_18') {
         peerSharingControls.classList.add('active'); peerSharingView.classList.add('active');
         if (!renderedPages.peerSharing) { await renderPeerSharingCanvas(); renderedPages.peerSharing = true; }
+    } else if (selected === 'dev_1_1_19') {
+        peerSharingIconPushControls.classList.add('active'); peerSharingIconPushView.classList.add('active');
+        if (!renderedPages.peerSharingIconPush) { await renderPeerSharingIconPushCanvas(); renderedPages.peerSharingIconPush = true; }
+    } else if (selected === 'dev_1_1_20') {
+        cloudStoreFeedLongBannerControls?.classList.add('active'); cloudStoreFeedLongBannerView?.classList.add('active');
+        if (!renderedPages.cloudStoreFeedLongBanner) { await renderCloudStoreFeedLongBannerCanvas(); renderedPages.cloudStoreFeedLongBanner = true; }
+    } else if (selected === 'dev_1_1_21') {
+        mallFeedWideBannerControls?.classList.add('active'); mallFeedWideBannerView?.classList.add('active');
+        if (!renderedPages.mallFeedWideBanner) { await renderMallFeedWideBannerCanvas(); renderedPages.mallFeedWideBanner = true; }
 
     } else if (selected === 'yike_4') {
         if (yikeHomeControls) yikeHomeControls.classList.add('active');
@@ -3075,7 +3510,7 @@ function setActiveBusinessLine(bu, options = {}) {
     } else {
         document.documentElement.style.setProperty('--primary-color', '#87B4FF');
         wangpanWorkspace.classList.add('hidden'); emptyWorkspace.classList.remove('hidden');
-        [homeView, myPageView, feedView, videoAudioShareView, tierBasedRewardsProductImagesView, searchIconView, mySpaceView, myActivityView, peerSharingView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
+        [homeView, myPageView, feedView, videoAudioShareView, tierBasedRewardsProductImagesView, searchIconView, mySpaceView, myActivityView, peerSharingView, peerSharingIconPushView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     }
 }
 buBtns.forEach(btn => {
@@ -3145,6 +3580,15 @@ function openDetailModal(targetType) {
     } else if (targetType === 'peerSharing') {
         detailModalTitle.innerText = '共享点对点 Banner - 纯净切图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (670x320)</div><img src="${peerSharingExportCanvas.toDataURL()}" style="max-width: 100%; height: auto;">`;
+    } else if (targetType === 'dev_1_1_19') {
+        detailModalTitle.innerText = 'A1.1.19 NA - 共享点对点icon（push） - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (300x300)</div><img src="${peerSharingIconPushExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'dev_1_1_20') {
+        detailModalTitle.innerText = 'A1.1.20 NA - 网盘商城feed流长banner - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (522x837, JPG)</div><img src="${cloudStoreFeedLongBannerExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'dev_1_1_21') {
+        detailModalTitle.innerText = 'A1.1.21 NA - 商城feed流宽banner - 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'yikeEquip') {
         detailModalTitle.innerText = '设备 Banner - 详情预览';
         detailImagesBox.innerHTML = `
@@ -3190,6 +3634,9 @@ textCapsuleInput?.addEventListener('input', renderMyPage);
 myPageTitle?.addEventListener('input', renderMyPage);
 myPageHighlight?.addEventListener('input', renderMyPage);
 myPageSubtitle?.addEventListener('input', renderMyPage);
+membershipChannelCardBgColor1?.addEventListener('input', renderMembershipChannelCardCanvas);
+membershipChannelCardBgColor2?.addEventListener('input', renderMembershipChannelCardCanvas);
+membershipChannelCardTextColor?.addEventListener('input', renderMembershipChannelCardCanvas);
 membershipChannelCardTitle?.addEventListener('input', renderMembershipChannelCardCanvas);
 membershipChannelCardTitleLine2?.addEventListener('input', renderMembershipChannelCardCanvas);
 membershipChannelCardSub?.addEventListener('input', renderMembershipChannelCardCanvas);
@@ -3428,6 +3875,15 @@ function autoSelectExportItems() {
     if (document.getElementById('peerSharingView')?.classList.contains('active')) {
         ['chkPeerSharingExport', 'chkPeerSharingPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
+    if (document.getElementById('cloudStoreFeedLongBannerView')?.classList.contains('active')) {
+        ['chkCloudStoreFeedLongBannerExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
+    if (document.getElementById('mallFeedWideBannerView')?.classList.contains('active')) {
+        ['chkMallFeedWideBannerExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
+    if (document.getElementById('mallFeedWideBannerView')?.classList.contains('active')) {
+        ['chkMallFeedWideBannerExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
+    }
     if (document.getElementById('yikeEquipView')?.classList.contains('active')) {
         ['chkYikeEquipExport', 'chkYikeEquipPageExport'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).checked = true; });
     }
@@ -3444,6 +3900,22 @@ function autoSelectExportItems() {
 }
 // ==================== 导出 ZIP 与初始化 ====================
 function canvasToBlob(c) { return new Promise((resolve, reject) => { try { c.toBlob(b => { if (b) resolve(b); else reject(new Error("画布已被污染无法生成")); }, 'image/png'); } catch (e) { reject(e); } }); }
+async function canvasToJpegBlob(canvas, maxBytes = 100 * 1024) {
+    const qualities = [0.92, 0.82, 0.72, 0.62, 0.52, 0.42, 0.32];
+    let lastBlob = null;
+    for (const quality of qualities) {
+        const blob = await new Promise((resolve, reject) => {
+            try {
+                canvas.toBlob(b => { if (b) resolve(b); else reject(new Error('画布已被污染无法生成')); }, 'image/jpeg', quality);
+            } catch (e) {
+                reject(e);
+            }
+        });
+        lastBlob = blob;
+        if (!maxBytes || blob.size <= maxBytes) return blob;
+    }
+    return lastBlob;
+}
 const externalScriptPromises = {};
 function loadExternalScriptOnce(src) {
     if (externalScriptPromises[src]) return externalScriptPromises[src];
@@ -3598,6 +4070,12 @@ function initExportModal() {
             let peerSharingRefs = MODULE_INPUT_MAP['peerSharing'];
             await exportCanvasOrMulti('chkPeerSharingExport', peerSharingExportCanvas, `共享点对点-独立切图(670x320)`, 'peerSharing', bannerFolder, peerSharingRefs, renderPeerSharingCanvas);
             await exportCanvasOrMulti('chkPeerSharingPageExport', peerSharingPageCanvas, `共享点对点-页面预览`, 'peerSharing', previewFolder, peerSharingRefs, renderPeerSharingCanvas);
+            await exportCanvasOrMulti('chkPeerSharingIconPushExport', peerSharingIconPushExportCanvas, `共享点对点icon-独立切图(300x300)`, 'peerSharingIconPush', bannerFolder, [], renderPeerSharingIconPushCanvas);
+            await exportCanvasOrMulti('chkPeerSharingIconPushPageExport', peerSharingIconPushPageCanvas, `共享点对点icon-页面预览`, 'peerSharingIconPush', previewFolder, [], renderPeerSharingIconPushCanvas);
+            if (document.getElementById('chkCloudStoreFeedLongBannerExport')?.checked && cloudStoreFeedLongBannerExportCanvas) {
+                await renderCloudStoreFeedLongBannerCanvas();
+                bannerFolder.file(`网盘商城feed流长banner-独立切图(522x837).jpg`, await canvasToJpegBlob(cloudStoreFeedLongBannerExportCanvas));
+            }
 
             let yikeEquipRefs = MODULE_INPUT_MAP['yikeEquip'];
             await exportCanvasOrMulti('chkYikeEquipExport', yikeEquipExportCanvas, `设备-独立切图(1125x270)`, 'yikeEquip', bannerFolder, yikeEquipRefs, renderYikeEquipCanvas);

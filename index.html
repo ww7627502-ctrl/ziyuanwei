@@ -279,6 +279,47 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="peerSharingIconPushView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方手机预览图可查看纯净版切图 (300x300)</div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">共享点对点 icon（push）</div>
+                            <canvas id="peerSharingIconPushPageCanvas" class="phone-canvas zoomable-canvas"
+                                data-target="dev_1_1_19"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cloudStoreFeedLongBannerView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：点击下方预览图可查看纯净版切图 (522x837)</div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">网盘商城 feed 流长 banner</div>
+                            <canvas id="cloudStoreFeedLongBannerPageCanvas" class="phone-canvas zoomable-canvas"
+                                data-target="dev_1_1_20"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mallFeedWideBannerView" class="view-section">
+                    <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
+                        提示：两个页面共用同一个 banner，点击任意预览图可查看纯净版切图 (522x336)</div>
+                    <div class="preview-grid flex-center">
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">商城 feed 流宽 banner - 页面1</div>
+                            <canvas id="mallFeedWideBannerPage1Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="dev_1_1_21"></canvas>
+                        </div>
+                        <div class="preview-card transparent-card">
+                            <div class="card-title text-center">商城 feed 流宽 banner - 页面2</div>
+                            <canvas id="mallFeedWideBannerPage2Canvas" class="phone-canvas zoomable-canvas"
+                                data-target="dev_1_1_21"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -788,8 +829,16 @@
                         <div class="panel-group-body">
                             <div style="font-size: 12px; color: #666; line-height: 1.6;">
                                 【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
-                                预览图保持圆角，导出切图为 1092x597 直角版本，背景渐变固定为 #F4F476 → #83FFE6。<br>
-                                配图安全区 395x330（顶边对齐），背景边距较大不可填充重视觉元素。
+                                预览图保持圆角，导出切图为 1092x597 直角版本。<br>
+                                配图安全区 395x330（顶边对齐），背景渐变和文字颜色可调，背景边距较大不可填充重视觉元素。
+                            </div>
+                            <div class="sidebar-section" style="margin-top: 12px;">
+                                <div class="section-title">配色设置</div>
+                                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                    <div class="color-picker-wrap"><span>背景起始</span><input type="color" id="membershipChannelCardBgColor1" value="#F4F476"></div>
+                                    <div class="color-picker-wrap"><span>背景终止</span><input type="color" id="membershipChannelCardBgColor2" value="#83FFE6"></div>
+                                    <div class="color-picker-wrap"><span>文字/描边</span><input type="color" id="membershipChannelCardTextColor" value="#074400"></div>
+                                </div>
                             </div>
                             <div class="input-group" style="margin-top: 12px;">
                                 <span style="margin-bottom: 4px; display: block;">主标题第1行 (≤6字):</span>
@@ -1220,6 +1269,99 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="peerSharingIconPushControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">共享点对点 icon（push）配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                页面图按 248x1167 位置展示，尺寸 167x167。<br>
+                                导出为 300x300 纯净切图，预览图保持等比缩放不裁剪。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cloudStoreFeedLongBannerControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">网盘商城 feed 流长 banner 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                顶部安全区 522x522，顶边对齐，图片等比缩放不裁剪。<br>
+                                文案颜色固定：第一行黑色，第二行橙色，按钮白字；导出 JPG，尺寸 522x837。
+                            </div>
+                            <div class="sidebar-section" style="margin-top: 12px;">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">第一行 (最多8字):</span>
+                                    <input type="text" id="cloudStoreFeedLongBannerTitle" value="主标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">第二行 (最多8字):</span>
+                                    <input type="text" id="cloudStoreFeedLongBannerSub" value="副标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <span style="margin-bottom: 4px; display: block;">第三行按钮字 (最多3字):</span>
+                                    <input type="text" id="cloudStoreFeedLongBannerBtnText" value="按钮字" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mallFeedWideBannerControls" class="control-group">
+                    <div class="panel-group">
+                        <div class="panel-group-header">商城 feed 流宽 banner 配置</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
+                                【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                                画板尺寸 522x336，主图安全区 180x180 放在 x313, y127。<br>
+                                页面1 位置 x572.26, y1195；页面2 位置 x22, y1332。<br>
+                                背景渐变和字体颜色都可调整，导出 JPG。
+                            </div>
+                            <div class="sidebar-section" style="margin-top: 12px;">
+                                <div class="section-title">背景渐变</div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="mallFeedWideBannerGrad1" value="#FF288F"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="mallFeedWideBannerGrad2" value="#FF993C"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="mallFeedWideBannerGradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="mallFeedWideBannerGradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">第一行 (最多8字):</span>
+                                        <input type="color" id="mallFeedWideBannerTitleColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerTitle" value="主标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">第二行 (最多8字):</span>
+                                        <input type="color" id="mallFeedWideBannerSubColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerSub" value="副标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮字 (最多3字):</span>
+                                        <input type="color" id="mallFeedWideBannerBtnColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerBtnText" value="按钮字" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="developingPrompt" class="developing-prompt hidden">
@@ -1249,6 +1391,9 @@
         <canvas id="simpleScanExportCanvas"></canvas>
         <canvas id="myActivityExportCanvas"></canvas>
         <canvas id="peerSharingExportCanvas"></canvas>
+        <canvas id="peerSharingIconPushExportCanvas"></canvas>
+        <canvas id="cloudStoreFeedLongBannerExportCanvas"></canvas>
+        <canvas id="mallFeedWideBannerExportCanvas"></canvas>
         <canvas id="yikeEquipExportCanvas"></canvas>
         <canvas id="yikeCashExportCanvas"></canvas>
         <canvas id="yikeHomeExportCanvas"></canvas>
@@ -1385,6 +1530,32 @@
                         (670x320)</label>
                     <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked>
                         共享点对点-页面预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.19 NA - 共享点对点icon（push） <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <label><input type="checkbox" id="chkPeerSharingIconPushExport" class="export-item-chk" checked> 共享点对点icon-独立切图
+                        (300x300)</label>
+                    <label><input type="checkbox" id="chkPeerSharingIconPushPageExport" class="export-item-chk" checked>
+                        共享点对点icon-页面预览</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.20 NA - 网盘商城feed流长banner <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
+                        输出尺寸 522×837，顶部安全区 522×522，JPG 导出。
+                    </div>
+                    <label><input type="checkbox" id="chkCloudStoreFeedLongBannerExport" class="export-item-chk" checked>
+                        网盘商城feed流长banner-独立切图 (522x837, JPG)</label>
+                </div>
+                <div class="export-group" data-bu="wangpan">
+                    <div class="export-group-title">A1.1.21 NA - 商城feed流宽banner <span class="export-badge"
+                            style="color:#258AFF;">【A级】</span></div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
+                        输出尺寸 522×336，主图 180×180，JPG 导出。
+                    </div>
+                    <label><input type="checkbox" id="chkMallFeedWideBannerExport" class="export-item-chk" checked>
+                        商城feed流宽banner-独立切图 (522x336, JPG)</label>
                 </div>
 
                 <div class="export-group" data-bu="yike">
