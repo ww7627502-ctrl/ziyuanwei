@@ -12,8 +12,20 @@
 
 <body>
     <svg width="0" height="0" style="position:absolute; width:0; height:0;">
-        <filter id="lightBlueTint">
-            <feColorMatrix type="matrix" values="0.2157 0 0 0 0.7843 0 0.1177 0 0 0.8823 0 0 0 0 1.0 0 0 0 1 0" />
+        <!-- 业务线未选中着色：仅把黑色部分换成浅色，白色字/文案保持白色（按亮度线性映射） -->
+        <!-- 第一排：黑色 → #C8E1FF -->
+        <filter id="lightBlueTint" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.21569 0 0 0 0.78431
+                                                 0 0.11765 0 0 0.88235
+                                                 0 0 0 0 1
+                                                 0 0 0 1 0" />
+        </filter>
+        <!-- 第二排：黑色 → #B6E7DC -->
+        <filter id="mintTint" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.28627 0 0 0 0.71373
+                                                 0 0.09412 0 0 0.90588
+                                                 0 0 0.13725 0 0.86275
+                                                 0 0 0 1 0" />
         </filter>
     </svg>
 

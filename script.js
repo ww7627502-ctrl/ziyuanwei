@@ -2020,9 +2020,16 @@ async function renderMyPage() { await renderMyPageBanner(); await renderMyPageFu
 async function renderMyPageBanner() {
     const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg;
     const drawMyPageMode = async (canvas, ctx, isDark) => {
-        if (!ctx || !canvas) return; const targetColor = isDark ? '#141414' : (myPageColors[myPageColor] || '#F0FBFF'), elementColor = myPageElementColors[myPageColor] || '#0090FF', currentCapsuleColor = isDark ? '#0090FF' : elementColor, banner2Img = await loadImage(config.banner2Svg);
-        canvas.width = banner2Img?.width || 1182; canvas.height = banner2Img?.height || 225; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (banner2Img && banner2Img.width) { ctx.drawImage(banner2Img, 0, 0); } else { ctx.fillStyle = targetColor; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+        if (!ctx || !canvas) return;
+        const targetColor = isDark ? '#141414' : (myPageColors[myPageColor] || '#F0FBFF');
+        const elementColor = myPageElementColors[myPageColor] || '#0090FF';
+        const currentCapsuleColor = isDark ? '#0090FF' : elementColor;
+        canvas.width = 1182;
+        canvas.height = 225;
+        setupHighQualityContext(ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = targetColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
             const capsuleTxt = textCapsuleInput?.value || ''; const titleTxt = myPageTitle?.value || ''; const highlightTxt = myPageHighlight?.value || ''; const subtitleTxt = myPageSubtitle?.value || '';
             ctx.save(); ctx.globalAlpha = 0.15; ctx.fillStyle = currentCapsuleColor; drawRoundRect(ctx, 857, 62, 212, 100, 50); ctx.fill(); ctx.restore();
