@@ -523,10 +523,6 @@ body {
     filter: url(#lightBlueTint);
 }
 
-/* 第二排未选中：黑色部分换成 #B6E7DC */
-.bu-selector-row2 .bu-btn img {
-    filter: url(#mintTint);
-}
 
 .bu-btn:hover {
     transform: translateY(-2px);
