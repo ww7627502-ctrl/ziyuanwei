@@ -1,39 +1,25 @@
-// 资源缓存 Service Worker：首次访问后，图片/脚本/样式走本地缓存，二次加载秒开。
-// 换了资源想强制刷新时，把 CACHE 版本号 +1 即可。
-const CACHE = 'ziyuanwei-v2';
-const CORE = ['./', './index.html', './script.js', './style.css'];
+// 自注销 Service Worker：清空所有缓存并注销自身，页面直接走网络，避免旧缓存导致看不到最新改动。
+// （之前的缓存策略在没起本地服务器时会一直吐旧版本，这里改为彻底关闭缓存。）
 
-self.addEventListener('install', (e) => {
+self.addEventListener('install', () => {
     self.skipWaiting();
-    e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE).catch(() => {})));
 });
 
 self.addEventListener('activate', (e) => {
-    e.waitUntil(
-        caches.keys()
-            .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-            .then(() => self.clients.claim())
-    );
+    e.waitUntil((async () => {
+        // 1) 删除本 SW 创建过的所有缓存
+        try {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((k) => caches.delete(k)));
+        } catch (_) {}
+        // 2) 注销自身
+        try { await self.registration.unregister(); } catch (_) {}
+        // 3) 让当前受控页面重新加载一次，从服务器拿最新代码
+        try {
+            const clients = await self.clients.matchAll({ type: 'window' });
+            clients.forEach((c) => c.navigate(c.url));
+        } catch (_) {}
+    })());
 });
 
-self.addEventListener('fetch', (e) => {
-    const req = e.request;
-    if (req.method !== 'GET') return;
-    const url = new URL(req.url);
-    if (url.origin !== self.location.origin) return; // 只接管同源资源
-
-    // cache-first + 后台更新（stale-while-revalidate）：命中即秒开
-    e.respondWith(
-        caches.open(CACHE).then((cache) =>
-            cache.match(req).then((hit) => {
-                const fetchAndPut = fetch(req)
-                    .then((res) => {
-                        if (res && res.ok) cache.put(req, res.clone());
-                        return res;
-                    })
-                    .catch(() => hit);
-                return hit || fetchAndPut;
-            })
-        )
-    );
-});
+// 不拦截任何请求：所有资源直接走网络。

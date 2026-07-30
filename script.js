@@ -1083,55 +1083,60 @@ const container = document.getElementById('canvasContainer');
 const zoomLevelText = document.getElementById('zoomLevel');
 function updateCanvasTransform() {
     container.style.transform = `translate(${cvsTranslateX}px, ${cvsTranslateY}px) scale(${cvsScale})`;
-    zoomLevelText.innerText = Math.round(cvsScale * 100) + '%';
+    if (zoomLevelText) zoomLevelText.innerText = Math.round(cvsScale * 100) + '%';
+}
+// 自适应：把当前画板整体缩放到刚好放进可视区，居中显示，无需滑动
+function fitCanvasToViewport() {
+    const activeView = container.querySelector('.view-section.active');
+    // 先还原到 1:1 再测量内容真实尺寸
+    container.style.transform = 'translate(0px, 0px) scale(1)';
+    const vp = viewport.getBoundingClientRect();
+    if (vp.width <= 0 || vp.height <= 0) return; // 可视区尚未布局，跳过本次
+    const target = activeView || container;
+    const r = target.getBoundingClientRect();
+    const contentW = r.width, contentH = r.height;
+    if (contentW <= 0 || contentH <= 0) return;
+    const pad = 48;
+    // 浮动"调整"面板打开时，为其在左侧保留空间，把页面推到面板右侧、避免被遮住
+    const inset = (typeof window.__manualInsetLeft === 'number') ? window.__manualInsetLeft : 0;
+    const availW = Math.max(1, vp.width - inset);
+    let s = Math.min((availW - pad) / contentW, (vp.height - pad) / contentH);
+    if (!isFinite(s) || s <= 0) s = 1;
+    s = Math.min(s, 1); // 不放大，避免模糊
+    cvsScale = s;
+    // transform-origin 为 0 0，容器满屏；在 [inset, vp.width] 区间内水平居中
+    cvsTranslateX = (inset + availW / 2) - (vp.width / 2) * s;
+    cvsTranslateY = (vp.height / 2) * (1 - s);
+    updateCanvasTransform();
 }
 function resetCanvasView() {
-    cvsScale = 1; cvsTranslateX = 0; cvsTranslateY = 0;
-    updateCanvasTransform();
+    fitCanvasToViewport();
 }
-viewport.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if (e.ctrlKey || e.metaKey) {
-        const delta = -e.deltaY * 0.002;
-        const newScale = Math.min(Math.max(0.1, cvsScale + delta), 5);
-        const rect = viewport.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        cvsTranslateX = mouseX - (mouseX - cvsTranslateX) * (newScale / cvsScale);
-        cvsTranslateY = mouseY - (mouseY - cvsTranslateY) * (newScale / cvsScale);
-        cvsScale = newScale;
-        updateCanvasTransform();
-    } else {
-        cvsTranslateX -= e.deltaX;
-        cvsTranslateY -= e.deltaY;
-        updateCanvasTransform();
-    }
-}, { passive: false });
-let isSpacePressed = false;
-window.addEventListener('keydown', e => { if (e.code === 'Space') { isSpacePressed = true; viewport.style.cursor = 'grab'; } });
-window.addEventListener('keyup', e => { if (e.code === 'Space') { isSpacePressed = false; viewport.style.cursor = 'default'; } });
-viewport.addEventListener('mousedown', (e) => {
-    if (e.button === 1 || (e.button === 0 && isSpacePressed)) {
-        isDraggingCanvas = true;
-        startDragX = e.clientX - cvsTranslateX;
-        startDragY = e.clientY - cvsTranslateY;
-        viewport.style.cursor = 'grabbing';
-        e.preventDefault();
-    }
-});
-window.addEventListener('mousemove', (e) => {
-    if (!isDraggingCanvas) return;
-    cvsTranslateX = e.clientX - startDragX;
-    cvsTranslateY = e.clientY - startDragY;
-    updateCanvasTransform();
-});
-window.addEventListener('mouseup', () => {
-    isDraggingCanvas = false;
-    viewport.style.cursor = isSpacePressed ? 'grab' : 'default';
-});
-document.getElementById('zoomInBtn').addEventListener('click', () => { cvsScale = Math.min(cvsScale + 0.1, 5); updateCanvasTransform(); });
-document.getElementById('zoomOutBtn').addEventListener('click', () => { cvsScale = Math.max(cvsScale - 0.1, 0.1); updateCanvasTransform(); });
-document.getElementById('zoomResetBtn').addEventListener('click', resetCanvasView);
+// 画板固定展示：不再支持滚轮缩放 / 拖拽平移，仅自适应铺满可视区
+// 用 ResizeObserver 监听可视区自身尺寸变化（窗口缩放、侧栏回流都能捕获），
+// 保证任何情况下画板都完整可见、不会被遮住，且自适应不会“丢失”。
+let __fitRafId = null;
+function scheduleFit() {
+    if (__fitRafId) cancelAnimationFrame(__fitRafId);
+    __fitRafId = requestAnimationFrame(() => { __fitRafId = null; fitCanvasToViewport(); });
+}
+// 暴露给内联脚本：浮动调整面板开合时需要重新自适应
+window.scheduleFit = scheduleFit;
+window.fitCanvasToViewport = fitCanvasToViewport;
+let __contentObserver = null;
+if (typeof ResizeObserver !== 'undefined') {
+    // 1) 监听可视区尺寸（窗口缩放 / 侧栏回流）
+    new ResizeObserver(scheduleFit).observe(viewport);
+    // 2) 监听画板内容尺寸变化：手机预览的 canvas / 图片是异步渲染的，
+    //    渲染后内容会变高，若不重新自适应就会顶部/底部被裁切。
+    //    transform 缩放不影响布局盒尺寸，故不会触发观察循环。
+    __contentObserver = new ResizeObserver(scheduleFit);
+    __contentObserver.observe(container);
+    container.querySelectorAll('.view-section').forEach(v => __contentObserver.observe(v));
+}
+// 兜底：部分场景 ResizeObserver 不触发时，仍监听窗口尺寸与加载完成
+window.addEventListener('resize', scheduleFit);
+window.addEventListener('load', () => setTimeout(fitCanvasToViewport, 50));
 // ==================== 🎨 3. 颜色主题与工具函数 ====================
 const BRAND_THEMES = [
     { id: 'red', hue: 350, grad1: '#FFD9E2', grad2: '#FFF2F5', lightGrad: '#FFF0F3', solid: '#FFEAEF', btn1: '#FF5E7E', btn2: '#FF1A4B', textHighlight: '#FF1A4B', darkGrad1: '#FF3366', darkGrad2: '#D90036' },
@@ -1140,6 +1145,14 @@ const BRAND_THEMES = [
     { id: 'blue', hue: 210, grad1: '#D6EBFF', grad2: '#F0F8FF', lightGrad: '#F0F8FF', solid: '#E5F3FF', btn1: '#06A7FF', btn2: '#0066FF', textHighlight: '#0066FF', darkGrad1: '#06A7FF', darkGrad2: '#0052CC' },
     { id: 'purple', hue: 275, grad1: '#E6D4FF', grad2: '#F6F0FF', lightGrad: '#F8F0FF', solid: '#EFE5FF', btn1: '#B358FF', btn2: '#7B1BFF', textHighlight: '#7B1BFF', darkGrad1: '#B358FF', darkGrad2: '#6200E6' }
 ];
+const AUTO_COLOR_RESOURCE_IDS = new Set([
+    'na_home', 'na_mypage', 'na_feed', 'dev_1_1_15', 'dev_1_1_16',
+    'dev_1_1_17', 'dev_1_1_18', 'dev_1_1_20', 'dev_1_1_21',
+    'yike_4', 'yike_5', 'yike_7'
+]);
+function shouldAutoColorForResource(resource) {
+    return AUTO_COLOR_RESOURCE_IDS.has(resource);
+}
 function setCheckedRadioValue(radios, value) {
     Array.from(radios || []).forEach(radio => { radio.checked = radio.value === value; });
 }
@@ -1179,6 +1192,8 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
             'peerSharingGrad1': matchedTheme.grad1, 'peerSharingGrad2': matchedTheme.grad2,
             'peerSharingTitle1Color': '#000000', 'peerSharingTitle2Color': '#000000', 'peerSharingSubColor': '#777777',
             'membershipChannelCardBgColor1': matchedTheme.grad1, 'membershipChannelCardBgColor2': matchedTheme.grad2, 'membershipChannelCardTextColor': matchedTheme.darkGrad2,
+            'mallFeedWideBannerGrad1': matchedTheme.btn2, 'mallFeedWideBannerGrad2': matchedTheme.btn1,
+            'mallFeedWideBannerTitleColor': '#FFFFFF', 'mallFeedWideBannerSubColor': '#FFFFFF', 'mallFeedWideBannerBtnColor': '#FFFFFF',
         },
         yike: {
             'yikeEquipGrad1': matchedTheme.grad1, 'yikeEquipGrad2': matchedTheme.grad2,
@@ -1267,9 +1282,19 @@ function focusResourceControl(resource, options = {}) {
     const viewEl = document.getElementById(RESOURCE_PREVIEW_TARGET_MAP[resource] || RESOURCE_VIEW_MAP[resource]);
     viewEl?.classList.add('ai-preview-selected');
     if (scroll) {
-        const rightSidebar = document.querySelector('.right-sidebar');
-        const targetScrollEl = ctrlEl;
-        if (rightSidebar) rightSidebar.scrollTo({ top: Math.max(targetScrollEl.offsetTop - 20, 0), behavior: 'smooth' });
+        // 控件常驻最右侧栏、素材库下方；显隐由 .active 控制，这里清掉可能残留的内联 display 并滚动定位
+        const wrapEl = document.getElementById('manualControlsWrapper');
+        if (wrapEl) wrapEl.querySelectorAll('.control-group').forEach(g => { g.style.display = ''; });
+        const devP = document.getElementById('developingPrompt');
+        if (devP) devP.classList.add('hidden');
+        const scroller = document.querySelector('.right-sidebar') || document.getElementById('dynamicControlsArea');
+        const target = controlGroupEl || ctrlEl;
+        if (scroller && target) {
+            const sbRect = scroller.getBoundingClientRect();
+            const elRect = target.getBoundingClientRect();
+            const top = scroller.scrollTop + (elRect.top - sbRect.top) - 16;
+            scroller.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+        }
     }
     if (highlight) {
         const highlightToken = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -1328,10 +1353,7 @@ async function showAiRecognizedPreview(resources, options = {}) {
         }
     });
     focusResourceControl(modules[0], { scroll: false, highlight: false });
-    cvsScale = modules.length > 1 ? 0.6 : 1;
-    cvsTranslateX = 0;
-    cvsTranslateY = modules.length > 1 ? 100 : 0;
-    updateCanvasTransform();
+    fitCanvasToViewport();
     if (document.getElementById('exportModal')?.style.display === 'flex') autoSelectExportItems();
 }
 function bindCanvasClickToControl() {
@@ -1339,15 +1361,15 @@ function bindCanvasClickToControl() {
         const viewEl = document.getElementById(viewId);
         if (!viewEl) return;
         viewEl.addEventListener('mousedown', (e) => {
-            if (isSpacePressed) return;
             if (viewEl.classList.contains('phone-canvas')) e.stopPropagation();
-            if (!viewEl.classList.contains('phone-canvas') && e.target.closest?.('.phone-canvas')) return;
+            // 若点击到的手机预览图本身已单独注册了点击映射，交给它自己的监听处理，容器不重复响应
+            const clickedPhone = e.target.closest?.('.phone-canvas');
+            if (!viewEl.classList.contains('phone-canvas') && clickedPhone
+                && clickedPhone.id && VIEW_RESOURCE_MAP[clickedPhone.id]) return;
             const resource = VIEW_RESOURCE_MAP[viewId];
-            if (isAiResultPreviewMode && lastAiRecognizedModules.includes(resource)) {
-                focusResourceControl(resource);
-                return;
-            }
-            focusResourceControl(resource);
+            // 弹窗尽量贴在实际点击的预览图旁边，没有则用整个视图
+            const anchorEl = (clickedPhone || viewEl);
+            focusResourceControl(resource, { anchorEl });
         });
     });
 }
@@ -1907,14 +1929,6 @@ async function loadColoredArrow(url, color) {
     if (!modified.includes('xmlns=')) modified = modified.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
     const dataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(modified))); return await loadImage(dataUri);
 }
-async function loadColoredSvgFill(url, color) {
-    try {
-        let txt = globalSvgTextCache[url]; if (!txt) { const res = await fetch(url); if (!res.ok) return null; txt = await res.text(); globalSvgTextCache[url] = txt; }
-        if (!txt.includes('fill=')) { txt = txt.replace(/<svg/i, `<svg fill="${color}" `); } else { txt = txt.replace(/fill="([^"]*)"/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`).replace(/fill='([^']*)'/gi, (m, p) => p.toLowerCase() === 'none' ? m : `fill="${color}"`); }
-        if (!txt.includes('xmlns=')) txt = txt.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
-        const dataUri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(txt))); return await loadImage(dataUri);
-    } catch (e) { return null; }
-}
 function drawRoundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r); ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r); ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath(); }
 function drawDualColorText(ctx, fullText, highlightText, x, y, baseColor, highlightColor) {
     const fixedX = Math.floor(x), fixedY = Math.floor(y);
@@ -2006,7 +2020,7 @@ async function renderMyPage() { await renderMyPageBanner(); await renderMyPageFu
 async function renderMyPageBanner() {
     const heroImg = await loadImage(config.heroImage), kvImg = userImgObj || heroImg;
     const drawMyPageMode = async (canvas, ctx, isDark) => {
-        if (!ctx || !canvas) return; const targetColor = isDark ? '#141414' : (myPageColors[myPageColor] || '#F0FBFF'), elementColor = myPageElementColors[myPageColor] || '#0090FF', currentCapsuleColor = isDark ? '#0090FF' : elementColor, banner2Img = await loadColoredSvgFill(config.banner2Svg, targetColor);
+        if (!ctx || !canvas) return; const targetColor = isDark ? '#141414' : (myPageColors[myPageColor] || '#F0FBFF'), elementColor = myPageElementColors[myPageColor] || '#0090FF', currentCapsuleColor = isDark ? '#0090FF' : elementColor, banner2Img = await loadImage(config.banner2Svg);
         canvas.width = banner2Img?.width || 1182; canvas.height = banner2Img?.height || 225; setupHighQualityContext(ctx); ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (banner2Img && banner2Img.width) { ctx.drawImage(banner2Img, 0, 0); } else { ctx.fillStyle = targetColor; ctx.fillRect(0, 0, canvas.width, canvas.height); }
         if (kvImg && kvImg.width) { ctx.save(); const imgBoxX = 37, imgBoxY = 23, imgBoxW = 314, imgBoxH = 178; ctx.beginPath(); ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH); ctx.clip(); const imgScale = Math.min(imgBoxW / kvImg.width, imgBoxH / kvImg.height), drawImgW = kvImg.width * imgScale, drawImgH = kvImg.height * imgScale, drawImgX = imgBoxX + (imgBoxW - drawImgW) / 2, drawImgY = imgBoxY + (imgBoxH - drawImgH) / 2; drawSharpenedImage(ctx, kvImg, drawImgX, drawImgY, drawImgW, drawImgH, 0.3); ctx.restore(); }
@@ -3425,7 +3439,7 @@ async function switchResourceView(selected, options = {}) {
     if (spaceCard) spaceCard.style.display = '';
     if (scanCard) scanCard.style.display = '';
     if (['na_home', 'na_mypage', 'na_feed', 'dev_1_1_11', 'dev_1_1_15', 'dev_1_1_12', 'dev_1_1_9', 'dev_1_1_13', 'dev_1_1_16', 'dev_1_1_17', 'dev_1_1_18', 'dev_1_1_19', 'dev_1_1_20', 'dev_1_1_21', 'yike_4', 'yike_5', 'yike_7'].includes(selected)) {
-        baseGlobalPicArea.style.display = 'block';
+        baseGlobalPicArea.style.display = 'flex';
     } else {
         baseGlobalPicArea.style.display = 'none';
     }
@@ -3518,13 +3532,49 @@ buBtns.forEach(btn => {
         setActiveBusinessLine(e.currentTarget.dataset.bu);
     });
 });
+const terminalPicker = document.getElementById('terminalPicker');
+const terminalTrigger = document.getElementById('terminalTrigger');
+const terminalTriggerText = document.getElementById('terminalTriggerText');
+const terminalMenu = document.getElementById('terminalMenu');
 const terminalBtns = document.querySelectorAll('.terminal-btn');
+
+function setTerminalMenuOpen(isOpen) {
+    if (!terminalPicker || !terminalTrigger || !terminalMenu) return;
+    terminalPicker.classList.toggle('open', isOpen);
+    terminalMenu.classList.toggle('hidden', !isOpen);
+    terminalTrigger.setAttribute('aria-expanded', String(isOpen));
+}
+
+function syncTerminalTriggerLabel() {
+    const activeBtn = document.querySelector('.terminal-btn.active');
+    if (activeBtn && terminalTriggerText) {
+        terminalTriggerText.textContent = activeBtn.textContent.trim();
+    }
+}
+
+syncTerminalTriggerLabel();
+setTerminalMenuOpen(false);
+
+terminalTrigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setTerminalMenuOpen(!terminalPicker?.classList.contains('open'));
+});
+
 terminalBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
         terminalBtns.forEach(b => b.classList.remove('active'));
-        const currentBtn = e.currentTarget; currentBtn.classList.add('active');
+        const currentBtn = e.currentTarget;
+        currentBtn.classList.add('active');
+        syncTerminalTriggerLabel();
+        setTerminalMenuOpen(false);
         updateResourceDropdown(currentBtn.dataset.terminal);
     });
+});
+
+document.addEventListener('click', (e) => {
+    if (terminalPicker && !terminalPicker.contains(e.target)) {
+        setTerminalMenuOpen(false);
+    }
 });
 const detailModal = document.getElementById('detailModal');
 const detailImagesBox = document.getElementById('detailImagesBox');
@@ -3744,29 +3794,75 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
     }
 }
 function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max == min) { h = s = 0; } else { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }h /= 6; } return [h * 360, s, l]; }
+function detectBrandThemeFromImage(img) {
+    if (!img || !img.width || !img.height) return 'blue';
+    const sampleSize = Math.max(24, Math.min(72, Math.round(Math.sqrt(img.width * img.height) / 8)));
+    const canvas = document.createElement('canvas');
+    canvas.width = sampleSize;
+    canvas.height = sampleSize;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return 'blue';
+    setupHighQualityContext(ctx);
+    ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+    let data;
+    try {
+        data = ctx.getImageData(0, 0, sampleSize, sampleSize).data;
+    } catch (e) {
+        return 'blue';
+    }
+    let weightedX = 0;
+    let weightedY = 0;
+    let weightSum = 0;
+    let fallbackX = 0;
+    let fallbackY = 0;
+    let satSum = 0;
+    let satCount = 0;
+    for (let i = 0; i < data.length; i += 4) {
+        const alpha = data[i + 3] / 255;
+        if (alpha < 0.12) continue;
+        const [hue, sat, light] = rgbToHsl(data[i], data[i + 1], data[i + 2]);
+        satSum += sat;
+        satCount++;
+        const hueRad = hue * Math.PI / 180;
+        const warmBoost = 1 - Math.min(1, Math.abs(light - 0.55) * 1.6);
+        const dominantWeight = alpha * Math.max(0, sat - 0.08) * Math.max(0.25, warmBoost);
+        const fallback = alpha * Math.max(0.15, sat);
+        fallbackX += Math.cos(hueRad) * fallback;
+        fallbackY += Math.sin(hueRad) * fallback;
+        if (dominantWeight > 0) {
+            weightedX += Math.cos(hueRad) * dominantWeight;
+            weightedY += Math.sin(hueRad) * dominantWeight;
+            weightSum += dominantWeight;
+        }
+    }
+    const avgSat = satCount ? satSum / satCount : 0;
+    if (avgSat < 0.08) return 'blue';
+    const useFallback = weightSum < 0.001;
+    const angle = Math.atan2(useFallback ? fallbackY : weightedY, useFallback ? fallbackX : weightedX) * 180 / Math.PI;
+    const hue = (angle + 360) % 360;
+    let matchedTheme = BRAND_THEMES[0];
+    let minDiff = Infinity;
+    for (const theme of BRAND_THEMES) {
+        let diff = Math.abs(hue - theme.hue);
+        diff = diff > 180 ? 360 - diff : diff;
+        if (diff < minDiff) {
+            minDiff = diff;
+            matchedTheme = theme;
+        }
+    }
+    return matchedTheme.id === 'yellow' ? 'orange' : matchedTheme.id;
+}
 bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => {
     const activeBU = getActiveBusinessLineKey();
+    const selectedResource = document.querySelector('.resource-item.active')?.dataset.value;
     const loadedImg = await loadImage(src);
     businessUploadState[activeBU] = { src, img: loadedImg };
     userImgObj = loadedImg;
     syncCurrentBusinessUploadState();
-    if (userImgObj) {
-        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const w = canvas.width = Math.min(userImgObj.width, 100); const h = canvas.height = Math.min(userImgObj.height, 100);
-        ctx.drawImage(userImgObj, 0, 0, w, h); let data; try { data = ctx.getImageData(0, 0, w, h).data; } catch (e) { }
-        if (data) {
-            let r = 0, g = 0, b = 0, count = 0; for (let i = 0; i < data.length; i += 16) { if (data[i + 3] < 128) continue; r += data[i]; g += data[i + 1]; b += data[i + 2]; count++; }
-            if (count > 0) {
-                let matchedTheme = BRAND_THEMES.find(t => t.id === 'blue');
-                let [h_val, s_val, l_val] = rgbToHsl(Math.floor(r / count), Math.floor(g / count), Math.floor(b / count));
-                if (s_val > 0.1 && l_val > 0.1 && l_val < 0.95) {
-                    let minDiff = Infinity;
-                    for (let theme of BRAND_THEMES) {
-                        let diff = Math.abs(h_val - theme.hue); diff = diff > 180 ? 360 - diff : diff;
-                        if (diff < minDiff) { minDiff = diff; matchedTheme = theme; }
-                    }
-                }
-                triggerThemeSwitch(matchedTheme.id === 'yellow' ? 'orange' : matchedTheme.id, activeBU);
-            }
+    if (shouldAutoColorForResource(selectedResource)) {
+        const detectedThemeId = detectBrandThemeFromImage(loadedImg);
+        if (detectedThemeId) {
+            triggerThemeSwitch(detectedThemeId, activeBU);
         }
     }
     await renderActiveBusinessCanvases();
@@ -3966,6 +4062,8 @@ async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, input
         inputRefs.forEach((ref, idx) => { document.getElementById(ref.id).value = backups[idx]; });
         await renderFn();
     } else {
+        // ✨ 修复：单方案导出前也先渲染一次，避免未浏览过的页面导出空白/缺图
+        if (typeof renderFn === 'function') await renderFn();
         folder.file(`${baseName}.png`, await canvasToBlob(canvas));
     }
 }
@@ -4043,21 +4141,79 @@ function initExportModal() {
             let feedRefs = MODULE_INPUT_MAP['feed'];
             await exportCanvasOrMulti('chkFeedBannerExport', feedBannerCanvas, `首页-Feed10出1banner`, 'feed', bannerFolder, feedRefs, renderFeedCanvas);
             await exportCanvasOrMulti('chkFeedPhone', feedCanvas, `首页-Feed10出1预览`, 'feed', previewFolder, feedRefs, renderFeedCanvas);
-            if (document.getElementById('chkVideoAudioShareIconExport')?.checked && videoAudioShareExportCanvas) bannerFolder.file(`视频音频共享页-右上icon独立切图(114x114).png`, await canvasToBlob(videoAudioShareExportCanvas));
-            if (document.getElementById('chkVideoAudioSharePageExport')?.checked && videoAudioSharePageCanvas) previewFolder.file(`视频音频共享页-页面预览.png`, await canvasToBlob(videoAudioSharePageCanvas));
-            if (document.getElementById('chkMembershipChannelCardExport')?.checked && membershipChannelCardExportCanvas) bannerFolder.file(`会员频道大卡-独立切图(1092x597).png`, await canvasToBlob(membershipChannelCardExportCanvas));
-            if (document.getElementById('chkMembershipChannelCardPageExport')?.checked && membershipChannelCardPageCanvas) previewFolder.file(`会员频道大卡-页面预览.png`, await canvasToBlob(membershipChannelCardPageCanvas));
-            if (document.getElementById('chkTierBasedRewardsProductImagesExport')?.checked && tierBasedRewardsProductImagesExportCanvas) bannerFolder.file(`等级福利商品图-独立切图(342x342).png`, await canvasToBlob(tierBasedRewardsProductImagesExportCanvas));
-            if (document.getElementById('chkTierBasedRewardsProductImagesPage1Export')?.checked && tierBasedRewardsProductImagesPage1Canvas) previewFolder.file(`等级福利商品图-页面1预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage1Canvas));
-            if (document.getElementById('chkTierBasedRewardsProductImagesPage2Export')?.checked && tierBasedRewardsProductImagesPage2Canvas) previewFolder.file(`等级福利商品图-页面2预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage2Canvas));
-            if (document.getElementById('chkTierBasedRewardsProductImagesPage3Export')?.checked && tierBasedRewardsProductImagesPage3Canvas) previewFolder.file(`等级福利商品图-页面3预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage3Canvas));
-
-            if (document.getElementById('chkMembersChannelPage1Banner')?.checked && membersChannelPage1ExportCanvas) bannerFolder.file(`会员频道下拉2楼-单列-独立切图.png`, await canvasToBlob(membersChannelPage1ExportCanvas));
-            if (document.getElementById('chkMembersChannelPage1Page')?.checked && membersChannelPage1Canvas) previewFolder.file(`会员频道下拉2楼-单列-页面预览.png`, await canvasToBlob(membersChannelPage1Canvas));
-            if (document.getElementById('chkMembersChannelPage2Banner')?.checked && membersChannelPage2ExportCanvas) bannerFolder.file(`会员频道下拉2楼-双列-独立切图.png`, await canvasToBlob(membersChannelPage2ExportCanvas));
-            if (document.getElementById('chkMembersChannelPage2Page')?.checked && membersChannelPage2Canvas) previewFolder.file(`会员频道下拉2楼-双列-页面预览.png`, await canvasToBlob(membersChannelPage2Canvas));
-            if (document.getElementById('chkMembersChannelPage3Banner')?.checked && membersChannelPage3ExportCanvas) bannerFolder.file(`会员频道下拉2楼-三列-独立切图.png`, await canvasToBlob(membersChannelPage3ExportCanvas));
-            if (document.getElementById('chkMembersChannelPage3Page')?.checked && membersChannelPage3Canvas) previewFolder.file(`会员频道下拉2楼-三列-页面预览.png`, await canvasToBlob(membersChannelPage3Canvas));
+            // == 我的页面：只要勾选就先渲染再写文件，不依赖当前视图状态 ==
+            {
+                const myPageLightChk = document.getElementById('chkMyPageBannerLight')?.checked;
+                const myPageDarkChk = document.getElementById('chkMyPageBannerDark')?.checked;
+                const myPagePhoneChk = document.getElementById('chkMyPagePhone')?.checked;
+                if (myPageLightChk || myPageDarkChk || myPagePhoneChk) await renderMyPage();
+                if (myPageLightChk && myPageCanvas) bannerFolder.file(`我的页面-Banner(日间)-${myPageColor}.png`, await canvasToBlob(myPageCanvas));
+                if (myPageDarkChk && myPageDarkCanvas) bannerFolder.file(`我的页面-Banner(夜间)-${myPageColor}.png`, await canvasToBlob(myPageDarkCanvas));
+                if (myPagePhoneChk && myPageFullCanvas) previewFolder.file(`我的页面-页面预览-${myPageColor}.png`, await canvasToBlob(myPageFullCanvas));
+            }
+            // == 视频音频共享页：导出前先渲染，避免未浏览过的页面画布空白 ==
+            {
+                const iconChk = document.getElementById('chkVideoAudioShareIconExport')?.checked;
+                const pageChk = document.getElementById('chkVideoAudioSharePageExport')?.checked;
+                if (iconChk || pageChk) await renderVideoAudioShareCanvas();
+                if (iconChk && videoAudioShareExportCanvas) bannerFolder.file(`视频音频共享页-右上icon独立切图(114x114).png`, await canvasToBlob(videoAudioShareExportCanvas));
+                if (pageChk && videoAudioSharePageCanvas) previewFolder.file(`视频音频共享页-页面预览.png`, await canvasToBlob(videoAudioSharePageCanvas));
+            }
+            // == 会员频道大卡：导出前先渲染 ==
+            {
+                const cardChk = document.getElementById('chkMembershipChannelCardExport')?.checked;
+                const cardPageChk = document.getElementById('chkMembershipChannelCardPageExport')?.checked;
+                if (cardChk || cardPageChk) await renderMembershipChannelCardCanvas();
+                if (cardChk && membershipChannelCardExportCanvas) bannerFolder.file(`会员频道大卡-独立切图(1092x597).png`, await canvasToBlob(membershipChannelCardExportCanvas));
+                if (cardPageChk && membershipChannelCardPageCanvas) previewFolder.file(`会员频道大卡-页面预览.png`, await canvasToBlob(membershipChannelCardPageCanvas));
+            }
+            // == 等级福利商品图：导出前先渲染 ==
+            {
+                const trExport = document.getElementById('chkTierBasedRewardsProductImagesExport')?.checked;
+                const trP1 = document.getElementById('chkTierBasedRewardsProductImagesPage1Export')?.checked;
+                const trP2 = document.getElementById('chkTierBasedRewardsProductImagesPage2Export')?.checked;
+                const trP3 = document.getElementById('chkTierBasedRewardsProductImagesPage3Export')?.checked;
+                if (trExport || trP1 || trP2 || trP3) await renderTierBasedRewardsProductImagesCanvas();
+                if (trExport && tierBasedRewardsProductImagesExportCanvas) bannerFolder.file(`等级福利商品图-独立切图(342x342).png`, await canvasToBlob(tierBasedRewardsProductImagesExportCanvas));
+                if (trP1 && tierBasedRewardsProductImagesPage1Canvas) previewFolder.file(`等级福利商品图-页面1预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage1Canvas));
+                if (trP2 && tierBasedRewardsProductImagesPage2Canvas) previewFolder.file(`等级福利商品图-页面2预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage2Canvas));
+                if (trP3 && tierBasedRewardsProductImagesPage3Canvas) previewFolder.file(`等级福利商品图-页面3预览.png`, await canvasToBlob(tierBasedRewardsProductImagesPage3Canvas));
+            }
+            // == 会员频道下拉2楼：三种列布局，导出前分别渲染 ==
+            {
+                const p1b = document.getElementById('chkMembersChannelPage1Banner')?.checked;
+                const p1p = document.getElementById('chkMembersChannelPage1Page')?.checked;
+                if (p1b || p1p) await renderMembersChannelPage1Canvas();
+                if (p1b && membersChannelPage1ExportCanvas) bannerFolder.file(`会员频道下拉2楼-单列-独立切图.png`, await canvasToBlob(membersChannelPage1ExportCanvas));
+                if (p1p && membersChannelPage1Canvas) previewFolder.file(`会员频道下拉2楼-单列-页面预览.png`, await canvasToBlob(membersChannelPage1Canvas));
+            }
+            {
+                const p2b = document.getElementById('chkMembersChannelPage2Banner')?.checked;
+                const p2p = document.getElementById('chkMembersChannelPage2Page')?.checked;
+                if (p2b || p2p) await renderMembersChannelPage2Canvas();
+                if (p2b && membersChannelPage2ExportCanvas) bannerFolder.file(`会员频道下拉2楼-双列-独立切图.png`, await canvasToBlob(membersChannelPage2ExportCanvas));
+                if (p2p && membersChannelPage2Canvas) previewFolder.file(`会员频道下拉2楼-双列-页面预览.png`, await canvasToBlob(membersChannelPage2Canvas));
+            }
+            {
+                const p3b = document.getElementById('chkMembersChannelPage3Banner')?.checked;
+                const p3p = document.getElementById('chkMembersChannelPage3Page')?.checked;
+                if (p3b || p3p) await renderMembersChannelPage3Canvas();
+                if (p3b && membersChannelPage3ExportCanvas) bannerFolder.file(`会员频道下拉2楼-三列-独立切图.png`, await canvasToBlob(membersChannelPage3ExportCanvas));
+                if (p3p && membersChannelPage3Canvas) previewFolder.file(`会员频道下拉2楼-三列-页面预览.png`, await canvasToBlob(membersChannelPage3Canvas));
+            }
+            // == 搜索icon：独立切图 + 页面预览 ==
+            {
+                const searchIconChecked = document.getElementById('chkSearchIconExport')?.checked;
+                const searchPageChecked = document.getElementById('chkSearchPageExport')?.checked;
+                if (searchIconChecked || searchPageChecked) await renderSearchIcon();
+                if (searchIconChecked && searchIconExportCanvas) bannerFolder.file(`搜索icon-独立切图(204x204).png`, await canvasToBlob(searchIconExportCanvas));
+                if (searchPageChecked && searchPageCanvas) previewFolder.file(`搜索icon-页面预览.png`, await canvasToBlob(searchPageCanvas));
+            }
+            // == 网盘商城feed流宽banner：独立切图(JPG) ==
+            if (document.getElementById('chkMallFeedWideBannerExport')?.checked && mallFeedWideBannerExportCanvas) {
+                await renderMallFeedWideBannerCanvas();
+                bannerFolder.file(`网盘商城feed流宽banner-独立切图(522x336).jpg`, await canvasToJpegBlob(mallFeedWideBannerExportCanvas));
+            }
             let mySpaceRefs = MODULE_INPUT_MAP['mySpace'];
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpaceExport', mySpaceExportCanvas, `我的空间-独立切图(1182x252)`, 'mySpace', bannerFolder, mySpaceRefs, renderMySpaceCanvas);
             if (document.getElementById('chkMySpacePageExport')?.checked && mySpacePageCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpacePageExport', mySpacePageCanvas, `我的空间-页面预览`, 'mySpace', previewFolder, mySpaceRefs, renderMySpaceCanvas);

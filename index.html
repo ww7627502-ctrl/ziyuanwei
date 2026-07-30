@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>配置中心</title>
+    <title>资源位一键适配平台</title>
     <link rel="stylesheet" href="style.css">
     <!-- 引入 Figma 风格的颜色选择器库 (Pickr) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
@@ -12,15 +12,37 @@
 
 <body>
     <svg width="0" height="0" style="position:absolute; width:0; height:0;">
-        <filter id="lightBlueTint">
-            <feColorMatrix type="matrix" values="0.2157 0 0 0 0.7843 0 0.1177 0 0 0.8823 0 0 0 0 1.0 0 0 0 1 0" />
+        <!-- 业务线未选中着色：仅把黑色部分换成浅色，白色字/文案保持白色（按亮度线性映射） -->
+        <!-- 第一排：黑色 → #C8E1FF -->
+        <filter id="lightBlueTint" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.21569 0 0 0 0.78431
+                                                 0 0.11765 0 0 0.88235
+                                                 0 0 0 0 1
+                                                 0 0 0 1 0" />
+        </filter>
+        <!-- 第二排：黑色 → #B6E7DC -->
+        <filter id="mintTint" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.28627 0 0 0 0.71373
+                                                 0 0.09412 0 0 0.90588
+                                                 0 0 0.13725 0 0.86275
+                                                 0 0 0 1 0" />
         </filter>
     </svg>
 
     <header class="app-header">
-        <div class="header-title">配置中心</div>
+        <div class="header-brand">
+            <div class="header-text">
+                <div class="header-title">资源位一键适配平台</div>
+                <div class="header-subtitle">配资源位 · 一键导出 Banner 切图</div>
+            </div>
+        </div>
         <div class="header-actions">
-            <button class="btn primary-btn" id="openExportModalBtn">选择并导出资源...</button>
+            <button class="btn primary-btn header-export-btn" id="openExportModalBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                    <path d="M12 3v11m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                选择并导出资源
+            </button>
         </div>
     </header>
 
@@ -35,6 +57,9 @@
                     <button class="bu-btn" data-bu="yike"><img src="assets/2yikexiangce.svg" alt="一刻"></button>
                     <button class="bu-btn" data-bu="chuhai"><img src="assets/3chuhaifangxiang.svg" alt="出海"></button>
                 </div>
+                <div class="bu-selector bu-selector-row2">
+                    <button class="bu-btn" data-bu="wenku"><img src="assets/wbaiduwenku.svg" alt="文库"></button>
+                </div>
             </div>
 
             <div id="emptyWorkspace" class="hidden">
@@ -42,15 +67,23 @@
             </div>
 
             <div id="wangpanWorkspace">
-                <div class="sidebar-section">
+                <div class="sidebar-section terminal-section">
                     <div class="section-title"><span class="step-label">2</span>所属端 (Terminal)</div>
-                    <div class="terminal-tabs">
-                        <button class="terminal-btn active" data-terminal="NA">NA端</button>
-                        <button class="terminal-btn" data-terminal="PC">PC端</button>
-                        <button class="terminal-btn" data-terminal="Web">Web端</button>
-                        <button class="terminal-btn" data-terminal="Wap">Wap端</button>
-                        <button class="terminal-btn" data-terminal="Mac">Mac端</button>
-                        <button class="terminal-btn" data-terminal="ipd">ipd端</button>
+                    <div class="terminal-picker" id="terminalPicker">
+                        <button type="button" class="terminal-trigger" id="terminalTrigger" aria-expanded="false" aria-controls="terminalMenu">
+                            <span class="terminal-trigger-text" id="terminalTriggerText">NA端</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="terminal-tabs hidden" id="terminalMenu">
+                            <button type="button" class="terminal-btn active" data-terminal="NA">NA端</button>
+                            <button type="button" class="terminal-btn" data-terminal="PC">PC端</button>
+                            <button type="button" class="terminal-btn" data-terminal="Web">Web端</button>
+                            <button type="button" class="terminal-btn" data-terminal="Wap">Wap端</button>
+                            <button type="button" class="terminal-btn" data-terminal="Mac">Mac端</button>
+                            <button type="button" class="terminal-btn" data-terminal="ipd">ipd端</button>
+                        </div>
                     </div>
                 </div>
                 <div class="sidebar-section"
@@ -62,15 +95,8 @@
         </aside>
 
         <!-- ==================== 中间：纯净的带壳预览区 ==================== -->
+        <div class="center-column">
         <main class="preview-area center-workspace" id="viewport">
-            <div class="canvas-help-tip">空格+左键(或中键) 拖拽平移 | Ctrl+滚轮 缩放</div>
-            <div class="zoom-controls">
-                <button id="zoomOutBtn">-</button>
-                <div id="zoomLevel">100%</div>
-                <button id="zoomInBtn">+</button>
-                <button id="zoomResetBtn" title="恢复居中">⛶</button>
-            </div>
-
             <div id="canvasContainer">
                 <div id="viewDevelopingPrompt" class="view-section prompt-view">
                     <img src="assets/hero-banner.png"
@@ -198,7 +224,7 @@
                     </div>
                     <div class="preview-grid flex-center">
                         <div class="preview-card transparent-card">
-                            <div class="card-title text-center">会员频道大卡 <span style="color:#258AFF;font-size:12px;">【A级】</span></div>
+                            <div class="card-title text-center">会员频道大卡 <span style="color:#2563EB;font-size:12px;">【A级】</span></div>
                             <canvas id="membershipChannelCardPageCanvas" class="phone-canvas zoomable-canvas" data-target="membershipChannelCard"></canvas>
                         </div>
                     </div>
@@ -323,24 +349,18 @@
             </div>
         </main>
 
-        <!-- ==================== 右侧：参数控制面板 ==================== -->
-        <aside class="sidebar right-sidebar">
-            <div id="dynamicControlsArea">
-
-                <!-- 💡核心功能：AI 智能生成面板 (肖恩AI强化版) -->
-                <div id="aiPromptArea" class="sidebar-section"
-                    style="background: linear-gradient(135deg, #f0f7ff, #f9f4ff); padding: 14px; border-radius: 10px; border: 1px solid #dcd6ff; margin-bottom: 16px;">
-
-                    <div class="section-title"
-                        style="color: #641AFF; display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="#641AFF" />
+        <!-- AI 生成输入栏：独立底部模块，与画布上下分区，互不遮挡 -->
+        <div class="ai-dock-bar">
+            <div id="aiPromptArea" class="ai-dock">
+                <div class="ai-dock-head">
+                    <span class="ai-dock-title">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="#6D28D9" />
                         </svg>
-                        AI 智能一键配置引擎
-                    </div>
-
-                    <select id="apiModelSelect"
-                        style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; color: #333;">
+                        AI 一键配置
+                    </span>
+                    <span class="ai-dock-hint">粘贴运营需求文案，或把 PDF / 图片拖进来，AI 自动识别并配好画板</span>
+                    <select id="apiModelSelect" class="ai-dock-model">
                         <!-- 组合公式：BaseURL + /v1/chat/completions | 模型名 -->
                         <option value="https://oneapi-comate.baidu-int.com/v1/chat/completions|GLM-5.2-内部" selected>推荐便宜 - GLM-5.2-内部</option>
                         <option value="https://oneapi-comate.baidu-int.com/v1/chat/completions|DeepSeek-V4-Flash-内部">更便宜 - DeepSeek-V4-Flash-内部</option>
@@ -351,36 +371,53 @@
                         <option value="https://oneapi-comate.baidu-int.com/v1/chat/completions|DeepSeek-V4-Flash">DeepSeek-V4-Flash</option>
                         <option value="https://oneapi-comate.baidu-int.com/v1/chat/completions|MiniMax-M3">MiniMax-M3</option>
                     </select>
+                </div>
 
-                    <!-- 支持拖拽和粘贴的输入区 -->
-                    <div id="aiInputContainer"
-                        style="position: relative; width: 100%; border: 2px dashed #cbd5e1; border-radius: 6px; background: #fff; transition: all 0.3s; margin-bottom: 10px;">
-                        <textarea id="aiPromptInput" placeholder="1、直接粘贴运营需求文案...&#10;2、也支持将导出的pdf表格文件拖拽到这个框里"
-                            style="width: 100%; height: 90px; padding: 10px; border: none; border-radius: 6px; font-size: 12px; resize: none; font-family: inherit; line-height: 1.5; color: #333; outline: none; background: transparent;"></textarea>
-
-                        <!-- 图片预览悬浮层 -->
-                        <div id="aiImagePreview"
-                            style="display: none; position: absolute; bottom: 5px; right: 5px; width: 60px; height: 60px; border-radius: 6px; border: 2px solid #258AFF; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;">
-                            <img id="aiPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
-                            <div id="aiRemoveImageBtn"
-                                style="position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; width: 16px; height: 16px; text-align: center; line-height: 16px; cursor: pointer; border-bottom-left-radius: 4px;">
-                                X</div>
-                        </div>
+                <!-- 支持拖拽和粘贴的输入区 -->
+                <div id="aiInputContainer" class="ai-dock-input">
+                    <textarea id="aiPromptInput" placeholder="直接粘贴运营需求文案，或把导出的 PDF / 图片拖到这里…"></textarea>
+                    <!-- 图片预览悬浮层 -->
+                    <div id="aiImagePreview"
+                        style="display: none; position: absolute; bottom: 5px; right: 5px; width: 60px; height: 60px; border-radius: 6px; border: 2px solid #2563EB; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden;">
+                        <img id="aiPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div id="aiRemoveImageBtn"
+                            style="position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; width: 16px; height: 16px; text-align: center; line-height: 16px; cursor: pointer; border-bottom-left-radius: 4px;">
+                            X</div>
                     </div>
-
-                    <button id="aiGenerateBtn" class="btn primary-btn"
-                        style="width: 100%; background: linear-gradient(90deg, #258AFF, #641AFF); border: none; font-weight: bold; font-size: 14px; padding: 10px 0; box-shadow: 0 4px 12px rgba(100,26,255,0.3); transition: all 0.3s;">一键解析并生成画板</button>
                 </div>
 
-                <div id="baseGlobalPicArea" class="sidebar-section">
-                    <div class="section-title"
-                        style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">全局基础配图 (传图自动变色)</div>
-                    <label id="uploadDropZone" class="upload-drop-zone" for="imageUpload">
-                        <img id="uploadPreviewImg" class="upload-preview-img" src="assets/hero-banner.png" alt="当前配图">
-                        <span class="upload-text">点击或将图片拖拽到此处替换</span>
-                        <input type="file" id="imageUpload" style="display:none;" accept="image/*">
-                    </label>
+                <button id="aiGenerateBtn" class="btn primary-btn ai-dock-gen">一键解析并生成画板</button>
+            </div>
+            <!-- 主图替换：底部独立放图面板，与 AI 输入栏并排 -->
+            <div id="baseGlobalPicArea" class="base-pic-panel" title="主图替换：上传主图后系统自动适配各资源位并变色">
+                <div class="base-pic-panel-title">主图替换</div>
+                <label id="uploadDropZone" class="base-pic-drop" for="imageUpload">
+                    <img id="uploadPreviewImg" class="base-pic-preview" src="assets/hero-banner.png" alt="当前主图">
+                    <span class="base-pic-hint">点击 / 拖拽替换主图</span>
+                    <input type="file" id="imageUpload" style="display:none;" accept="image/*">
+                </label>
+            </div>
+        </div>
+        </div>
+
+        <!-- ==================== 右侧：参数控制面板 ==================== -->
+        <aside class="sidebar right-sidebar">
+            <div id="dynamicControlsArea">
+
+                <!-- 素材库（占位脚手架，后续在此接入素材管理） -->
+                <div class="material-lib">
+                    <div class="material-lib-header">
+                        <span class="material-lib-title">素材库</span>
+                        <span class="material-lib-tag">待接入</span>
+                    </div>
+                    <div class="material-lib-hint">点击 / 拖拽素材即可放入画板，常用图片、Logo、组件都可以放在这里。</div>
+                    <div class="material-lib-grid" id="materialLibGrid">
+                        <div class="material-empty">素材库区域已就位，后续在此管理素材</div>
+                    </div>
                 </div>
+
+                <div id="manualControlsWrapper">
+                <div class="manual-intro-hint">以下参数 AI 已自动配好，一般无需改动；如需微调可在此修改，右侧画布会实时更新。</div>
 
                 <!-- 以下控件区完全保持原样不动 -->
                 <div id="homeControls" class="control-group active">
@@ -602,7 +639,7 @@
                 </div>
 
                 <div id="membersChannelControls" class="control-group">
-                    <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                    <div style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 三个页面共用最上方<b>【全局基础配图】</b>区域上传的主图，系统会按各自画框等比适配。
                     </div>
                     <div id="membersChannelPage1ControlPanel" class="panel-group">
@@ -640,7 +677,7 @@
 
                 <div id="yikeEquipControls" class="control-group">
                     <div
-                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 视觉图(420x240)请在最上方<b>【全局基础配图】</b>统一上传。<br>
                         <span style="color:#666;">系统会自动将此Banner垫在有透视洞口的页面图底层。</span>
                     </div>
@@ -717,8 +754,8 @@
                     <div class="control-scroll-wrapper">
                         <div class="control-scroll-content">
                             <div class="sidebar-section">
-                                <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">Banner 底板 (670x78)</div>
-                                <div style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 12px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                                <div class="section-title" style="color: #2563EB; border-left: 3px solid #2563EB; padding-left: 8px;">Banner 底板 (670x78)</div>
+                                <div style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 12px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                                     👉 视觉图(156x78)请在最上方<b>【全局基础配图】</b>统一上传。<br>
                                     <span style="color:#666;">系统会自动将此 Banner 画在 670x78 的圆角底板中。</span>
                                 </div>
@@ -772,7 +809,7 @@
                     <div class="control-scroll-wrapper">
                         <div class="control-scroll-content">
                             <div class="sidebar-section">
-                                <div class="section-title" style="color: #258AFF; border-left: 3px solid #258AFF; padding-left: 8px;">Banner 底图 (1170x624)</div>
+                                <div class="section-title" style="color: #2563EB; border-left: 3px solid #2563EB; padding-left: 8px;">Banner 底图 (1170x624)</div>
                                 <label id="yikeHomeBgUploadDropZone" class="upload-drop-zone" for="yikeHomeBgUpload">
                                     <img id="yikeHomeBgPreviewImg" class="upload-preview-img" src="assets/photo-home-beijing.png" alt="底图预览">
                                     <span class="upload-text">点击或将图片拖拽到此处替换</span>
@@ -905,7 +942,7 @@
 
                 <div id="mySpaceControls" class="control-group">
                     <div
-                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
                     <div class="panel-group">
@@ -1108,7 +1145,7 @@
 
                 <div id="myActivityControls" class="control-group">
                     <div
-                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
                     <div class="panel-group">
@@ -1190,7 +1227,7 @@
 
                 <div id="peerSharingControls" class="control-group">
                     <div
-                        style="font-size: 12px; color: #258AFF; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #eef5ff; border-radius: 4px;">
+                        style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 右侧配图(270x270)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
                     <div class="panel-group">
@@ -1368,6 +1405,7 @@
                 <div style="font-size: 24px; margin-bottom: 10px;">🚧</div>
                 <div>该配置面板正在开发中，敬请期待...</div>
             </div>
+            </div>
         </aside>
     </div>
 
@@ -1417,7 +1455,7 @@
             <div class="export-modal-body">
                 <div style="padding-bottom: 12px; border-bottom: 1px solid #e0e6ed; margin-bottom: 16px;">
                     <label
-                        style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #258AFF;">
+                        style="font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; color: #2563EB;">
                         <input type="checkbox" id="selectAllExport" checked
                             style="cursor: pointer; width: 16px; height: 16px;"> 全选 / 取消全选
                     </label>
@@ -1456,7 +1494,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.9 NA - 会员频道下拉2楼 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMembersChannelPage1Banner" class="export-item-chk" checked> 单列-独立切图</label>
                     <label><input type="checkbox" id="chkMembersChannelPage1Page" class="export-item-chk" checked> 单列-页面预览</label>
                     <label><input type="checkbox" id="chkMembersChannelPage2Banner" class="export-item-chk" checked> 双列-独立切图</label>
@@ -1466,7 +1504,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.11 NA - 视频/音频/共享页右上icon <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkVideoAudioShareIconExport" class="export-item-chk" checked> 右上icon-独立切图
                         (114x114)</label>
                     <label><input type="checkbox" id="chkVideoAudioSharePageExport" class="export-item-chk" checked>
@@ -1474,7 +1512,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.15 NA - 会员频道大卡 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMembershipChannelCardExport" class="export-item-chk" checked> 大卡-独立切图
                         (1092x597)</label>
                     <label><input type="checkbox" id="chkMembershipChannelCardPageExport" class="export-item-chk" checked>
@@ -1482,7 +1520,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.12 NA - 等级福利商品图 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
                         【A级资源】导出为 342×342 留白版切图，图片不会顶满外框。
                     </div>
@@ -1497,7 +1535,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.13 NA - 搜索框icon <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkSearchIconExport" class="export-item-chk" checked> 搜索框-独立切图
                         (204x204)</label>
                     <label><input type="checkbox" id="chkSearchPageExport" class="export-item-chk" checked>
@@ -1505,7 +1543,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.16 NA - 我的空间/简单扫描 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMySpaceExport" class="export-item-chk" checked> 我的空间-独立切图
                         (1182x252)</label>
                     <label><input type="checkbox" id="chkMySpacePageExport" class="export-item-chk" checked>
@@ -1517,7 +1555,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.17 NA - 活动中心 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkMyActivityExport" class="export-item-chk" checked> 活动中心-独立切图
                         (670x320)</label>
                     <label><input type="checkbox" id="chkMyActivityPageExport" class="export-item-chk" checked>
@@ -1525,7 +1563,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.18 NA - 共享点对点 <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkPeerSharingExport" class="export-item-chk" checked> 共享点对点-独立切图
                         (670x320)</label>
                     <label><input type="checkbox" id="chkPeerSharingPageExport" class="export-item-chk" checked>
@@ -1533,7 +1571,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.19 NA - 共享点对点icon（push） <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <label><input type="checkbox" id="chkPeerSharingIconPushExport" class="export-item-chk" checked> 共享点对点icon-独立切图
                         (300x300)</label>
                     <label><input type="checkbox" id="chkPeerSharingIconPushPageExport" class="export-item-chk" checked>
@@ -1541,7 +1579,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.20 NA - 网盘商城feed流长banner <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
                         输出尺寸 522×837，顶部安全区 522×522，JPG 导出。
                     </div>
@@ -1550,7 +1588,7 @@
                 </div>
                 <div class="export-group" data-bu="wangpan">
                     <div class="export-group-title">A1.1.21 NA - 商城feed流宽banner <span class="export-badge"
-                            style="color:#258AFF;">【A级】</span></div>
+                            style="color:#2563EB;">【A级】</span></div>
                     <div style="font-size: 12px; color: #666; line-height: 1.6; margin: 8px 0 10px;">
                         输出尺寸 522×336，主图 180×180，JPG 导出。
                     </div>
@@ -1584,12 +1622,28 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260730-exportfix2"></script>
     <script>
-        // 注册 Service Worker：二次加载资源走本地缓存，避免每次都慢慢下载
+        // 手动微调控件保留在最右侧栏、素材库下方：点击画布中的页面时，
+        // 右侧栏自动显示并滚动定位到对应页面的调整项（由 .active 类控制显隐）。
+        (function () {
+            var wrap = document.getElementById('manualControlsWrapper');
+            if (wrap) wrap.classList.remove('manual-collapsed'); // 常驻展开，内部按 .active 显示当前页
+            window.__manualInsetLeft = 0;
+
+            // 底部 AI 输入栏：滚轮事件不冒泡到画布，避免在输入框里滚动时误触发画布平移
+            var aiDock = document.getElementById('aiPromptArea');
+            if (aiDock) {
+                aiDock.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: false });
+            }
+        })();
+
+        // 关闭旧的 Service Worker 缓存：注册的 sw.js 会自动清空缓存并注销自身，
+        // 页面始终从服务器拿最新代码，避免看到旧版本。
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
+                if (window.caches) caches.keys().then(ks => ks.forEach(k => caches.delete(k))).catch(() => {});
             });
         }
     </script>
