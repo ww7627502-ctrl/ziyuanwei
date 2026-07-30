@@ -1920,46 +1920,53 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
 async function loadImage(src) {
     if (!src) return null;
     if (globalImageCache[src]) return globalImageCache[src];
-    if (src.startsWith('data:')) {
-        return new Promise(resolve => {
-            const img = new Image();
-            img.onload = () => { globalImageCache[src] = img; resolve(img); };
-            img.onerror = () => resolve(new Image());
-            img.src = src;
-        });
-    }
-    const netSrc = cdnUrl(src);
-    const tryDirectLoad = (url) => new Promise(resolve => {
+
+    const cacheAndResolve = (img, resolve) => {
+        if (img && img.width) globalImageCache[src] = img;
+        resolve(img || new Image());
+    };
+
+    const loadViaImage = (url, options = {}) => new Promise(resolve => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        let settled = false;
+        const done = (result) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            cacheAndResolve(result, resolve);
+        };
+        const timer = setTimeout(() => done(null), options.timeout || 8000);
+        if (options.crossOrigin) img.crossOrigin = 'anonymous';
         img.decoding = 'async';
-        img.onload = () => { globalImageCache[src] = img; resolve(img); };
-        img.onerror = () => resolve(null);
+        img.onload = () => done(img);
+        img.onerror = () => done(null);
         img.src = url;
     });
-    const directImg = await tryDirectLoad(netSrc);
+
+    if (src.startsWith('data:')) return await loadViaImage(src);
+
+    const netSrc = cdnUrl(src);
+    const isCrossOrigin = /^https?:\/\//.test(netSrc) && new URL(netSrc, window.location.href).origin !== window.location.origin;
+    const directImg = await loadViaImage(netSrc, { crossOrigin: isCrossOrigin });
     if (directImg && directImg.width) return directImg;
+
     try {
-        const response = await fetch(netSrc);
+        const response = await fetch(netSrc, { cache: 'force-cache' });
+        if (!response.ok) throw new Error(`图片加载失败: ${response.status}`);
         const blob = await response.blob();
-        return await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const img = new Image();
-                img.onload = () => { globalImageCache[src] = img; resolve(img); };
-                img.onerror = () => resolve(new Image());
-                img.src = reader.result;
-            };
-            reader.readAsDataURL(blob);
-        });
+        const objectUrl = URL.createObjectURL(blob);
+        const blobImg = await loadViaImage(objectUrl);
+        URL.revokeObjectURL(objectUrl);
+        if (blobImg && blobImg.width) {
+            globalImageCache[src] = blobImg;
+            return blobImg;
+        }
     } catch (e) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => { globalImageCache[src] = img; resolve(img); };
-            img.onerror = () => resolve(new Image());
-            img.src = src;
-        });
+        console.warn('图片加载回退失败:', src, e);
     }
+
+    const fallbackImg = await loadViaImage(src);
+    return fallbackImg || new Image();
 }
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url]; if (!txt) { try { const res = await fetch(url); if (!res.ok) return new Image(); txt = await res.text(); globalSvgTextCache[url] = txt; } catch (e) { return new Image(); } }
