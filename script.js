@@ -1918,10 +1918,48 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     ctx.drawImage(off, ix, iy, iw, ih);
 }
 async function loadImage(src) {
-    if (!src) return null; if (globalImageCache[src]) return globalImageCache[src];
-    if (src.startsWith('data:')) { return new Promise(resolve => { const img = new Image(); img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => resolve(new Image()); img.src = src; }); }
+    if (!src) return null;
+    if (globalImageCache[src]) return globalImageCache[src];
+    if (src.startsWith('data:')) {
+        return new Promise(resolve => {
+            const img = new Image();
+            img.onload = () => { globalImageCache[src] = img; resolve(img); };
+            img.onerror = () => resolve(new Image());
+            img.src = src;
+        });
+    }
     const netSrc = cdnUrl(src);
-    try { const response = await fetch(netSrc); const blob = await response.blob(); return new Promise((resolve) => { const reader = new FileReader(); reader.onloadend = () => { const img = new Image(); img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => resolve(new Image()); img.src = reader.result; }; reader.readAsDataURL(blob); }); } catch (e) { return new Promise((resolve) => { const img = new Image(); img.crossOrigin = 'Anonymous'; img.onload = () => { globalImageCache[src] = img; resolve(img); }; img.onerror = () => { const fallback = new Image(); fallback.onload = () => { globalImageCache[src] = fallback; resolve(fallback); }; fallback.onerror = () => resolve(new Image()); fallback.src = src; }; img.src = netSrc; }); }
+    const tryDirectLoad = (url) => new Promise(resolve => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.decoding = 'async';
+        img.onload = () => { globalImageCache[src] = img; resolve(img); };
+        img.onerror = () => resolve(null);
+        img.src = url;
+    });
+    const directImg = await tryDirectLoad(netSrc);
+    if (directImg && directImg.width) return directImg;
+    try {
+        const response = await fetch(netSrc);
+        const blob = await response.blob();
+        return await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const img = new Image();
+                img.onload = () => { globalImageCache[src] = img; resolve(img); };
+                img.onerror = () => resolve(new Image());
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(blob);
+        });
+    } catch (e) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => { globalImageCache[src] = img; resolve(img); };
+            img.onerror = () => resolve(new Image());
+            img.src = src;
+        });
+    }
 }
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url]; if (!txt) { try { const res = await fetch(url); if (!res.ok) return new Image(); txt = await res.text(); globalSvgTextCache[url] = txt; } catch (e) { return new Image(); } }
