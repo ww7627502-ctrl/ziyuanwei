@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>资源位一键适配平台</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260731-terminalsplit1">
     <!-- 引入 Figma 风格的颜色选择器库 (Pickr) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
@@ -332,17 +332,17 @@
 
                 <div id="mallFeedWideBannerView" class="view-section">
                     <div style="text-align: center; margin-bottom: 24px; color: #888; font-size: 13px;">
-                        提示：两个页面共用同一个 banner，点击任意预览图可查看纯净版切图 (522x336)</div>
+                        提示：两个页面独立配置，点击对应预览图可查看对应纯净版切图 (522x336)</div>
                     <div class="preview-grid flex-center">
                         <div class="preview-card transparent-card">
                             <div class="card-title text-center">商城 feed 流宽 banner - 页面1</div>
                             <canvas id="mallFeedWideBannerPage1Canvas" class="phone-canvas zoomable-canvas"
-                                data-target="dev_1_1_21"></canvas>
+                                data-target="mallFeedWideBannerPage1"></canvas>
                         </div>
                         <div class="preview-card transparent-card">
                             <div class="card-title text-center">商城 feed 流宽 banner - 页面2</div>
                             <canvas id="mallFeedWideBannerPage2Canvas" class="phone-canvas zoomable-canvas"
-                                data-target="dev_1_1_21"></canvas>
+                                data-target="mallFeedWideBannerPage2"></canvas>
                         </div>
                     </div>
                 </div>
@@ -400,25 +400,29 @@
         </div>
         </div>
 
-        <!-- ==================== 右侧：参数控制面板 ==================== -->
+        <!-- ==================== 右侧：素材库与资源位操作 ==================== -->
         <aside class="sidebar right-sidebar">
             <div id="dynamicControlsArea">
 
-                <!-- 素材库（占位脚手架，后续在此接入素材管理） -->
-                <div class="material-lib">
+                <!-- 素材库：支持批量图片与文件夹导入，自动按素材用途粗分组 -->
+                <div class="material-lib" id="materialLibPanel">
                     <div class="material-lib-header">
                         <span class="material-lib-title">素材库</span>
-                        <span class="material-lib-tag">待接入</span>
+                        <span class="material-lib-tag" id="materialLibCount">已接入</span>
                     </div>
-                    <div class="material-lib-hint">点击 / 拖拽素材即可放入画板，常用图片、Logo、组件都可以放在这里。</div>
+                    <div class="material-lib-hint">项目内置素材已放入 assets/materials，也支持继续导入图片或整个文件夹；系统会按用途先分类，点击素材即可放入当前画板主图。</div>
+                    <div class="material-lib-actions">
+                        <label class="material-lib-btn" for="materialFileInput">导入图片</label>
+                        <label class="material-lib-btn secondary" for="materialFolderInput">导入文件夹</label>
+                        <input type="file" id="materialFileInput" style="display:none;" accept="image/*" multiple>
+                        <input type="file" id="materialFolderInput" style="display:none;" accept="image/*" webkitdirectory directory multiple>
+                    </div>
                     <div class="material-lib-grid" id="materialLibGrid">
-                        <div class="material-empty">素材库区域已就位，后续在此管理素材</div>
+                        <div class="material-empty">把素材文件夹拖进来，或点击上方导入。命名不标准也会先按图片特征分组。</div>
                     </div>
                 </div>
 
                 <div id="manualControlsWrapper">
-                <div class="manual-intro-hint">以下参数 AI 已自动配好，一般无需改动；如需微调可在此修改，右侧画布会实时更新。</div>
-
                 <!-- 以下控件区完全保持原样不动 -->
                 <div id="homeControls" class="control-group active">
                     <div id="homeTopControlPanel" class="panel-group">
@@ -874,7 +878,7 @@
                                 <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                                     <div class="color-picker-wrap"><span>背景起始</span><input type="color" id="membershipChannelCardBgColor1" value="#F4F476"></div>
                                     <div class="color-picker-wrap"><span>背景终止</span><input type="color" id="membershipChannelCardBgColor2" value="#83FFE6"></div>
-                                    <div class="color-picker-wrap"><span>文字/描边</span><input type="color" id="membershipChannelCardTextColor" value="#074400"></div>
+                                    <div class="color-picker-wrap"><span>文字/描边</span><input type="color" id="membershipChannelCardTextColor" value="#102114"></div>
                                 </div>
                             </div>
                             <div class="input-group" style="margin-top: 12px;">
@@ -945,7 +949,7 @@
                         style="font-size: 12px; color: #2563EB; line-height: 1.6; margin-bottom: 16px; padding: 8px; background: #EFF4FF; border-radius: 4px;">
                         👉 右侧配图(300x220)请在最上方<b>【全局基础配图】</b>区域统一上传。
                     </div>
-                    <div class="panel-group">
+                    <div id="mySpaceControlPanel" class="panel-group">
                         <div class="panel-group-header">我的空间 Banner 配置</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
@@ -1037,7 +1041,7 @@
                         </div>
                     </div>
 
-                    <div class="panel-group" style="margin-top: 24px;">
+                    <div id="simpleScanControlPanel" class="panel-group" style="margin-top: 24px;">
                         <div class="panel-group-header">简单扫描 Banner 配置</div>
                         <div class="panel-group-body">
                             <div class="sidebar-section">
@@ -1349,16 +1353,17 @@
                 </div>
 
                 <div id="mallFeedWideBannerControls" class="control-group">
-                    <div class="panel-group">
-                        <div class="panel-group-header">商城 feed 流宽 banner 配置</div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 12px;">
+                        【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
+                        两个页面的文案与配色独立，主图仍使用同一张素材。
+                    </div>
+                    <div id="mallFeedWideBannerPage1ControlPanel" class="panel-group">
+                        <div class="panel-group-header">商城 feed 流宽 banner - 页面1</div>
                         <div class="panel-group-body">
-                            <div style="font-size: 12px; color: #666; line-height: 1.6;">
-                                【A级资源】请在上方<b>【全局基础配图】</b>区域上传图片。<br>
-                                画板尺寸 522x336，主图安全区 180x180 放在 x313, y127。<br>
-                                页面1 位置 x572.26, y1195；页面2 位置 x22, y1332。<br>
-                                背景渐变和字体颜色都可调整，导出 JPG。
+                            <div style="font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 12px;">
+                                页面1 位置 x572.26, y1195。
                             </div>
-                            <div class="sidebar-section" style="margin-top: 12px;">
+                            <div class="sidebar-section">
                                 <div class="section-title">背景渐变</div>
                                 <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
                                     <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
@@ -1398,6 +1403,52 @@
                             </div>
                         </div>
                     </div>
+                    <div id="mallFeedWideBannerPage2ControlPanel" class="panel-group" style="margin-top: 24px;">
+                        <div class="panel-group-header">商城 feed 流宽 banner - 页面2</div>
+                        <div class="panel-group-body">
+                            <div style="font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 12px;">
+                                页面2 位置 x22, y1332。
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title">背景渐变</div>
+                                <div style="background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 10px;">
+                                        <div class="color-picker-wrap"><span>起始</span><input type="color" id="mallFeedWideBannerPage2Grad1" value="#00C2B8"></div>
+                                        <div class="color-picker-wrap"><span>终止</span><input type="color" id="mallFeedWideBannerPage2Grad2" value="#93E0FF"></div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 12px; color: #666; width: 40px;">角度</span>
+                                        <input type="range" id="mallFeedWideBannerPage2GradAngle" min="0" max="360" value="90" style="flex: 1;">
+                                        <span id="mallFeedWideBannerPage2GradAngleVal" style="font-size: 12px; font-weight: bold; color: #333; width: 40px; text-align: right;">90°</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <div class="section-title">文案配置</div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">第一行 (最多8字):</span>
+                                        <input type="color" id="mallFeedWideBannerPage2TitleColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerPage2Title" value="主标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">第二行 (最多8字):</span>
+                                        <input type="color" id="mallFeedWideBannerPage2SubColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerPage2Sub" value="副标题最多8个字" maxlength="8">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <span style="margin: 0;">按钮字 (最多3字):</span>
+                                        <input type="color" id="mallFeedWideBannerPage2BtnColor" value="#FFFFFF" style="width: 24px; height: 24px; border: none; padding: 0; cursor: pointer; border-radius: 4px; background: transparent;">
+                                    </div>
+                                    <input type="text" id="mallFeedWideBannerPage2BtnText" value="按钮字" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1432,6 +1483,8 @@
         <canvas id="peerSharingIconPushExportCanvas"></canvas>
         <canvas id="cloudStoreFeedLongBannerExportCanvas"></canvas>
         <canvas id="mallFeedWideBannerExportCanvas"></canvas>
+        <canvas id="mallFeedWideBannerPage1ExportCanvas"></canvas>
+        <canvas id="mallFeedWideBannerPage2ExportCanvas"></canvas>
         <canvas id="yikeEquipExportCanvas"></canvas>
         <canvas id="yikeCashExportCanvas"></canvas>
         <canvas id="yikeHomeExportCanvas"></canvas>
@@ -1622,13 +1675,13 @@
         </div>
     </div>
 
-    <script src="script.js?v=20260730-loadfix1"></script>
+    <script src="script.js?v=20260731-terminalsplit1"></script>
     <script>
-        // 手动微调控件保留在最右侧栏、素材库下方：点击画布中的页面时，
-        // 右侧栏自动显示并滚动定位到对应页面的调整项（由 .active 类控制显隐）。
+        // 手动微调控件会由脚本移动到画布下方，右侧栏只保留素材库。
+        // 点击画布中的页面时，底部操作区自动定位到对应页面的调整项（由 .active 类控制显隐）。
         (function () {
             var wrap = document.getElementById('manualControlsWrapper');
-            if (wrap) wrap.classList.remove('manual-collapsed'); // 常驻展开，内部按 .active 显示当前页
+            if (wrap) wrap.classList.remove('manual-collapsed'); // 内部按 .active 显示当前页，默认由脚本收起为覆盖层
             window.__manualInsetLeft = 0;
 
             // 底部 AI 输入栏：滚轮事件不冒泡到画布，避免在输入框里滚动时误触发画布平移

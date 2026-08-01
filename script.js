@@ -38,11 +38,48 @@ const PAGE_DIRECTORY = {
         { value: 'dev_1_1_32_bg', text: 'A1.1.32 NA - 我的页背景皮肤配置规范' },
         { value: 'dev_1_1_32_push', text: 'A1.1.32 NA - 首页push' }
     ],
-    'PC': [{ value: 'pc_link', text: 'A1.2.1 PC - 首页文字链' }],
-    'Web': [{ value: 'web_link', text: 'A1.3.1 Web - 文字链' }],
-    'Wap': [{ value: 'wap_link', text: 'A1.4.1 Wap - 有效外链页' }],
-    'Mac': [{ value: 'mac_link', text: 'A1.5.1 Mac - 首页文字链' }],
-    'ipd': [{ value: 'ipd_dev', text: 'A1.6 ipd端配置项' }]
+    'PC': [{
+        title: 'A1.2 PC端',
+        items: [
+            { value: 'pc_home_banner', text: 'A1.2.1 PC-首页文字链banner', placeholder: true },
+            { value: 'pc_bottom_tray', text: 'A1.2.2 PC-右下角托盘', placeholder: true },
+            { value: 'pc_transfer_corner', text: 'A1.2.3 PC-传输页左下角', placeholder: true },
+            { value: 'pc_corner_badge', text: 'A1.2.4 PC-角标', placeholder: true },
+            { value: 'pc_cashier_banner', text: 'A1.2.5 PC-收银台运营位banner', placeholder: true },
+            { value: 'pc_member_hover_banner', text: 'A1.2.6 PC-会员信息hover状态banner', placeholder: true }
+        ]
+    }],
+    'Web': [{
+        title: 'A1.3 Web端',
+        items: [
+            { value: 'web_link', text: 'A1.3.1 Web-文字链', placeholder: true },
+            { value: 'web_popup', text: 'A1.3.2 Web-弹窗', placeholder: true },
+            { value: 'web_save_banner', text: 'A1.3.3 Web-保存弹窗banner', placeholder: true },
+            { value: 'web_pending_extract', text: 'A1.3.4 Web-待提取页', placeholder: true },
+            { value: 'web_extract_page', text: 'A1.3.5 Web-提取页', placeholder: true }
+        ]
+    }],
+    'Wap': [{
+        title: 'A1.4 Wap端',
+        items: [
+            { value: 'wap_corner_badge', text: 'A1.4.1 Wap-有效外链页角标', placeholder: true },
+            { value: 'wap_external_page', text: 'A1.4.2 Wap-外链页', placeholder: true }
+        ]
+    }],
+    'Mac': [{
+        title: 'A1.5 Mac端',
+        items: [
+            { value: 'mac_home_banner', text: 'A1.5.1 Mac-首页文字链banner', placeholder: true },
+            { value: 'mac_home_badge', text: 'A1.5.2 Mac-首页角标', placeholder: true }
+        ]
+    }],
+    'ipd': [{
+        title: 'A1.6 ipd端',
+        items: [
+            { value: 'ipd_home_banner', text: 'A1.6.1 ipad-首页banner', placeholder: true },
+            { value: 'ipd_floating_strip', text: 'A1.6.2 ipad-首页悬浮飘条', placeholder: true }
+        ]
+    }]
 };
 // 记录当前所在的业务线
 let currentBU = 'wangpan';
@@ -72,14 +109,91 @@ const YIKE_PAGE_DIRECTORY = {
 // 新增：出海方向专属目录结构
 const CHUHAI_PAGE_DIRECTORY = {
     'NA': [
-        { value: 'chuhai_1', text: 'C1.1.1 NA - 首页弹窗（大）' },
-        { value: 'chuhai_2', text: 'C1.1.2 NA - 首页弹窗（小）' },
-        { value: 'chuhai_3', text: 'C1.1.3 NA - 侧位悬浮' },
-        { value: 'chuhai_4', text: 'C1.1.4 NA - 福利中心大曝光运营位' },
-        { value: 'chuhai_5', text: 'C1.1.5 NA - 福利中心banner运营位' },
-        { value: 'chuhai_6', text: 'C1.1.6 NA - 福利中心单元素图' }
+        {
+            title: 'C1.1 NA端',
+            items: [
+                { value: 'chuhai_na_1', text: 'C1.1.1 NA - 首页弹窗（大）', placeholder: true },
+                { value: 'chuhai_na_2', text: 'C1.1.2 NA - 首页弹窗（小）', placeholder: true },
+                { value: 'chuhai_na_3', text: 'C1.1.3 NA - 侧位悬浮', placeholder: true },
+                { value: 'chuhai_na_4', text: 'C1.1.4 NA - 福利中心大曝光运营位', placeholder: true },
+                { value: 'chuhai_na_5', text: 'C1.1.5 NA - 福利中心banner运营位', placeholder: true },
+                { value: 'chuhai_na_6', text: 'C1.1.6 NA - 福利中心单元素图', placeholder: true }
+            ]
+        }
     ],
-    'PC': [], 'Web': [], 'Wap': [], 'Mac': [], 'ipd': []
+    'PC': [
+        {
+            title: 'C1.2 PC端（暂未配置运营位）',
+            items: [
+                { value: 'chuhai_pc_1', text: 'C1.2.1 PC - ', placeholder: true },
+                { value: 'chuhai_pc_2', text: 'C1.2.2 PC - ', placeholder: true },
+                { value: 'chuhai_pc_3', text: 'C1.2.3 PC - ', placeholder: true },
+                { value: 'chuhai_pc_4', text: 'C1.2.4 PC - ', placeholder: true }
+            ]
+        }
+    ],
+    'Web': [
+        {
+            title: 'C1.3 Web端',
+            items: [
+                { value: 'chuhai_web_1', text: 'C1.3.1 Web - ', placeholder: true },
+                { value: 'chuhai_web_2', text: 'C1.3.2 Web - ', placeholder: true },
+                { value: 'chuhai_web_3', text: 'C1.3.3 Web - ', placeholder: true },
+                { value: 'chuhai_web_4', text: 'C1.3.4 Web - ', placeholder: true },
+                { value: 'chuhai_web_5', text: 'C1.3.5 Web - ', placeholder: true },
+                { value: 'chuhai_web_6', text: 'C1.3.6 Web - ', placeholder: true }
+            ]
+        }
+    ],
+    'Wap': [
+        {
+            title: 'C1.4 Wap端',
+            items: [
+                { value: 'chuhai_wap_1', text: 'C1.4.1 wap - 有效外链页角标', placeholder: true },
+                { value: 'chuhai_wap_2', text: 'C1.4.2 wap - 外链页', placeholder: true }
+            ]
+        }
+    ],
+    'Mac': [],
+    'ipd': []
+};
+const WENKU_PAGE_DIRECTORY = {
+    'NA': [
+        {
+            title: 'A1.1 NA端',
+            items: [
+                { value: 'wenku_na_1', text: 'A1.1.1 NA - 开屏 iOS-3X', placeholder: true },
+                { value: 'wenku_na_2', text: 'A1.1.2 NA - 开屏 iOS-2', placeholder: true },
+                { value: 'wenku_na_3', text: 'A1.1.3 NA - 开屏 Android-1', placeholder: true },
+                { value: 'wenku_na_4', text: 'A1.1.3 NA - 开屏Android-X', placeholder: true },
+                { value: 'wenku_na_5', text: 'A1.1.4 NA - 文库APP首页banner', placeholder: true },
+                { value: 'wenku_na_6', text: 'A1.1.5 NA - 文库APP首页弹窗', placeholder: true },
+                { value: 'wenku_na_7', text: 'A1.1.6 NA - 首页页一楼', placeholder: true },
+                { value: 'wenku_mp_1', text: 'A1.2.1 小程序-首页banner设计', placeholder: true }
+            ]
+        }
+    ],
+    'PC': [
+        {
+            title: 'A1.3 PC端',
+            items: [
+                { value: 'wenku_pc_1', text: 'A1.4.1 文库PC阅读页左上角', placeholder: true },
+                { value: 'wenku_pc_2', text: 'A1.4.2 PC首页banner', placeholder: true },
+                { value: 'wenku_pc_3', text: 'A1.4.2 文库PC端搜索结果页', placeholder: true }
+            ]
+        }
+    ],
+    'Web': [
+        {
+            title: 'A1.4 WEP端',
+            items: [
+                { value: 'wenku_wep_1', text: 'A1.2.1 WEP端-首页banner设计', placeholder: true }
+            ]
+        }
+    ],
+    'Wap': [],
+    'Mac': [],
+    'ipd': []
 };
 const IMPLEMENTED_RESOURCE_PRIORITY = {
     wangpan: {
@@ -109,7 +223,7 @@ const config = {
     membershipChannelCardPage: 'assets/membership-channel-card-page.jpg', membershipChannelCardImage: 'assets/membership-channel-card-image.png',
     mySpacePage: 'assets/my-space-page.jpg', simpleScanPage: 'assets/simple-banner-scan.jpg',
     membersChannelPage1: 'assets/members-only-channel-page1.jpg', membersChannelPage2: 'assets/members-only-channel-page2.jpg', membersChannelPage3: 'assets/members-only-channel-page3.jpg',
-    membersChannelBanner1: 'assets/members-only-channel-banner1.svg', membersChannelBanner2: 'assets/members-only-channel-banner2.svg', membersChannelBanner3: 'assets/members-only-channel-banner3.svg',
+    membersChannelBanner1: 'assets/members-only-channel-banner1.svg', membersChannelBanner2: 'assets/members-only-channel-banner2.svg', membersChannelBanner3: 'assets/members-only-channel-banner3.svg?v=20260731-banner3fix1',
     searchBtSvg: 'assets/search-bt.svg', searchArrowSvg: 'assets/search-arrow.svg',
     mySpaceExampleImage: SHARED_BANNER_EXAMPLE_IMAGE, simpleScanExampleImage: 'assets/simple-banner-scan-image.png',
     myActivityPage: 'assets/my-activity-enter-banner.jpg', peerSharingPage: 'assets/peer-to-peer-sharing.jpg',
@@ -144,6 +258,21 @@ const wangpanWorkspace = document.getElementById('wangpanWorkspace');
 const emptyWorkspace = document.getElementById('emptyWorkspace');
 const resourceList = document.getElementById('resourceList');
 const baseGlobalPicArea = document.getElementById('baseGlobalPicArea');
+const materialLibPanel = document.getElementById('materialLibPanel');
+const materialLibGrid = document.getElementById('materialLibGrid');
+const materialLibCount = document.getElementById('materialLibCount');
+const materialFileInput = document.getElementById('materialFileInput');
+const materialFolderInput = document.getElementById('materialFolderInput');
+const smartActionPanel = document.getElementById('smartActionPanel');
+const smartActionToggleBtn = document.getElementById('smartActionToggleBtn');
+const smartActionTitle = document.getElementById('smartActionTitle');
+const smartActionExportBtn = document.getElementById('smartActionExportBtn');
+const smartActionDetail = document.getElementById('smartActionDetail');
+let smartActionMode = null;
+let smartActionPageIndex = 0;
+let smartActionPanelExpanded = false;
+let materialLibraryItems = [];
+let materialLibrarySeed = 0;
 const homeControls = document.getElementById('homeControls');
 const myPageControls = document.getElementById('myPageControls');
 const feedControls = document.getElementById('feedControls');
@@ -158,6 +287,8 @@ const peerSharingControls = document.getElementById('peerSharingControls');
 const peerSharingIconPushControls = document.getElementById('peerSharingIconPushControls');
 const cloudStoreFeedLongBannerControls = document.getElementById('cloudStoreFeedLongBannerControls');
 const mallFeedWideBannerControls = document.getElementById('mallFeedWideBannerControls');
+const mallFeedWideBannerPage1ControlPanel = document.getElementById('mallFeedWideBannerPage1ControlPanel');
+const mallFeedWideBannerPage2ControlPanel = document.getElementById('mallFeedWideBannerPage2ControlPanel');
 const paymentResultBannerControls = document.getElementById('paymentResultBannerControls');
 const developingPrompt = document.getElementById('developingPrompt');
 const viewDevelopingPrompt = document.getElementById('viewDevelopingPrompt');
@@ -218,6 +349,8 @@ const peerSharingExportCanvas = document.getElementById('peerSharingExportCanvas
 const peerSharingIconPushExportCanvas = document.getElementById('peerSharingIconPushExportCanvas'); const peerSharingIconPushExportCtx = peerSharingIconPushExportCanvas?.getContext('2d');
 const cloudStoreFeedLongBannerExportCanvas = document.getElementById('cloudStoreFeedLongBannerExportCanvas'); const cloudStoreFeedLongBannerExportCtx = cloudStoreFeedLongBannerExportCanvas?.getContext('2d');
 const mallFeedWideBannerExportCanvas = document.getElementById('mallFeedWideBannerExportCanvas'); const mallFeedWideBannerExportCtx = mallFeedWideBannerExportCanvas?.getContext('2d');
+const mallFeedWideBannerPage1ExportCanvas = document.getElementById('mallFeedWideBannerPage1ExportCanvas'); const mallFeedWideBannerPage1ExportCtx = mallFeedWideBannerPage1ExportCanvas?.getContext('2d');
+const mallFeedWideBannerPage2ExportCanvas = document.getElementById('mallFeedWideBannerPage2ExportCanvas'); const mallFeedWideBannerPage2ExportCtx = mallFeedWideBannerPage2ExportCanvas?.getContext('2d');
 const paymentResultBannerExportCanvas = document.getElementById('paymentResultBannerExportCanvas'); const paymentResultBannerExportCtx = paymentResultBannerExportCanvas?.getContext('2d');
 const textLine1Input = document.getElementById('textLine1'); const textLine2Input = document.getElementById('textLine2');
 const textCapsuleInput = document.getElementById('textCapsule'); const myPageTitle = document.getElementById('myPageTitle'); const myPageHighlight = document.getElementById('myPageHighlight'); const myPageSubtitle = document.getElementById('myPageSubtitle');
@@ -262,6 +395,9 @@ const cloudStoreFeedLongBannerTitle = document.getElementById('cloudStoreFeedLon
 const mallFeedWideBannerTitle = document.getElementById('mallFeedWideBannerTitle'); const mallFeedWideBannerSub = document.getElementById('mallFeedWideBannerSub'); const mallFeedWideBannerBtnText = document.getElementById('mallFeedWideBannerBtnText');
 const mallFeedWideBannerGrad1 = document.getElementById('mallFeedWideBannerGrad1'); const mallFeedWideBannerGrad2 = document.getElementById('mallFeedWideBannerGrad2');
 const mallFeedWideBannerTitleColor = document.getElementById('mallFeedWideBannerTitleColor'); const mallFeedWideBannerSubColor = document.getElementById('mallFeedWideBannerSubColor'); const mallFeedWideBannerBtnColor = document.getElementById('mallFeedWideBannerBtnColor');
+const mallFeedWideBannerPage2Title = document.getElementById('mallFeedWideBannerPage2Title'); const mallFeedWideBannerPage2Sub = document.getElementById('mallFeedWideBannerPage2Sub'); const mallFeedWideBannerPage2BtnText = document.getElementById('mallFeedWideBannerPage2BtnText');
+const mallFeedWideBannerPage2Grad1 = document.getElementById('mallFeedWideBannerPage2Grad1'); const mallFeedWideBannerPage2Grad2 = document.getElementById('mallFeedWideBannerPage2Grad2');
+const mallFeedWideBannerPage2TitleColor = document.getElementById('mallFeedWideBannerPage2TitleColor'); const mallFeedWideBannerPage2SubColor = document.getElementById('mallFeedWideBannerPage2SubColor'); const mallFeedWideBannerPage2BtnColor = document.getElementById('mallFeedWideBannerPage2BtnColor');
 const paymentResultBannerTitle = document.getElementById('paymentResultBannerTitle'); const paymentResultBannerSub = document.getElementById('paymentResultBannerSub'); const paymentResultBannerBtnText = document.getElementById('paymentResultBannerBtnText');
 const paymentResultBannerColorSelect = document.getElementById('paymentResultBannerColorSelect');
 const yikeEquipView = document.getElementById('yikeEquipView');
@@ -300,9 +436,10 @@ const businessUploadState = {
     wangpan: { src: null, img: null },
     yike: { src: null, img: null },
     chuhai: { src: null, img: null },
+    wenku: { src: null, img: null },
 };
 let userImgObj = null; let feedBgBannerObj = null; let topBgBannerObj = null; let userTopBannerTitleObj = null;
-function getActiveBusinessLineKey() { return currentBU === 'yike' ? 'yike' : currentBU === 'chuhai' ? 'chuhai' : 'wangpan'; }
+function getActiveBusinessLineKey() { return currentBU === 'yike' ? 'yike' : currentBU === 'chuhai' ? 'chuhai' : currentBU === 'wenku' ? 'wenku' : 'wangpan'; }
 function getDefaultUploadPreviewSrc(selectedResource = document.querySelector('.resource-item.active')?.dataset.value) {
     const key = getActiveBusinessLineKey();
     if (key === 'yike') {
@@ -407,6 +544,8 @@ const MODULE_INPUT_MAP = {
     'peerSharing': [{ id: 'peerSharingTitle1', key: 'title1', limit: 7 }, { id: 'peerSharingTitle2', key: 'title2', limit: 7 }, { id: 'peerSharingSub', key: 'sub', limit: 8 }, { id: 'peerSharingBtnText', key: 'btn', limit: 4 }],
     'cloudStoreFeedLongBanner': [{ id: 'cloudStoreFeedLongBannerTitle', key: 'title', limit: 8 }, { id: 'cloudStoreFeedLongBannerSub', key: 'sub', limit: 8 }, { id: 'cloudStoreFeedLongBannerBtnText', key: 'btn', limit: 3 }],
     'mallFeedWideBanner': [{ id: 'mallFeedWideBannerTitle', key: 'title', limit: 8 }, { id: 'mallFeedWideBannerSub', key: 'sub', limit: 8 }, { id: 'mallFeedWideBannerBtnText', key: 'btn', limit: 3 }],
+    'mallFeedWideBannerPage1': [{ id: 'mallFeedWideBannerTitle', key: 'title', limit: 8 }, { id: 'mallFeedWideBannerSub', key: 'sub', limit: 8 }, { id: 'mallFeedWideBannerBtnText', key: 'btn', limit: 3 }],
+    'mallFeedWideBannerPage2': [{ id: 'mallFeedWideBannerPage2Title', key: 'title', limit: 8 }, { id: 'mallFeedWideBannerPage2Sub', key: 'sub', limit: 8 }, { id: 'mallFeedWideBannerPage2BtnText', key: 'btn', limit: 3 }],
     'paymentResultBanner': [{ id: 'paymentResultBannerTitle', key: 'title', limit: 7 }, { id: 'paymentResultBannerSub', key: 'sub', limit: 8 }, { id: 'paymentResultBannerBtnText', key: 'btn', limit: 3 }],
     'yikeEquip': [{ id: 'yikeEquipTitle', key: 'title', limit: 9 }, { id: 'yikeEquipSub', key: 'sub', limit: 12 }, { id: 'yikeEquipBtnText', key: 'btn', limit: 4 }],
     'yikeHome': [{ id: 'yikeHomeTitle', key: 'title', limit: 8 }, { id: 'yikeHomeSub', key: 'sub', limit: 11 }, { id: 'yikeHomeSubHighlight', key: 'highlight', limit: 11 }, { id: 'yikeHomeTitleColor', key: 'titleColor', limit: 7 }, { id: 'yikeHomeSubColor', key: 'subColor', limit: 7 }, { id: 'yikeHomeSubHighlightColor', key: 'highlightColor', limit: 7 }],
@@ -420,6 +559,8 @@ const MODULE_RENDER_FNS = {
     'activity': renderMyActivityCanvas, 'peerSharing': renderPeerSharingCanvas,
     'cloudStoreFeedLongBanner': renderCloudStoreFeedLongBannerCanvas,
     'mallFeedWideBanner': renderMallFeedWideBannerCanvas,
+    'mallFeedWideBannerPage1': renderMallFeedWideBannerCanvas,
+    'mallFeedWideBannerPage2': renderMallFeedWideBannerCanvas,
     'paymentResultBanner': renderPaymentResultBannerCanvas,
     'yikeEquip': renderYikeEquipCanvas, 'yikeHome': renderYikeHomeCanvas,
     'yikeCash': renderYikeCashCanvas
@@ -438,7 +579,7 @@ const AI_RESOURCE_MATCHERS = [
     { resource: 'dev_1_1_18', bu: 'wangpan', label: 'A1.1.18 NA - 共享点对点', patterns: [/A\s*1\.1\.18/i, /共享点对点/i, /点对点/i, /1023\s*[×x*]\s*488/] },
     { resource: 'dev_1_1_19', bu: 'wangpan', label: 'A1.1.19 NA - 共享点对点icon（push）', patterns: [/A\s*1\.1\.19/i, /共享点对点icon/i, /share[-_\s]?peer[-_\s]?to[-_\s]?peer[-_\s]?icon[-_\s]?push/i, /300\s*[×x*]\s*300/i, /300\s*[×x*]\s*330/i] },
     { resource: 'dev_1_1_20', bu: 'wangpan', label: 'A1.1.20 NA - 网盘商城feed流长banner', patterns: [/A\s*1\.1\.20/i, /网盘商城\s*feed流长\s*banner/i, /网盘商城\s*feed.*长\s*banner/i, /long[-_\s]?banner[-_\s]?in[-_\s]?the[-_\s]?cloud[-_\s]?store[-_\s]?feed/i, /522\s*[×x*]\s*837/i] },
-    { resource: 'dev_1_1_21', bu: 'wangpan', label: 'A1.1.21 NA - 商城feed流宽banner', patterns: [/A\s*1\.1\.21/i, /商城\s*feed流\s*宽\s*banner/i, /商城\s*feed.*宽\s*banner/i, /mall[-_\s]?feed[-_\s]?wide[-_\s]?banner/i, /mal[-_\s]?eed[-_\s]?wide[-_\s]?banner/i, /522\s*[×x*]\s*336/i, /page\s*1|page\s*2/i] },
+    { resource: 'dev_1_1_21', bu: 'wangpan', label: 'A1.1.21 NA - 商城feed流宽banner', patterns: [/A\s*1\.1\.21/i, /商城\s*feed流\s*宽\s*banner/i, /商城\s*feed.*宽\s*banner/i, /mall[-_\s]?feed[-_\s]?wide[-_\s]?banner/i, /mal[-_\s]?eed[-_\s]?wide[-_\s]?banner/i, /522\s*[×x*]\s*336/i] },
     { resource: 'yike_4', bu: 'yike', label: 'B1.1.4 NA - 首页banner', patterns: [/B\s*1\.1\.4/i, /一刻.*首页\s*banner/i, /一刻相册.*首页/i] },
     { resource: 'yike_5', bu: 'yike', label: 'B1.1.5 NA - 设备banner', patterns: [/B\s*1\.1\.5/i, /一刻.*设备\s*banner/i] },
     { resource: 'yike_7', bu: 'yike', label: 'B1.1.7 NA - 收银台banner', patterns: [/B\s*1\.1\.7/i, /一刻.*收银台\s*banner/i, /一刻.*收银台/i] }
@@ -481,11 +622,15 @@ const RESOURCE_CONTROL_MAP = {
     membersChannelPage3: 'membersChannelPage3ControlPanel',
     dev_1_1_13: 'searchIconControls',
     dev_1_1_16: 'mySpaceControls',
+    mySpace: 'mySpaceControlPanel',
+    simpleScan: 'simpleScanControlPanel',
     dev_1_1_17: 'myActivityControls',
     dev_1_1_18: 'peerSharingControls',
     dev_1_1_19: 'peerSharingIconPushControls',
     dev_1_1_20: 'cloudStoreFeedLongBannerControls',
     dev_1_1_21: 'mallFeedWideBannerControls',
+    mallFeedWideBannerPage1: 'mallFeedWideBannerPage1ControlPanel',
+    mallFeedWideBannerPage2: 'mallFeedWideBannerPage2ControlPanel',
     dev_1_1_23: 'paymentResultBannerControls',
     yike_4: 'yikeHomeControls',
     yike_5: 'yikeEquipControls',
@@ -503,9 +648,13 @@ const RESOURCE_PREVIEW_TARGET_MAP = {
     membersChannelPage1: 'membersChannelPage1Canvas',
     membersChannelPage2: 'membersChannelPage2Canvas',
     membersChannelPage3: 'membersChannelPage3Canvas',
+    mySpace: 'mySpacePageCanvas',
+    simpleScan: 'simpleScanPageCanvas',
     dev_1_1_19: 'peerSharingIconPushPageCanvas',
     dev_1_1_20: 'cloudStoreFeedLongBannerPageCanvas',
     dev_1_1_21: 'mallFeedWideBannerView',
+    mallFeedWideBannerPage1: 'mallFeedWideBannerPage1Canvas',
+    mallFeedWideBannerPage2: 'mallFeedWideBannerPage2Canvas',
     dev_1_1_23: 'paymentResultBannerPageCanvas'
 };
 const VIEW_RESOURCE_MAP = {
@@ -520,8 +669,12 @@ const VIEW_RESOURCE_MAP = {
     membersChannelPage1Canvas: 'membersChannelPage1',
     membersChannelPage2Canvas: 'membersChannelPage2',
     membersChannelPage3Canvas: 'membersChannelPage3',
+    mySpacePageCanvas: 'mySpace',
+    simpleScanPageCanvas: 'simpleScan',
     peerSharingIconPushPageCanvas: 'dev_1_1_19',
     cloudStoreFeedLongBannerPageCanvas: 'dev_1_1_20',
+    mallFeedWideBannerPage1Canvas: 'mallFeedWideBannerPage1',
+    mallFeedWideBannerPage2Canvas: 'mallFeedWideBannerPage2',
     paymentResultBannerPageCanvas: 'dev_1_1_23'
 };
 const RESOURCE_LIST_ACTIVE_MAP = {
@@ -530,8 +683,12 @@ const RESOURCE_LIST_ACTIVE_MAP = {
     dev_1_1_11: 'dev_1_1_11',
     dev_1_1_12: 'dev_1_1_12',
     dev_1_1_15: 'dev_1_1_15',
+    mySpace: 'dev_1_1_16',
+    simpleScan: 'dev_1_1_16',
     peerSharingIconPushPageCanvas: 'dev_1_1_19',
     cloudStoreFeedLongBannerPageCanvas: 'dev_1_1_20',
+    mallFeedWideBannerPage1: 'dev_1_1_21',
+    mallFeedWideBannerPage2: 'dev_1_1_21',
     paymentResultBannerPageCanvas: 'dev_1_1_23',
     tierBasedRewardsProductImagesPage1: 'dev_1_1_12',
     tierBasedRewardsProductImagesPage2: 'dev_1_1_12',
@@ -578,6 +735,15 @@ function compactDemandTextForMatch(str = '') {
     }
     return text.replace(/([A-Za-z])\s+(?=[A-Za-z])/g, '$1');
 }
+function pruneConflictingResourceMatches(matched, normalized, compacted) {
+    if (!matched.includes('na_feed') || !matched.includes('dev_1_1_21')) return matched;
+    const hasStrongFeed10 = /A\s*1\.1\.4|首页运营\s*10\s*出\s*1|10\s*出\s*1/i.test(normalized) || /10\s*出\s*1/i.test(compacted);
+    const hasExplicitMallWide = /A\s*1\.1\.21|商城\s*feed流\s*宽\s*banner|商城\s*feed.*宽\s*banner|mall[-_\s]?feed[-_\s]?wide[-_\s]?banner|mal[-_\s]?eed[-_\s]?wide[-_\s]?banner|522\s*[×x*]\s*336/i.test(normalized) || /522\s*[×x*]\s*336/i.test(compacted);
+    if (hasStrongFeed10 && !hasExplicitMallWide) {
+        return matched.filter(resource => resource !== 'dev_1_1_21');
+    }
+    return matched;
+}
 function inferResourcesFromDemandText(text) {
     const normalized = normalizeDemandTextForMatch(text);
     const compacted = compactDemandTextForMatch(text);
@@ -586,7 +752,7 @@ function inferResourcesFromDemandText(text) {
     AI_RESOURCE_MATCHERS.forEach(item => {
         if (item.patterns.some(pattern => pattern.test(normalized) || pattern.test(compacted))) matched.push(item.resource);
     });
-    return [...new Set(matched)];
+    return pruneConflictingResourceMatches([...new Set(matched)], normalized, compacted);
 }
 function pickFirstTextMatch(text, patterns) {
     for (const pattern of patterns) {
@@ -620,6 +786,12 @@ function isActionButtonCopy(str = '') {
         || /^去.{1,3}$/.test(text)
         || /^立即.{1,3}$/.test(text)
         || /^马上.{1,3}$/.test(text);
+}
+function findFirstActionButtonCopy(text = '') {
+    const compacted = compactCopyForRole(text);
+    if (!compacted) return '';
+    const match = compacted.match(/(去创建|立即创建|去参与|立即参与|去查看|查看详情|了解更多|马上查看|去领取|立即领取|去开通|立即开通|去体验|立即体验|马上体验|去使用|立即使用|去看看)/);
+    return match ? match[1] : '';
 }
 function isNonContentNoiseCopy(str = '') {
     const text = compactCopyForRole(str);
@@ -735,6 +907,7 @@ function stripHomeLargeTitleBlock(text = '') {
 }
 function buildLocalFallbackConfigFromDemand(text, inferredResources) {
     const normalized = compactDemandTextForMatch(text);
+    const guessedBtn = findFirstActionButtonCopy(normalized);
     const fallback = {};
     if (!normalized) return fallback;
 
@@ -745,7 +918,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
             /主标题[“\"]([^“”\"]{2,12})[”\"][\s\S]{0,80}按钮[“\"]([^“”\"]{2,6})[”\"]/i,
             /首页\s*banner[\s\S]{0,120}(宝宝相簿|宝宝相册)[\s\S]{0,120}(去创建|立即创建)/i
         ]);
-        if (line1 || line2) fallback.home = [{ line1: cleanFallbackCopy(line1 || '宝宝相簿', 6), line2: cleanFallbackCopy(line2 || '去创建', 4) }];
+        if (line1 || line2) fallback.home = [{ line1: cleanFallbackCopy(line1 || '宝宝相簿', 6), line2: cleanFallbackCopy(line2 || guessedBtn || '去创建', 4) }];
     }
 
     if (inferredResources.includes('na_feed')) {
@@ -753,7 +926,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
             /10\s*出\s*1[\s\S]{0,220}标题[:：]?([^，,。；;\s]{2,14})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮[:：]?([^，,。；;\s]{2,6})/i,
             /10\s*出\s*1[\s\S]{0,220}(留存宝宝记忆|留存宝.记忆|职场解压站|珍藏成长|创建宝宝相册|创建宝宝相簿)[\s\S]{0,100}(高清原图[，,]全家共享|指尖轻击[，,]释放日常压力|珍藏成长[，,]定格美好|珍藏童年[，,]全家共享)[\s\S]{0,60}(立即创建|去创建|去参与)/i
         ]);
-        if (title || sub) fallback.feed = [{ title: cleanFallbackCopy(title, 7), sub: cleanFallbackCopy(sub, 10), btn: cleanFallbackCopy(btn || '去查看', 4) }];
+        if (title || sub) fallback.feed = [{ title: cleanFallbackCopy(title, 7), sub: cleanFallbackCopy(sub, 10), btn: cleanFallbackCopy(btn || guessedBtn || '去查看', 4) }];
     }
 
     if (inferredResources.includes('na_mypage')) {
@@ -761,7 +934,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
             /我的(?:页面|页).*?banner[\s\S]{0,260}(留存宝宝记忆|留存宝.记忆|创建宝宝相册|创建宝宝相簿|点点解压赢积分)[\s\S]{0,120}(高清原图[，,]全家共享|珍藏童年[，,]全家共享|珍藏成长[，,]定格美好|珍藏成長[，,]定格美好|告别内耗赢取好礼)[\s\S]{0,60}(去创建|立即创建|去参与)/i,
             /我的(?:页面|页).*?标题[:：]?([^，,。；;\s]{2,14})[\s\S]{0,80}副标题[:：]?([^。；;\n]{4,24})[\s\S]{0,50}按钮[:：]?([^，,。；;\s]{2,6})/i
         ]);
-        if (title || sub) fallback.mypage = [{ title: cleanFallbackCopy(title, 9), sub: cleanFallbackCopy(sub, 8), capsule: '', highlight: '', btn: cleanFallbackCopy(btn || '去创建', 4) }];
+        if (title || sub) fallback.mypage = [{ title: cleanFallbackCopy(title, 9), sub: cleanFallbackCopy(sub, 8), capsule: '', highlight: '', btn: cleanFallbackCopy(btn || guessedBtn || '去创建', 4) }];
     }
 
     if (inferredResources.includes('dev_1_1_16')) {
@@ -776,7 +949,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         } else if (mySpacePatternIndex === 1) {
             [title, sub, btn] = mySpaceGroups;
         }
-        if (title || sub || btn) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || '去创建', 4) }];
+        if (title || sub || btn) fallback.mySpace = [{ title: cleanFallbackCopy(title, 11), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || guessedBtn || '去创建', 4) }];
     }
 
     if (inferredResources.includes('dev_1_1_15')) {
@@ -789,7 +962,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
             btn = sub;
             sub = '';
         }
-        if (title || sub || btn) fallback.membershipChannelCard = [{ title: cleanFallbackCopy(title, 12), sub: cleanFallbackCopy(sub, 9), btn: cleanFallbackCopy(btn || '去领取', 3) }];
+        if (title || sub || btn) fallback.membershipChannelCard = [{ title: cleanFallbackCopy(title, 12), sub: cleanFallbackCopy(sub, 9), btn: cleanFallbackCopy(btn || guessedBtn || '去领取', 3) }];
     }
 
     const fillMembersChannelPage = (resource, key, titleLimit, options = {}) => {
@@ -810,7 +983,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
             else if (match.length === 1) [title] = match;
         }
         if (!title && !sub && !btn) return;
-        const item = { title: cleanFallbackCopy(title, titleLimit), btn: cleanFallbackCopy(btn || '去查看', 4) };
+        const item = { title: cleanFallbackCopy(title, titleLimit), btn: cleanFallbackCopy(btn || guessedBtn || '去查看', 4) };
         if (options.withSub) item.sub = cleanFallbackCopy(sub, 8);
         fallback[key] = [item];
     };
@@ -830,7 +1003,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         }
         if (!title && !sub) return;
         const [title1, title2] = splitFallbackTitlePair(title);
-        fallback[key] = [{ title1: cleanFallbackCopy(title1, 7), title2: cleanFallbackCopy(title2, 7), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || '去创建', 4) }];
+        fallback[key] = [{ title1: cleanFallbackCopy(title1, 7), title2: cleanFallbackCopy(title2, 7), sub: cleanFallbackCopy(sub, 8), btn: cleanFallbackCopy(btn || guessedBtn || '去创建', 4) }];
     };
     fillSquareBanner('dev_1_1_17', 'activity');
     fillSquareBanner('dev_1_1_18', 'peerSharing');
@@ -843,7 +1016,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         ];
         const match = pickFirstTextMatch(normalized, feedLongBannerPatterns);
         if (match.length >= 3) {
-            fallback.cloudStoreFeedLongBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || '按钮字', 3) }];
+            fallback.cloudStoreFeedLongBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || guessedBtn || '按钮字', 3) }];
         } else {
             fallback.cloudStoreFeedLongBanner = [{ title: '主标题最多8个字', sub: '副标题最多8个字', btn: '按钮字' }];
         }
@@ -855,7 +1028,7 @@ function buildLocalFallbackConfigFromDemand(text, inferredResources) {
         ];
         const match = pickFirstTextMatch(normalized, mallWideBannerPatterns);
         if (match.length >= 3) {
-            fallback.mallFeedWideBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || '按钮字', 3) }];
+            fallback.mallFeedWideBanner = [{ title: cleanFallbackCopy(match[0], 8), sub: cleanFallbackCopy(match[1], 8), btn: cleanFallbackCopy(match[2] || guessedBtn || '按钮字', 3) }];
         } else {
             fallback.mallFeedWideBanner = [{ title: '主标题最多8个字', sub: '副标题最多8个字', btn: '按钮字' }];
         }
@@ -884,6 +1057,47 @@ function setLimitedInputValue(inputId, value, limit) {
     if (!value) return;
     const el = document.getElementById(inputId);
     if (el) el.value = formatAndLimitText(value, limit);
+}
+function getMallFeedWideBannerPagePrefix(page = 1) {
+    return page === 2 ? 'mallFeedWideBannerPage2' : 'mallFeedWideBanner';
+}
+function getMallFeedWideBannerPageState(page = 1) {
+    const prefix = getMallFeedWideBannerPagePrefix(page);
+    const byId = suffix => document.getElementById(`${prefix}${suffix}`);
+    return {
+        title: byId('Title')?.value || '主标题最多8个字',
+        sub: byId('Sub')?.value || '副标题最多8个字',
+        btn: byId('BtnText')?.value || '按钮字',
+        titleColor: byId('TitleColor')?.value || '#FFFFFF',
+        subColor: byId('SubColor')?.value || '#FFFFFF',
+        btnColor: byId('BtnColor')?.value || '#FFFFFF',
+        grad1: byId('Grad1')?.value || (page === 2 ? '#00C2B8' : '#FF288F'),
+        grad2: byId('Grad2')?.value || (page === 2 ? '#93E0FF' : '#FF993C'),
+        gradAngle: byId('GradAngle')?.value || '90',
+        gradAngleValId: `${prefix}GradAngleVal`,
+    };
+}
+function applyMallFeedWideBannerPageState(page = 1, copy = {}) {
+    const prefix = getMallFeedWideBannerPagePrefix(page);
+    const byId = suffix => document.getElementById(`${prefix}${suffix}`);
+    const assignText = (suffix, value, limit) => {
+        if (value !== undefined && value !== null && value !== '') setLimitedInputValue(`${prefix}${suffix}`, value, limit);
+    };
+    assignText('Title', copy.title, 8);
+    assignText('Sub', copy.sub, 8);
+    assignText('BtnText', copy.btn, 3);
+    const setValue = (suffix, value) => {
+        const el = byId(suffix);
+        if (el && value !== undefined && value !== null) el.value = value;
+    };
+    setValue('TitleColor', copy.titleColor);
+    setValue('SubColor', copy.subColor);
+    setValue('BtnColor', copy.btnColor);
+    setValue('Grad1', copy.grad1);
+    setValue('Grad2', copy.grad2);
+    setValue('GradAngle', copy.gradAngle);
+    const angleVal = byId('GradAngleVal');
+    if (angleVal && copy.gradAngle !== undefined && copy.gradAngle !== null) angleVal.innerText = `${copy.gradAngle}°`;
 }
 function safeRenderABTestSwitcher(ctrlId, moduleKey) {
     try {
@@ -989,12 +1203,12 @@ async function applyFastLocalFallbackPreview(fallbackConfig, inferredResources, 
     }
     if (fallbackConfig.mallFeedWideBanner?.length) {
         const first = fallbackConfig.mallFeedWideBanner[0];
+        const second = fallbackConfig.mallFeedWideBanner[1] || first;
         window.abTestCopies.mallFeedWideBanner = fallbackConfig.mallFeedWideBanner;
         window.abTestActiveIndex.mallFeedWideBanner = 0;
-        setLimitedInputValue('mallFeedWideBannerTitle', first.title, 8);
-        setLimitedInputValue('mallFeedWideBannerSub', first.sub, 8);
-        setLimitedInputValue('mallFeedWideBannerBtnText', first.btn, 3);
-        safeRenderABTestSwitcher('mallFeedWideBannerControls', 'mallFeedWideBanner');
+        applyMallFeedWideBannerPageState(1, first);
+        applyMallFeedWideBannerPageState(2, second);
+        await renderMallFeedWideBannerCanvas();
     }
 
     const targetBU = getDominantBusinessFromResources(modules);
@@ -1087,6 +1301,14 @@ function updateCanvasTransform() {
 }
 // 自适应：把当前画板整体缩放到刚好放进可视区，居中显示，无需滑动
 function fitCanvasToViewport() {
+    if (container?.classList.contains('ai-result-preview-mode')) {
+        cvsScale = 1;
+        cvsTranslateX = 0;
+        cvsTranslateY = 0;
+        container.style.transform = 'none';
+        if (zoomLevelText) zoomLevelText.innerText = '100%';
+        return;
+    }
     const activeView = container.querySelector('.view-section.active');
     // 先还原到 1:1 再测量内容真实尺寸
     container.style.transform = 'translate(0px, 0px) scale(1)';
@@ -1191,9 +1413,11 @@ function triggerThemeSwitch(themeId, targetBU = getActiveBusinessLineKey()) {
             'myActivityTitle1Color': '#000000', 'myActivityTitle2Color': '#000000', 'myActivitySubColor': '#777777',
             'peerSharingGrad1': matchedTheme.grad1, 'peerSharingGrad2': matchedTheme.grad2,
             'peerSharingTitle1Color': '#000000', 'peerSharingTitle2Color': '#000000', 'peerSharingSubColor': '#777777',
-            'membershipChannelCardBgColor1': matchedTheme.grad1, 'membershipChannelCardBgColor2': matchedTheme.grad2, 'membershipChannelCardTextColor': matchedTheme.darkGrad2,
+            'membershipChannelCardBgColor1': matchedTheme.grad1, 'membershipChannelCardBgColor2': matchedTheme.grad2, 'membershipChannelCardTextColor': '#102114',
             'mallFeedWideBannerGrad1': matchedTheme.btn2, 'mallFeedWideBannerGrad2': matchedTheme.btn1,
             'mallFeedWideBannerTitleColor': '#FFFFFF', 'mallFeedWideBannerSubColor': '#FFFFFF', 'mallFeedWideBannerBtnColor': '#FFFFFF',
+            'mallFeedWideBannerPage2Grad1': matchedTheme.btn2, 'mallFeedWideBannerPage2Grad2': matchedTheme.btn1,
+            'mallFeedWideBannerPage2TitleColor': '#FFFFFF', 'mallFeedWideBannerPage2SubColor': '#FFFFFF', 'mallFeedWideBannerPage2BtnColor': '#FFFFFF',
         },
         yike: {
             'yikeEquipGrad1': matchedTheme.grad1, 'yikeEquipGrad2': matchedTheme.grad2,
@@ -1238,6 +1462,9 @@ function getManagedControlElements() {
 function markResourceListActive(resource) {
     document.querySelectorAll('.resource-item').forEach(el => el.classList.toggle('active', el.dataset.value === resource));
 }
+function isRenderableResource(resource) {
+    return Boolean(RESOURCE_VIEW_MAP[resource] || RESOURCE_CONTROL_MAP[resource] || RESOURCE_PREVIEW_TARGET_MAP[resource]);
+}
 function getVisibleAiModulesForCurrentBusiness() {
     return lastAiRecognizedModules.filter(resource => getBusinessForResource(resource) === getActiveBusinessLineKey());
 }
@@ -1260,6 +1487,9 @@ function clearAiResultPreviewState() {
     lastAiRenderOptions = {};
     const canvasContainer = document.getElementById('canvasContainer');
     canvasContainer?.classList.remove('ai-result-preview-mode');
+    const aiWorkspace = document.getElementById('viewport');
+    aiWorkspace?.classList.remove('ai-result-workspace');
+    if (aiWorkspace) { aiWorkspace.scrollLeft = 0; aiWorkspace.scrollTop = 0; }
     resetConditionalPreviewCards();
     getManagedViewElements().forEach(view => view.classList.remove('ai-preview-selected'));
 }
@@ -1282,18 +1512,22 @@ function focusResourceControl(resource, options = {}) {
     const viewEl = document.getElementById(RESOURCE_PREVIEW_TARGET_MAP[resource] || RESOURCE_VIEW_MAP[resource]);
     viewEl?.classList.add('ai-preview-selected');
     if (scroll) {
-        // 控件常驻最右侧栏、素材库下方；显隐由 .active 控制，这里清掉可能残留的内联 display 并滚动定位
         const wrapEl = document.getElementById('manualControlsWrapper');
-        if (wrapEl) wrapEl.querySelectorAll('.control-group').forEach(g => { g.style.display = ''; });
+        if (wrapEl) {
+            wrapEl.querySelectorAll('.control-group').forEach(g => { g.style.display = ''; });
+            wrapEl.classList.add('open');
+        }
         const devP = document.getElementById('developingPrompt');
         if (devP) devP.classList.add('hidden');
-        const scroller = document.querySelector('.right-sidebar') || document.getElementById('dynamicControlsArea');
-        const target = controlGroupEl || ctrlEl;
+        const scroller = wrapEl || document.querySelector('.right-sidebar');
+        const target = ctrlEl || controlGroupEl;
         if (scroller && target) {
-            const sbRect = scroller.getBoundingClientRect();
-            const elRect = target.getBoundingClientRect();
-            const top = scroller.scrollTop + (elRect.top - sbRect.top) - 16;
-            scroller.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+            requestAnimationFrame(() => {
+                const sbRect = scroller.getBoundingClientRect();
+                const elRect = target.getBoundingClientRect();
+                const top = scroller.scrollTop + (elRect.top - sbRect.top) - 16;
+                scroller.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+            });
         }
     }
     if (highlight) {
@@ -1311,6 +1545,221 @@ function focusResourceControl(resource, options = {}) {
         }, 800);
     }
 }
+function relocateActionPanels() {
+    const manualWrapper = document.getElementById('manualControlsWrapper');
+    if (manualWrapper) {
+        manualWrapper.classList.remove('bottom-manual-controls', 'open');
+    }
+}
+function setManualControlsOpen(isOpen) {
+    const manualWrapper = document.getElementById('manualControlsWrapper');
+    if (manualWrapper) manualWrapper.classList.toggle('open', Boolean(isOpen));
+}
+function setSmartActionPanelExpanded(isOpen) {
+    smartActionPanelExpanded = Boolean(isOpen);
+    smartActionPanel?.classList.toggle('open', smartActionPanelExpanded);
+    if (smartActionToggleBtn) {
+        smartActionToggleBtn.textContent = smartActionPanelExpanded ? '收起' : '展开';
+        smartActionToggleBtn.setAttribute('aria-expanded', String(smartActionPanelExpanded));
+    }
+}
+function getSmartActionResource() {
+    return activeResourceValue || document.querySelector('.resource-item.active')?.dataset.value || null;
+}
+function getSmartActionLabel(resource) {
+    const activeItem = resource ? document.querySelector(`.resource-item[data-value="${resource}"]`) : document.querySelector('.resource-item.active');
+    const rawText = activeItem?.textContent?.replace(/\s+/g, ' ').trim();
+    if (!rawText) return '请选择资源位';
+    const parts = rawText.split(' - ');
+    return parts[parts.length - 1] || rawText;
+}
+function updateSmartActionTitle(resource = getSmartActionResource()) {
+    if (smartActionTitle) smartActionTitle.textContent = getSmartActionLabel(resource);
+}
+function getControlGroupForResource(resource) {
+    const ctrlEl = document.getElementById(RESOURCE_CONTROL_MAP[resource]);
+    if (!ctrlEl) return null;
+    return ctrlEl.classList.contains('control-group') ? ctrlEl : ctrlEl.closest('.control-group');
+}
+function getSmartInputLabel(input) {
+    const group = input.closest('.input-group');
+    const span = group?.querySelector('span');
+    const raw = span?.textContent || input.labels?.[0]?.textContent || input.placeholder || input.id || '文案';
+    return raw.replace(/[:：]\s*$/, '').trim();
+}
+function isSmartTextInput(input) {
+    if (!input || input.disabled) return false;
+    if (input.type === 'hidden' || input.type === 'file' || input.type === 'color' || input.type === 'range' || input.type === 'number') return false;
+    if (input.closest('.hidden')) return false;
+    const style = window.getComputedStyle(input);
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    return input.tagName === 'TEXTAREA' || input.type === 'text';
+}
+function getSmartTextInputs(scope) {
+    if (!scope) return [];
+    return Array.from(scope.querySelectorAll('input, textarea')).filter(isSmartTextInput);
+}
+function getSmartTextGroups(resource) {
+    const controlGroup = getControlGroupForResource(resource);
+    if (!controlGroup) return [];
+    const panelGroups = Array.from(controlGroup.querySelectorAll('.panel-group'));
+    const groups = panelGroups.map((panel, index) => {
+        const title = panel.querySelector('.panel-group-header')?.textContent?.trim() || `页面 ${index + 1}`;
+        return { title, fields: getSmartTextInputs(panel) };
+    }).filter(group => group.fields.length > 0);
+    if (groups.length) return groups;
+    const fallbackFields = getSmartTextInputs(controlGroup);
+    return fallbackFields.length ? [{ title: getSmartActionLabel(resource), fields: fallbackFields }] : [];
+}
+function setSmartActionActive(action) {
+    smartActionMode = action;
+    document.querySelectorAll('.smart-action-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.smartAction === action);
+    });
+}
+function createSmartTextRow(originalInput) {
+    const row = document.createElement('div');
+    row.className = 'smart-text-row';
+    const label = document.createElement('label');
+    label.textContent = getSmartInputLabel(originalInput);
+    const input = document.createElement(originalInput.tagName === 'TEXTAREA' ? 'textarea' : 'input');
+    if (input.tagName === 'INPUT') input.type = 'text';
+    input.className = 'smart-text-input';
+    input.value = originalInput.value || '';
+    input.placeholder = originalInput.placeholder || '';
+    if (originalInput.maxLength > 0) input.maxLength = originalInput.maxLength;
+    input.addEventListener('input', () => {
+        originalInput.value = input.value;
+        originalInput.dispatchEvent(new Event('input', { bubbles: true }));
+        const meta = row.querySelector('.smart-text-meta');
+        if (meta && input.maxLength > 0) meta.textContent = `${input.value.length}/${input.maxLength}`;
+    });
+    row.appendChild(label);
+    row.appendChild(input);
+    if (originalInput.maxLength > 0) {
+        const meta = document.createElement('div');
+        meta.className = 'smart-text-meta';
+        meta.textContent = `${input.value.length}/${originalInput.maxLength}`;
+        row.appendChild(meta);
+    }
+    return row;
+}
+function renderSmartTextEditor(resource = getSmartActionResource(), pageIndex = 0) {
+    if (!smartActionDetail) return;
+    smartActionDetail.innerHTML = '';
+    smartActionDetail.classList.add('active');
+    const groups = getSmartTextGroups(resource);
+    if (!groups.length) {
+        const empty = document.createElement('div');
+        empty.className = 'smart-action-empty';
+        empty.textContent = '这个资源暂时没有可直接编辑的文案项。';
+        smartActionDetail.appendChild(empty);
+        return;
+    }
+    const safeIndex = Math.max(0, Math.min(pageIndex, groups.length - 1));
+    smartActionPageIndex = safeIndex;
+    const group = groups[safeIndex];
+    const editor = document.createElement('div');
+    editor.className = 'smart-text-editor';
+
+    if (groups.length > 1) {
+        const tabs = document.createElement('div');
+        tabs.className = 'smart-text-tabs';
+        groups.forEach((item, index) => {
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.className = 'smart-text-tab';
+            tab.textContent = item.title || `页面 ${index + 1}`;
+            tab.classList.toggle('active', index === safeIndex);
+            tab.addEventListener('click', () => renderSmartTextEditor(resource, index));
+            tabs.appendChild(tab);
+        });
+        editor.appendChild(tabs);
+    }
+
+    const title = document.createElement('div');
+    title.className = 'smart-text-editor-title';
+    title.textContent = groups.length > 1 ? `当前：${group.title}` : '直接改这里，右侧预览会同步更新';
+    editor.appendChild(title);
+
+    const section = document.createElement('div');
+    section.className = 'smart-text-section';
+    const sectionHead = document.createElement('div');
+    sectionHead.className = 'smart-text-section-head';
+    const badge = document.createElement('span');
+    badge.className = 'smart-text-section-badge';
+    badge.textContent = groups.length > 1 ? `页面 ${safeIndex + 1}` : '文案';
+    const heading = document.createElement('span');
+    heading.className = 'smart-text-section-title';
+    heading.textContent = group.title;
+    sectionHead.appendChild(badge);
+    sectionHead.appendChild(heading);
+    section.appendChild(sectionHead);
+    group.fields.forEach(originalInput => section.appendChild(createSmartTextRow(originalInput)));
+    editor.appendChild(section);
+
+    smartActionDetail.appendChild(editor);
+}
+function focusSmartActionTarget(action) {
+    const resource = getSmartActionResource();
+    if (!resource) return;
+    updateSmartActionTitle(resource);
+    setSmartActionActive(action);
+    if (action === 'text') {
+        setSmartActionPanelExpanded(true);
+        setManualControlsOpen(false);
+        renderSmartTextEditor(resource, 0);
+        smartActionDetail?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+    }
+    if (action === 'image') {
+        setSmartActionPanelExpanded(false);
+        setManualControlsOpen(false);
+        if (baseGlobalPicArea) {
+            baseGlobalPicArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            baseGlobalPicArea.classList.add('smart-focus');
+            setTimeout(() => baseGlobalPicArea.classList.remove('smart-focus'), 900);
+        }
+        document.getElementById('imageUpload')?.click();
+        return;
+    }
+    const controlGroup = getControlGroupForResource(resource);
+    if (!controlGroup) return;
+    setSmartActionPanelExpanded(true);
+    setManualControlsOpen(true);
+    focusResourceControl(resource, { scroll: true, highlight: true });
+    const selectorsByAction = {
+        color: ['.color-picker-wrap', '.pcr-button', 'input[type="color"]'],
+        advanced: ['input[type="range"]', 'input[type="number"]', '.panel-group', '.sidebar-section']
+    };
+    const selectors = selectorsByAction[action] || ['.panel-group', '.sidebar-section'];
+    let target = null;
+    for (const selector of selectors) {
+        target = controlGroup.querySelector(selector);
+        if (target) break;
+    }
+    if (target) {
+        setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (typeof target.focus === 'function') target.focus({ preventScroll: true });
+        }, 80);
+    }
+}
+function bindSmartActionPanel() {
+    document.querySelectorAll('.smart-action-btn').forEach(btn => {
+        btn.addEventListener('click', () => focusSmartActionTarget(btn.dataset.smartAction));
+    });
+    smartActionToggleBtn?.addEventListener('click', () => setSmartActionPanelExpanded(!smartActionPanelExpanded));
+    smartActionExportBtn?.addEventListener('click', () => document.getElementById('openExportModalBtn')?.click());
+    updateSmartActionTitle();
+    setSmartActionActive(null);
+    setSmartActionPanelExpanded(false);
+    smartActionPageIndex = 0;
+    if (smartActionDetail) {
+        smartActionDetail.classList.remove('active');
+        smartActionDetail.innerHTML = '<div class="smart-action-placeholder">点“改文案”后，这里会按页面分开出现可编辑文案项。</div>';
+    }
+}
 async function showAiRecognizedPreview(resources, options = {}) {
     const modules = [...new Set(resources)].filter(resource => RESOURCE_VIEW_MAP[resource]);
     if (!modules.length) return;
@@ -1324,15 +1773,19 @@ async function showAiRecognizedPreview(resources, options = {}) {
     developingPrompt.classList.add('hidden');
 
     const canvasContainer = document.getElementById('canvasContainer');
+    const workspace = document.getElementById('viewport');
     canvasContainer?.classList.add('ai-result-preview-mode');
-    canvasContainer.style.flexDirection = modules.length > 1 ? 'row' : 'column';
-    canvasContainer.style.flexWrap = modules.length > 2 ? 'wrap' : 'nowrap';
-    canvasContainer.style.alignItems = modules.length > 1 ? 'flex-start' : 'center';
-    canvasContainer.style.justifyContent = 'center';
-    canvasContainer.style.gap = modules.length > 2 ? '64px 48px' : (modules.length > 1 ? '80px' : '0px');
+    workspace?.classList.add('ai-result-workspace');
+    if (workspace) { workspace.scrollLeft = 0; workspace.scrollTop = 0; }
+    canvasContainer.style.flexDirection = 'row';
+    canvasContainer.style.flexWrap = 'nowrap';
+    canvasContainer.style.alignItems = 'flex-start';
+    canvasContainer.style.justifyContent = 'flex-start';
+    canvasContainer.style.gap = '48px';
+    canvasContainer.style.transform = 'none';
     document.querySelectorAll('.view-section').forEach(el => {
-        el.style.width = modules.length > 1 ? 'auto' : '100%';
-        el.style.flexShrink = modules.length > 1 ? '0' : '1';
+        el.style.width = 'auto';
+        el.style.flexShrink = '0';
     });
 
     modules.forEach(resource => {
@@ -1622,7 +2075,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
 【提取与拆分铁律】(绝对服从):
 1. 如果文档没有给出明确的按钮字（如“去查看”），btn 字段默认填 "去查看"。
 2. 首页banner如果同时出现“主标题/按钮”和“大图主标题/大图副标题”：只提取“主标题 + 按钮”作为 home 的唯一小图方案；“大图主标题/大图副标题”对应外部导入的标题图素材，当前系统已通过标题图上传处理，JSON 中不要输出它。
-3. 2-4个字的动作词通常是按钮，尤其是“去创建 / 立即创建 / 去查看 / 去参与 / 查看详情 / 了解更多”。这些词绝不能放进 title/sub；如果你发现 sub/title 只有这类短动作词，必须放到 btn。像 KB、MB、GB、尺寸、文件名这类短噪声也不要当正文。
+3. 2-4个字的动作词通常是按钮，尤其是“去创建 / 立即创建 / 去查看 / 去参与 / 查看详情 / 了解更多”。这些词绝不能放进 title/sub；如果你发现 sub/title 只有这类短动作词，必须放到 btn。只要文案里能看到明确按钮字，即使它很短也要优先填到 btn。像 KB、MB、GB、尺寸、文件名这类短噪声也不要当正文。
 4. 分享页/任务中心/我的空间这类横向 banner：中间大字一般不会只有3个字；“去创建”这种三个字一定是按钮。若文本顺序像“珍藏童年，不负美好时光 去创建 创建宝宝相簿”，应输出 title="创建宝宝相簿", sub="珍藏童年，不负美好时光", btn="去创建".
 5. 【针对“活动中心 (activity)”和“共享点对点 (peerSharing)”的独家排版拆分算法】(⚠️绝不可错)：
   由于该卡片UI结构为：[最上方的副标题sub] + [中间特大主标题第一行title1] + [中间特大主标题第二行title2] + [底部按钮btn]。
@@ -1632,6 +2085,7 @@ document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
   -> 绝对禁止重复填词！提取过的字不要再填到其他字段。
 6. 会员频道下拉2楼有三页：单列页提取 title + sub + btn；双列页和三列页只提取 title + btn，sub 置空。btn 默认填 "去查看"。
 7. 【多套方案支持】：如果你在某模块看到了多组不同的备选文案，请将它们作为数组的多个元素返回。如果没有明确写多套，切忌无中生有！
+8. 如果你能识别到按钮短文案，哪怕只是 2 到 4 个字，也要单独放进 btn，不要和 title/sub 混在一起。
 请只输出严格的JSON，不要解释。
 JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
 {
@@ -1720,10 +2174,10 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
             recognizedModules.add('dev_1_1_21');
             window.abTestCopies['mallFeedWideBanner'] = config.mallFeedWideBanner; window.abTestActiveIndex['mallFeedWideBanner'] = 0;
             const first = config.mallFeedWideBanner[0];
-            if (first.title) document.getElementById('mallFeedWideBannerTitle').value = formatAndLimitText(first.title, 8);
-            if (first.sub) document.getElementById('mallFeedWideBannerSub').value = formatAndLimitText(first.sub, 8);
-            if (first.btn) document.getElementById('mallFeedWideBannerBtnText').value = formatAndLimitText(first.btn, 3);
-            safeRenderABTestSwitcher('mallFeedWideBannerControls', 'mallFeedWideBanner');
+            const second = config.mallFeedWideBanner[1] || first;
+            applyMallFeedWideBannerPageState(1, first);
+            applyMallFeedWideBannerPageState(2, second);
+            await renderMallFeedWideBannerCanvas();
         }
         if (config.membershipChannelCard && config.membershipChannelCard.length > 0) {
             recognizedModules.add('dev_1_1_15');
@@ -1901,9 +2355,36 @@ JSON结构示例(所有模块必须是数组，没有的置为空数组 [] )：
 });
 // ==================== 渲染与绘图核心代码 ====================
 function setupHighQualityContext(ctx) { if (!ctx) return; ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; }
+function isImageSafeForCanvas(img) {
+    if (!img || !img.width || !img.height) return false;
+    const testCanvas = document.createElement('canvas');
+    testCanvas.width = 1;
+    testCanvas.height = 1;
+    const testCtx = testCanvas.getContext('2d', { willReadFrequently: true });
+    if (!testCtx) return false;
+    try {
+        testCtx.drawImage(img, 0, 0, 1, 1);
+        testCtx.getImageData(0, 0, 1, 1);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+async function getSafeHeroImageForExport() {
+    if (userImgObj && isImageSafeForCanvas(userImgObj)) return userImgObj;
+    const activeBU = getActiveBusinessLineKey();
+    const uploadedSrc = businessUploadState[activeBU]?.src;
+    if (uploadedSrc && uploadedSrc.startsWith('data:')) {
+        const uploadedImg = await loadImage(uploadedSrc);
+        if (uploadedImg && isImageSafeForCanvas(uploadedImg)) return uploadedImg;
+    }
+    const fallbackImg = await loadImage(config.heroImage);
+    return fallbackImg && isImageSafeForCanvas(fallbackImg) ? fallbackImg : null;
+}
 function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
     const iw = Math.floor(w), ih = Math.floor(h), ix = Math.floor(x), iy = Math.floor(y);
-    if (!img || !img.width || iw < 3 || ih < 3) { if (img) ctx.drawImage(img, ix, iy, iw, ih); return; }
+    if (!img || !img.width || !isImageSafeForCanvas(img)) return;
+    if (iw < 3 || ih < 3) { ctx.drawImage(img, ix, iy, iw, ih); return; }
     const off = document.createElement('canvas'); off.width = iw; off.height = ih; const oCtx = off.getContext('2d'); setupHighQualityContext(oCtx); oCtx.drawImage(img, 0, 0, iw, ih);
     try {
         const imageData = oCtx.getImageData(0, 0, iw, ih), data = imageData.data, tempData = new Uint8ClampedArray(data), c = 1 + 4 * amount, edge = -amount;
@@ -1914,8 +2395,10 @@ function drawSharpenedImage(ctx, img, x, y, w, h, amount = 0.3) {
             }
         }
         oCtx.putImageData(imageData, 0, 0);
-    } catch (e) { }
-    ctx.drawImage(off, ix, iy, iw, ih);
+        ctx.drawImage(off, ix, iy, iw, ih);
+    } catch (e) {
+        ctx.drawImage(img, ix, iy, iw, ih);
+    }
 }
 async function loadImage(src) {
     if (!src) return null;
@@ -1923,7 +2406,7 @@ async function loadImage(src) {
 
     const cacheAndResolve = (img, resolve) => {
         if (img && img.width) globalImageCache[src] = img;
-        resolve(img || new Image());
+        resolve(img || null);
     };
 
     const loadViaImage = (url, options = {}) => new Promise(resolve => {
@@ -1946,27 +2429,101 @@ async function loadImage(src) {
     if (src.startsWith('data:')) return await loadViaImage(src);
 
     const netSrc = cdnUrl(src);
-    const isCrossOrigin = /^https?:\/\//.test(netSrc) && new URL(netSrc, window.location.href).origin !== window.location.origin;
-    const directImg = await loadViaImage(netSrc, { crossOrigin: isCrossOrigin });
-    if (directImg && directImg.width) return directImg;
+    const isHttpSrc = /^https?:\/\//.test(netSrc);
+    const isSameOrigin = !isHttpSrc || new URL(netSrc, window.location.href).origin === window.location.origin;
 
-    try {
-        const response = await fetch(netSrc, { cache: 'force-cache' });
-        if (!response.ok) throw new Error(`图片加载失败: ${response.status}`);
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-        const blobImg = await loadViaImage(objectUrl);
-        URL.revokeObjectURL(objectUrl);
-        if (blobImg && blobImg.width) {
-            globalImageCache[src] = blobImg;
-            return blobImg;
+    if (isHttpSrc) {
+        try {
+            const response = await fetch(netSrc, { cache: 'force-cache', mode: 'cors' });
+            if (response.ok) {
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                const blobImg = await loadViaImage(objectUrl);
+                URL.revokeObjectURL(objectUrl);
+                if (blobImg && blobImg.width) {
+                    globalImageCache[src] = blobImg;
+                    return blobImg;
+                }
+            }
+        } catch (e) {
+            console.warn('图片安全加载失败，尝试同源路径或跳过:', src, e);
         }
-    } catch (e) {
-        console.warn('图片加载回退失败:', src, e);
+        if (!isSameOrigin) {
+            console.warn('跳过无法安全导出的外链图片:', src);
+            return null;
+        }
     }
 
-    const fallbackImg = await loadViaImage(src);
-    return fallbackImg || new Image();
+    const directImg = await loadViaImage(netSrc);
+    if (directImg && directImg.width) return directImg;
+
+    return null;
+}
+function trimTransparentEdgesToCanvas(img, options = {}) {
+    if (!img || !img.width || !img.height) return img || null;
+    const threshold = options.threshold ?? 8;
+    const padding = Math.max(0, options.padding ?? 4);
+    const w = img.width;
+    const h = img.height;
+    const sourceCanvas = document.createElement('canvas');
+    sourceCanvas.width = w;
+    sourceCanvas.height = h;
+    const sourceCtx = sourceCanvas.getContext('2d', { willReadFrequently: true });
+    if (!sourceCtx) return img;
+    try {
+        sourceCtx.drawImage(img, 0, 0);
+    } catch (e) {
+        return img;
+    }
+    let data;
+    try {
+        data = sourceCtx.getImageData(0, 0, w, h).data;
+    } catch (e) {
+        return img;
+    }
+    const rowHasOpaque = y => {
+        for (let x = 0, idx = (y * w * 4) + 3; x < w; x++, idx += 4) {
+            if (data[idx] > threshold) return true;
+        }
+        return false;
+    };
+    let top = 0;
+    while (top < h && !rowHasOpaque(top)) top++;
+    if (top >= h) return img;
+    let bottom = h - 1;
+    while (bottom >= top && !rowHasOpaque(bottom)) bottom--;
+    const colHasOpaque = x => {
+        for (let y = top; y <= bottom; y++) {
+            if (data[(y * w + x) * 4 + 3] > threshold) return true;
+        }
+        return false;
+    };
+    let left = 0;
+    while (left < w && !colHasOpaque(left)) left++;
+    let right = w - 1;
+    while (right >= left && !colHasOpaque(right)) right--;
+    if (left <= 0 && top <= 0 && right >= w - 1 && bottom >= h - 1) return img;
+    const cropLeft = Math.max(0, left - padding);
+    const cropTop = Math.max(0, top - padding);
+    const cropRight = Math.min(w - 1, right + padding);
+    const cropBottom = Math.min(h - 1, bottom + padding);
+    const cropW = cropRight - cropLeft + 1;
+    const cropH = cropBottom - cropTop + 1;
+    if (cropW <= 0 || cropH <= 0 || (cropW >= w && cropH >= h)) return img;
+    const out = document.createElement('canvas');
+    out.width = cropW;
+    out.height = cropH;
+    const outCtx = out.getContext('2d');
+    if (!outCtx) return img;
+    setupHighQualityContext(outCtx);
+    outCtx.drawImage(sourceCanvas, cropLeft, cropTop, cropW, cropH, 0, 0, cropW, cropH);
+    out._trimmedTransparentEdges = { left: cropLeft, top: cropTop, right: cropRight, bottom: cropBottom };
+    return out;
+}
+async function loadImageWithAutoTrim(src, options = {}) {
+    const img = await loadImage(src);
+    const trimmed = trimTransparentEdgesToCanvas(img, options);
+    return trimmed || img;
 }
 async function loadColoredArrow(url, color) {
     let txt = globalSvgTextCache[url]; if (!txt) { try { const res = await fetch(url); if (!res.ok) return new Image(); txt = await res.text(); globalSvgTextCache[url] = txt; } catch (e) { return new Image(); } }
@@ -2222,7 +2779,7 @@ async function renderMembershipChannelCardCanvas() {
     const imageImg = userImgObj || defaultImage;
     const bgColor1 = membershipChannelCardBgColor1?.value || '#F4F476';
     const bgColor2 = membershipChannelCardBgColor2?.value || '#83FFE6';
-    const textColor = membershipChannelCardTextColor?.value || '#074400';
+    const textColor = membershipChannelCardTextColor?.value || '#102114';
 
     membershipChannelCardExportCanvas.width = exportW;
     membershipChannelCardExportCanvas.height = exportH;
@@ -2845,22 +3402,15 @@ async function renderCloudStoreFeedLongBannerCanvas() {
     }
 }
 async function renderMallFeedWideBannerCanvas() {
-    if (!mallFeedWideBannerPage1Canvas || !mallFeedWideBannerPage1Ctx || !mallFeedWideBannerPage2Canvas || !mallFeedWideBannerPage2Ctx || !mallFeedWideBannerExportCanvas || !mallFeedWideBannerExportCtx) return;
+    if (!mallFeedWideBannerPage1Canvas || !mallFeedWideBannerPage1Ctx || !mallFeedWideBannerPage2Canvas || !mallFeedWideBannerPage2Ctx || !mallFeedWideBannerExportCanvas || !mallFeedWideBannerExportCtx || !mallFeedWideBannerPage1ExportCanvas || !mallFeedWideBannerPage1ExportCtx || !mallFeedWideBannerPage2ExportCanvas || !mallFeedWideBannerPage2ExportCtx) return;
     const exportW = 522;
     const exportH = 336;
     const bannerRadius = 28;
     const imageBox = { x: 313, y: 127, w: 180, h: 180 };
     const pageBoxes = [
-        { canvas: mallFeedWideBannerPage1Canvas, ctx: mallFeedWideBannerPage1Ctx, pageSrc: config.mallFeedWideBannerPage1, x: 572.26, y: 1195 },
-        { canvas: mallFeedWideBannerPage2Canvas, ctx: mallFeedWideBannerPage2Ctx, pageSrc: config.mallFeedWideBannerPage2, x: 22, y: 1332 }
+        { canvas: mallFeedWideBannerPage1Canvas, ctx: mallFeedWideBannerPage1Ctx, pageSrc: config.mallFeedWideBannerPage1, x: 572.26, y: 1195, exportCanvas: mallFeedWideBannerPage1ExportCanvas, exportCtx: mallFeedWideBannerPage1ExportCtx, page: 1 },
+        { canvas: mallFeedWideBannerPage2Canvas, ctx: mallFeedWideBannerPage2Ctx, pageSrc: config.mallFeedWideBannerPage2, x: 22, y: 1332, exportCanvas: mallFeedWideBannerPage2ExportCanvas, exportCtx: mallFeedWideBannerPage2ExportCtx, page: 2 }
     ];
-    const titleText = mallFeedWideBannerTitle?.value || '主标题最多8个字';
-    const subText = mallFeedWideBannerSub?.value || '副标题最多8个字';
-    const btnText = mallFeedWideBannerBtnText?.value || '按钮字';
-    const titleColor = mallFeedWideBannerTitleColor?.value || '#FFFFFF';
-    const subColor = mallFeedWideBannerSubColor?.value || '#FFFFFF';
-    const btnColor = mallFeedWideBannerBtnColor?.value || '#FFFFFF';
-
     if (!globalImageCache[config.mallFeedWideBannerExampleImage]) {
         globalImageCache[config.mallFeedWideBannerExampleImage] = await loadImage(config.mallFeedWideBannerExampleImage);
     }
@@ -2869,72 +3419,74 @@ async function renderMallFeedWideBannerCanvas() {
     }
     const visualImg = userImgObj || globalImageCache[config.mallFeedWideBannerExampleImage];
 
-    const drawBanner = (ctx) => {
-        if (!ctx) return;
-        mallFeedWideBannerExportCanvas.width = exportW;
-        mallFeedWideBannerExportCanvas.height = exportH;
-        setupHighQualityContext(ctx);
-        ctx.clearRect(0, 0, exportW, exportH);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, exportW, exportH);
-        ctx.save();
-        drawRoundRect(ctx, 0, 0, exportW, exportH, bannerRadius);
-        ctx.clip();
-        const grad = buildGradientFromControls(ctx, { x: 0, y: 0, w: exportW, h: exportH }, {
-            color1Id: 'mallFeedWideBannerGrad1',
-            color2Id: 'mallFeedWideBannerGrad2',
-            angleId: 'mallFeedWideBannerGradAngle',
+    const drawBanner = ({ exportCanvas, exportCtx, page }) => {
+        if (!exportCanvas || !exportCtx) return;
+        const pageState = getMallFeedWideBannerPageState(page);
+        const prefix = getMallFeedWideBannerPagePrefix(page);
+        exportCanvas.width = exportW;
+        exportCanvas.height = exportH;
+        setupHighQualityContext(exportCtx);
+        exportCtx.clearRect(0, 0, exportW, exportH);
+        exportCtx.fillStyle = '#FFFFFF';
+        exportCtx.fillRect(0, 0, exportW, exportH);
+        exportCtx.save();
+        drawRoundRect(exportCtx, 0, 0, exportW, exportH, bannerRadius);
+        exportCtx.clip();
+        const grad = buildGradientFromControls(exportCtx, { x: 0, y: 0, w: exportW, h: exportH }, {
+            color1Id: `${prefix}Grad1`,
+            color2Id: `${prefix}Grad2`,
+            angleId: `${prefix}GradAngle`,
             defaultAngle: 90,
-            defaultColor1: '#FF288F',
-            defaultColor2: '#FF993C'
+            defaultColor1: pageState.grad1,
+            defaultColor2: pageState.grad2
         });
-        ctx.fillStyle = grad || '#FF288F';
-        ctx.fillRect(0, 0, exportW, exportH);
+        exportCtx.fillStyle = grad || pageState.grad1 || '#FF288F';
+        exportCtx.fillRect(0, 0, exportW, exportH);
         if (visualImg && visualImg.width) {
-            drawContainedImage(ctx, visualImg, imageBox);
+            drawContainedImage(exportCtx, visualImg, imageBox);
         }
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+        exportCtx.textAlign = 'left';
+        exportCtx.textBaseline = 'top';
+        if ('letterSpacing' in exportCtx) exportCtx.letterSpacing = '0px';
         const fitFont = (text, maxWidth, startSize, minSize, fontFamily) => {
             let size = startSize;
             const safeText = String(text || '');
             while (size > minSize) {
-                ctx.font = `normal ${size}px ${fontFamily}`;
-                if (ctx.measureText(safeText).width <= maxWidth) break;
+                exportCtx.font = `normal ${size}px ${fontFamily}`;
+                if (exportCtx.measureText(safeText).width <= maxWidth) break;
                 size -= 1;
             }
-            ctx.font = `normal ${size}px ${fontFamily}`;
+            exportCtx.font = `normal ${size}px ${fontFamily}`;
         };
-    const titleBox = { x: 29.58, y: 66, w: 272, h: 57.07060623168945 };
-    const subBox = { x: 29.58, y: 131, w: 252, h: 44.054500579833984 };
-    const btnBox = { x: 29.58, y: 217.55, w: 197.75460815429688, h: 61.999996185302734 };
-    const btnTextBox = { x: 73.95, y: 227.8, w: 108, h: 42.052024841308594 };
-    ctx.fillStyle = titleColor;
-    ctx.font = 'normal 48px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
-    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
-    ctx.fillText(titleText, titleBox.x, titleBox.y);
-    ctx.fillStyle = subColor;
-    ctx.font = 'normal 38px "FZLanTingHeiS-R-GB", "Microsoft YaHei", sans-serif';
-    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
-    ctx.fillText(subText, subBox.x, subBox.y);
-    ctx.save();
-    drawRoundRect(ctx, btnBox.x, btnBox.y, btnBox.w, btnBox.h, Math.min(38.95, btnBox.h / 2, btnBox.w / 2));
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = btnColor;
-    ctx.stroke();
-    ctx.restore();
-    ctx.fillStyle = btnColor;
-    ctx.font = 'normal 36px "FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif';
-    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(btnText, btnTextBox.x + btnTextBox.w / 2, btnTextBox.y + btnTextBox.h / 2 + 0.5);
-        ctx.restore();
+        const titleBox = { x: 29.58, y: 66, w: 272, h: 57.07060623168945 };
+        const subBox = { x: 29.58, y: 131, w: 252, h: 44.054500579833984 };
+        const btnBox = { x: 29.58, y: 217.55, w: 197.75460815429688, h: 61.999996185302734 };
+        const btnTextBox = { x: 73.95, y: 227.8, w: 108, h: 42.052024841308594 };
+        exportCtx.fillStyle = pageState.titleColor;
+        fitFont(pageState.title, titleBox.w, 48, 30, '"FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif');
+        if ('letterSpacing' in exportCtx) exportCtx.letterSpacing = '0px';
+        exportCtx.fillText(pageState.title, titleBox.x, titleBox.y);
+        exportCtx.fillStyle = pageState.subColor;
+        fitFont(pageState.sub, subBox.w, 38, 24, '"FZLanTingHeiS-R-GB", "Microsoft YaHei", sans-serif');
+        if ('letterSpacing' in exportCtx) exportCtx.letterSpacing = '0px';
+        exportCtx.fillText(pageState.sub, subBox.x, subBox.y);
+        exportCtx.save();
+        drawRoundRect(exportCtx, btnBox.x, btnBox.y, btnBox.w, btnBox.h, Math.min(38.95, btnBox.h / 2, btnBox.w / 2));
+        exportCtx.lineWidth = 2;
+        exportCtx.strokeStyle = pageState.btnColor;
+        exportCtx.stroke();
+        exportCtx.restore();
+        exportCtx.fillStyle = pageState.btnColor;
+        fitFont(pageState.btn, btnTextBox.w, 36, 22, '"FZLanTingHeiS-DB-GB", "Microsoft YaHei", sans-serif');
+        if ('letterSpacing' in exportCtx) exportCtx.letterSpacing = '0px';
+        exportCtx.textAlign = 'center';
+        exportCtx.textBaseline = 'middle';
+        exportCtx.fillText(pageState.btn, btnTextBox.x + btnTextBox.w / 2, btnTextBox.y + btnTextBox.h / 2 + 0.5);
+        exportCtx.restore();
     };
 
-    const drawPagePreview = async ({ canvas, ctx, pageSrc, x, y }) => {
-        if (!canvas || !ctx) return;
+    const drawPagePreview = async ({ canvas, ctx, pageSrc, x, y, exportCanvas }) => {
+        if (!canvas || !ctx || !exportCanvas) return;
         const pageImg = globalImageCache[pageSrc];
         canvas.width = pageImg?.width || 1125;
         canvas.height = pageImg?.height || 2436;
@@ -2949,12 +3501,22 @@ async function renderMallFeedWideBannerCanvas() {
         ctx.save();
         drawRoundRect(ctx, x, y, exportW, exportH, bannerRadius);
         ctx.clip();
-        ctx.drawImage(mallFeedWideBannerExportCanvas, 0, 0, exportW, exportH, x, y, exportW, exportH);
+        ctx.drawImage(exportCanvas, 0, 0, exportW, exportH, x, y, exportW, exportH);
         ctx.restore();
         canvas._bannerBBox = { x, y, w: exportW, h: exportH };
     };
 
-    drawBanner(mallFeedWideBannerExportCtx);
+    drawBanner(pageBoxes[0]);
+    drawBanner(pageBoxes[1]);
+    if (mallFeedWideBannerExportCanvas && mallFeedWideBannerExportCtx) {
+        mallFeedWideBannerExportCanvas.width = exportW;
+        mallFeedWideBannerExportCanvas.height = exportH;
+        setupHighQualityContext(mallFeedWideBannerExportCtx);
+        mallFeedWideBannerExportCtx.clearRect(0, 0, exportW, exportH);
+        if (mallFeedWideBannerPage1ExportCanvas?.width) {
+            mallFeedWideBannerExportCtx.drawImage(mallFeedWideBannerPage1ExportCanvas, 0, 0, exportW, exportH, 0, 0, exportW, exportH);
+        }
+    }
     await drawPagePreview(pageBoxes[0]);
     await drawPagePreview(pageBoxes[1]);
 }
@@ -3394,29 +3956,66 @@ function updateResourceDropdown(terminalId, options = {}) {
     let buKey = 'wangpan';
     if (currentBU === 'yike') { dirData = YIKE_PAGE_DIRECTORY; buKey = 'yike'; }
     if (currentBU === 'chuhai') { dirData = CHUHAI_PAGE_DIRECTORY; buKey = 'chuhai'; }
+    if (currentBU === 'wenku') { dirData = WENKU_PAGE_DIRECTORY; buKey = 'wenku'; }
     currentTerminalId = terminalId || 'NA';
     const priorityList = IMPLEMENTED_RESOURCE_PRIORITY[buKey]?.[currentTerminalId] || [];
-    const pages = (dirData[currentTerminalId] || []).slice();
+    const rawGroups = dirData[currentTerminalId] || [];
+    const groups = rawGroups.length && Array.isArray(rawGroups[0]?.items)
+        ? rawGroups
+        : [{ title: currentTerminalId, items: rawGroups }];
+    const pages = groups.flatMap(group => group.items || []);
     const restoredValue = options.selectedResource || activeResourceValue;
     const activeValue = pages.some(page => page.value === restoredValue)
         ? restoredValue
         : (priorityList.find(value => pages.some(page => page.value === value)) || pages[0]?.value);
-    pages.forEach((page) => {
-        const item = document.createElement('div');
-        item.className = 'resource-item';
-        if (page.value === activeValue) item.classList.add('active');
-        item.dataset.value = page.value;
-        item.innerHTML = `<div class="resource-item-text" title="${page.text}">${page.text}</div>`;
-        item.addEventListener('click', (e) => {
-            document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
-            item.classList.add('active');
-            switchResourceView(page.value);
-            resetCanvasView();
+    groups.forEach(group => {
+        if (!group?.items?.length) return;
+        const section = document.createElement('section');
+        section.className = 'resource-directory';
+        const title = document.createElement('div');
+        title.className = 'resource-directory-title';
+        title.textContent = group.title || currentTerminalId;
+        const items = document.createElement('div');
+        items.className = 'resource-directory-items';
+        group.items.forEach((page) => {
+            const item = document.createElement('div');
+            item.className = 'resource-item';
+            if (page.value === activeValue) item.classList.add('active');
+            if (page.placeholder) item.classList.add('placeholder');
+            item.dataset.value = page.value;
+            item.innerHTML = `<div class="resource-item-text" title="${page.text}">${page.text}</div>`;
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('active'));
+                item.classList.add('active');
+                if (page.placeholder) {
+                    activeResourceValue = page.value;
+                    updateSmartActionTitle(page.value);
+                    markResourceListActive(page.value);
+                    return;
+                }
+                switchResourceView(page.value);
+                resetCanvasView();
+            });
+            items.appendChild(item);
         });
-        resourceList.appendChild(item);
+        section.appendChild(title);
+        section.appendChild(items);
+        resourceList.appendChild(section);
     });
-    const activeItem = resourceList.querySelector('.active') || resourceList.querySelector('.resource-item');
-    if (activeItem) switchResourceView(activeItem.dataset.value, { preserveAiResult: options.preserveAiResult }); else switchResourceView(null, { preserveAiResult: options.preserveAiResult });
+    const activeItem = resourceList.querySelector('.resource-item.active') || resourceList.querySelector('.resource-item');
+    if (activeItem) {
+        const activeResource = activeItem.dataset.value;
+        if (isRenderableResource(activeResource)) {
+            switchResourceView(activeResource, { preserveAiResult: options.preserveAiResult });
+        } else {
+            activeResourceValue = activeResource;
+            updateSmartActionTitle(activeResource);
+            switchResourceView(null, { preserveAiResult: options.preserveAiResult });
+            markResourceListActive(activeResource);
+        }
+    } else {
+        switchResourceView(null, { preserveAiResult: options.preserveAiResult });
+    }
 }
 const renderedPages = {};
 async function renderActiveBusinessCanvases() {
@@ -3478,8 +4077,14 @@ async function renderResourceCanvases(resources, options = {}) {
 }
 async function switchResourceView(selected, options = {}) {
     activeResourceValue = selected || null;
+    updateSmartActionTitle(selected);
+    if (smartActionMode === 'text') renderSmartTextEditor(selected, 0);
+    else if (smartActionDetail) {
+        smartActionDetail.classList.remove('active');
+        smartActionDetail.innerHTML = '<div class="smart-action-placeholder">点“改文案”后，这里会出现当前资源可直接编辑的文案项。</div>';
+    }
     if (!options.preserveAiResult) clearAiResultPreviewState();
-    [homeControls, myPageControls, feedControls, videoAudioShareControls, membershipChannelCardControls, tierBasedRewardsProductImagesControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, peerSharingIconPushControls, cloudStoreFeedLongBannerControls, mallFeedWideBannerControls, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
+    [homeControls, myPageControls, feedControls, videoAudioShareControls, membershipChannelCardControls, tierBasedRewardsProductImagesControls, membersChannelControls, searchIconControls, mySpaceControls, myActivityControls, peerSharingControls, peerSharingIconPushControls, cloudStoreFeedLongBannerControls, mallFeedWideBannerControls, mallFeedWideBannerPage1ControlPanel, mallFeedWideBannerPage2ControlPanel, yikeEquipControls, yikeCashControls, yikeHomeControls].forEach(ctrl => ctrl?.classList.remove('active'));
     [homeView, myPageView, feedView, videoAudioShareView, membershipChannelCardView, tierBasedRewardsProductImagesView, membersChannelView, searchIconView, mySpaceView, myActivityView, peerSharingView, peerSharingIconPushView, cloudStoreFeedLongBannerView, mallFeedWideBannerView, yikeEquipView, yikeCashView, yikeHomeView, viewDevelopingPrompt].forEach(view => view?.classList.remove('active'));
     developingPrompt.classList.add('hidden');
     const container = document.getElementById('canvasContainer');
@@ -3537,7 +4142,7 @@ async function switchResourceView(selected, options = {}) {
         cloudStoreFeedLongBannerControls?.classList.add('active'); cloudStoreFeedLongBannerView?.classList.add('active');
         if (!renderedPages.cloudStoreFeedLongBanner) { await renderCloudStoreFeedLongBannerCanvas(); renderedPages.cloudStoreFeedLongBanner = true; }
     } else if (selected === 'dev_1_1_21') {
-        mallFeedWideBannerControls?.classList.add('active'); mallFeedWideBannerView?.classList.add('active');
+        mallFeedWideBannerControls?.classList.add('active'); mallFeedWideBannerPage1ControlPanel?.classList.add('active'); mallFeedWideBannerPage2ControlPanel?.classList.add('active'); mallFeedWideBannerView?.classList.add('active');
         if (!renderedPages.mallFeedWideBanner) { await renderMallFeedWideBannerCanvas(); renderedPages.mallFeedWideBanner = true; }
 
     } else if (selected === 'yike_4') {
@@ -3568,7 +4173,7 @@ function setActiveBusinessLine(bu, options = {}) {
     Object.keys(renderedPages).forEach(key => { renderedPages[key] = false; });
     syncCurrentBusinessUploadState();
 
-    if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai') {
+    if (currentBU === 'wangpan' || currentBU === 'yike' || currentBU === 'chuhai' || currentBU === 'wenku') {
         document.documentElement.style.setProperty('--primary-color', '#258AFF');
         wangpanWorkspace.classList.remove('hidden'); emptyWorkspace.classList.add('hidden');
         updateResourceDropdown(document.querySelector('.terminal-btn.active').dataset.terminal, { preserveAiResult: options.preserveAiResult });
@@ -3688,9 +4293,15 @@ function openDetailModal(targetType) {
     } else if (targetType === 'dev_1_1_20') {
         detailModalTitle.innerText = 'A1.1.20 NA - 网盘商城feed流长banner - 纯净图';
         detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (522x837, JPG)</div><img src="${cloudStoreFeedLongBannerExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'mallFeedWideBannerPage1') {
+        detailModalTitle.innerText = 'A1.1.21 NA - 商城feed流宽banner - 页面1 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">页面1 独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerPage1ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+    } else if (targetType === 'mallFeedWideBannerPage2') {
+        detailModalTitle.innerText = 'A1.1.21 NA - 商城feed流宽banner - 页面2 纯净图';
+        detailImagesBox.innerHTML = `<div class="banner-label">页面2 独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerPage2ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'dev_1_1_21') {
         detailModalTitle.innerText = 'A1.1.21 NA - 商城feed流宽banner - 纯净图';
-        detailImagesBox.innerHTML = `<div class="banner-label">独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
+        detailImagesBox.innerHTML = `<div class="banner-label">页面1 独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerPage1ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;"><div class="banner-label" style="margin-top: 16px;">页面2 独立切图 (522x336, JPG)</div><img src="${mallFeedWideBannerPage2ExportCanvas.toDataURL()}" style="max-width: 100%; height: auto; border: 1px dashed #ccc;">`;
     } else if (targetType === 'yikeEquip') {
         detailModalTitle.innerText = '设备 Banner - 详情预览';
         detailImagesBox.innerHTML = `
@@ -3802,6 +4413,16 @@ bindGradientSlider('peerSharingGradAngle', 'peerSharingGradAngleVal', renderPeer
 bindGradientSlider('peerSharingGradStop1', 'peerSharingGradStop1Val', renderPeerSharingCanvas, '%');
 bindGradientSlider('peerSharingGradStop2', 'peerSharingGradStop2Val', renderPeerSharingCanvas, '%');
 peerSharingSubColor?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle1Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingTitle2Color?.addEventListener('input', renderPeerSharingCanvas); peerSharingBtnColor?.addEventListener('input', renderPeerSharingCanvas);
+['mallFeedWideBannerGrad1', 'mallFeedWideBannerGrad2', 'mallFeedWideBannerTitleColor', 'mallFeedWideBannerSubColor', 'mallFeedWideBannerBtnColor', 'mallFeedWideBannerTitle', 'mallFeedWideBannerSub', 'mallFeedWideBannerBtnText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', renderMallFeedWideBannerCanvas); if (el._pickrInstance) el._pickrInstance.on('change', renderMallFeedWideBannerCanvas); }
+});
+bindGradientSlider('mallFeedWideBannerGradAngle', 'mallFeedWideBannerGradAngleVal', renderMallFeedWideBannerCanvas, '°');
+['mallFeedWideBannerPage2Grad1', 'mallFeedWideBannerPage2Grad2', 'mallFeedWideBannerPage2TitleColor', 'mallFeedWideBannerPage2SubColor', 'mallFeedWideBannerPage2BtnColor', 'mallFeedWideBannerPage2Title', 'mallFeedWideBannerPage2Sub', 'mallFeedWideBannerPage2BtnText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', renderMallFeedWideBannerCanvas); if (el._pickrInstance) el._pickrInstance.on('change', renderMallFeedWideBannerCanvas); }
+});
+bindGradientSlider('mallFeedWideBannerPage2GradAngle', 'mallFeedWideBannerPage2GradAngleVal', renderMallFeedWideBannerCanvas, '°');
 // 绑定一刻设备 Banner 参数实时监听
 ['yikeEquipGrad1', 'yikeEquipGrad2', 'yikeEquipTitleColor', 'yikeEquipSubColor', 'yikeEquipBtnBgColor', 'yikeEquipBtnTextColor'].forEach(id => {
     const el = document.getElementById(id);
@@ -3826,8 +4447,236 @@ bindGradientSlider('yikeCashGradStop2', 'yikeCashGradStop2Val', renderYikeCashCa
     const el = document.getElementById(id);
     if (el) { el.addEventListener('input', renderYikeHomeCanvas); }
 });
-bindUploadEvents('yikeHomeBgUploadDropZone', 'yikeHomeBgUpload', 'yikeHomeBgPreviewImg', async src => { yikeHomeBgBannerObj = await loadImage(src); if (yikeHomeBgBannerObj) yikeHomeBgBannerObj._src = src; await renderYikeHomeCanvas(); });
+bindUploadEvents('yikeHomeBgUploadDropZone', 'yikeHomeBgUpload', 'yikeHomeBgPreviewImg', async src => { yikeHomeBgBannerObj = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 }); if (yikeHomeBgBannerObj) yikeHomeBgBannerObj._src = src; await renderYikeHomeCanvas(); });
 
+const MATERIAL_CATEGORY_ORDER = [
+    { key: '主视觉/横幅', label: '主视觉 / 横幅' },
+    { key: '背景底板', label: '背景底板' },
+    { key: '图标/按钮', label: '图标 / 按钮' },
+    { key: '会员/福利', label: '会员 / 福利' },
+    { key: '装饰元素', label: '装饰元素' },
+    { key: '其他', label: '其他' }
+];
+const BUILTIN_MATERIAL_LIBRARY = [
+    { key: 'assets/materials/reward-treasure-chest.png', name: '宝箱', path: 'assets/materials/reward-treasure-chest.png', src: 'assets/materials/reward-treasure-chest.png', category: '会员/福利' },
+    { key: 'assets/materials/decor-yellow-starfish.png', name: '黄色海星', path: 'assets/materials/decor-yellow-starfish.png', src: 'assets/materials/decor-yellow-starfish.png', category: '装饰元素' },
+    { key: 'assets/materials/reward-gold-medallion.png', name: '金币徽章', path: 'assets/materials/reward-gold-medallion.png', src: 'assets/materials/reward-gold-medallion.png', category: '会员/福利' },
+    { key: 'assets/materials/education-open-book.png', name: '打开的书', path: 'assets/materials/education-open-book.png', src: 'assets/materials/education-open-book.png', category: '图标/按钮' },
+    { key: 'assets/materials/decor-green-cloud.png', name: '绿色云朵', path: 'assets/materials/decor-green-cloud.png', src: 'assets/materials/decor-green-cloud.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-orange-starfish.png', name: '橙色海星', path: 'assets/materials/decor-orange-starfish.png', src: 'assets/materials/decor-orange-starfish.png', category: '装饰元素' },
+    { key: 'assets/materials/tool-pencil-cup-orange.png', name: '橙色笔筒', path: 'assets/materials/tool-pencil-cup-orange.png', src: 'assets/materials/tool-pencil-cup-orange.png', category: '图标/按钮' },
+    { key: 'assets/materials/reward-vip-pouch.png', name: '会员钱袋', path: 'assets/materials/reward-vip-pouch.png', src: 'assets/materials/reward-vip-pouch.png', category: '会员/福利' },
+    { key: 'assets/materials/decor-palm-tree.png', name: '棕榈树', path: 'assets/materials/decor-palm-tree.png', src: 'assets/materials/decor-palm-tree.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-green-cushion.png', name: '绿色靠垫', path: 'assets/materials/decor-green-cushion.png', src: 'assets/materials/decor-green-cushion.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-gold-disc.png', name: '金色圆盘', path: 'assets/materials/decor-gold-disc.png', src: 'assets/materials/decor-gold-disc.png', category: '装饰元素' },
+    { key: 'assets/materials/package-cardboard-box.png', name: '纸箱', path: 'assets/materials/package-cardboard-box.png', src: 'assets/materials/package-cardboard-box.png', category: '背景底板' },
+    { key: 'assets/materials/tool-pencil-cup-green.png', name: '绿色笔筒', path: 'assets/materials/tool-pencil-cup-green.png', src: 'assets/materials/tool-pencil-cup-green.png', category: '图标/按钮' },
+    { key: 'assets/materials/decor-swim-ring.png', name: '游泳圈', path: 'assets/materials/decor-swim-ring.png', src: 'assets/materials/decor-swim-ring.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-paper-plane.png', name: '纸飞机', path: 'assets/materials/decor-paper-plane.png', src: 'assets/materials/decor-paper-plane.png', category: '装饰元素' },
+    { key: 'assets/materials/device-retro-tv.png', name: '复古电视', path: 'assets/materials/device-retro-tv.png', src: 'assets/materials/device-retro-tv.png', category: '图标/按钮' },
+    { key: 'assets/materials/decor-crescent-moon.png', name: '月亮', path: 'assets/materials/decor-crescent-moon.png', src: 'assets/materials/decor-crescent-moon.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-blue-sofa.png', name: '蓝色沙发', path: 'assets/materials/decor-blue-sofa.png', src: 'assets/materials/decor-blue-sofa.png', category: '装饰元素' },
+    { key: 'assets/materials/device-yellow-camera.png', name: '黄色相机', path: 'assets/materials/device-yellow-camera.png', src: 'assets/materials/device-yellow-camera.png', category: '图标/按钮' },
+    { key: 'assets/materials/tool-green-pencil.png', name: '绿色铅笔', path: 'assets/materials/tool-green-pencil.png', src: 'assets/materials/tool-green-pencil.png', category: '图标/按钮' },
+    { key: 'assets/materials/decor-gold-shell.png', name: '金色贝壳', path: 'assets/materials/decor-gold-shell.png', src: 'assets/materials/decor-gold-shell.png', category: '装饰元素' },
+    { key: 'assets/materials/decor-flat-stone.png', name: '扁石', path: 'assets/materials/decor-flat-stone.png', src: 'assets/materials/decor-flat-stone.png', category: '装饰元素' }
+];
+const MATERIAL_DISPLAY_NAME_MAP = new Map([
+    ['assets/materials/reward-treasure-chest.png', '宝箱'],
+    ['assets/materials/decor-yellow-starfish.png', '黄色海星'],
+    ['assets/materials/reward-gold-medallion.png', '金币徽章'],
+    ['assets/materials/education-open-book.png', '打开的书'],
+    ['assets/materials/decor-green-cloud.png', '绿色云朵'],
+    ['assets/materials/decor-orange-starfish.png', '橙色海星'],
+    ['assets/materials/tool-pencil-cup-orange.png', '橙色笔筒'],
+    ['assets/materials/reward-vip-pouch.png', '会员钱袋'],
+    ['assets/materials/decor-palm-tree.png', '棕榈树'],
+    ['assets/materials/decor-green-cushion.png', '绿色靠垫'],
+    ['assets/materials/decor-gold-disc.png', '金色圆盘'],
+    ['assets/materials/package-cardboard-box.png', '纸箱'],
+    ['assets/materials/tool-pencil-cup-green.png', '绿色笔筒'],
+    ['assets/materials/decor-swim-ring.png', '游泳圈'],
+    ['assets/materials/decor-paper-plane.png', '纸飞机'],
+    ['assets/materials/device-retro-tv.png', '复古电视'],
+    ['assets/materials/decor-crescent-moon.png', '月亮'],
+    ['assets/materials/decor-blue-sofa.png', '蓝色沙发'],
+    ['assets/materials/device-yellow-camera.png', '黄色相机'],
+    ['assets/materials/tool-green-pencil.png', '绿色铅笔'],
+    ['assets/materials/decor-gold-shell.png', '金色贝壳'],
+    ['assets/materials/decor-flat-stone.png', '扁石']
+]);
+function getMaterialDisplayName(item = {}) {
+    const directName = String(item.displayName || item.name || '').trim();
+    if (/[\u4e00-\u9fff]/.test(directName)) return directName;
+    const rawText = [item.key, item.path, item.src, directName]
+        .filter(Boolean)
+        .map(value => String(value).split('?')[0])
+        .join(' ');
+    for (const [materialPath, displayName] of MATERIAL_DISPLAY_NAME_MAP.entries()) {
+        const fileName = materialPath.split('/').pop();
+        const fileStem = fileName.replace(/\.[^.]+$/, '');
+        if (rawText.includes(materialPath) || rawText.includes(fileName) || rawText.includes(fileStem)) {
+            return displayName;
+        }
+    }
+    return '未命名素材';
+}
+function getMaterialThemeHint(item = {}) {
+    const rawText = [item.displayName, item.name, item.key, item.path, item.src]
+        .filter(Boolean)
+        .map(value => String(value).split('?')[0])
+        .join(' ')
+        .toLowerCase();
+    if (/(绿色|green|草绿|浅绿|深绿|墨绿|翠绿|薄荷绿)/i.test(rawText)) return 'green';
+    if (/(蓝色|blue|天蓝|浅蓝|深蓝|海蓝|湖蓝)/i.test(rawText)) return 'blue';
+    if (/(紫色|purple|violet|lavender|薰衣草)/i.test(rawText)) return 'purple';
+    if (/(红色|red|玫红|粉红|粉色|桃红)/i.test(rawText)) return 'red';
+    if (/(黄色|金色|橙色|yellow|gold|orange|琥珀|琥珀色)/i.test(rawText)) return 'orange';
+    return '';
+}
+if (materialLibraryItems.length === 0) {
+    materialLibraryItems = BUILTIN_MATERIAL_LIBRARY.map(item => ({ ...item, image: null, width: 0, height: 0 }));
+}
+function normalizeMaterialText(text = '') {
+    return String(text)
+        .replace(/\.[^.]+$/, '')
+        .replace(/[\\/_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+}
+function inferMaterialCategory(file, img) {
+    const fullPath = normalizeMaterialText(file?.webkitRelativePath || '');
+    const fileName = normalizeMaterialText(file?.name || '');
+    const text = `${fullPath} ${fileName}`.trim();
+    const w = img?.width || 0;
+    const h = img?.height || 0;
+    const ratio = w && h ? w / h : 1;
+    if (/(会员|svip|vip|福利|等级|月卡|权益|礼包|宝箱|勋章|徽章|奖|会员购|会员卡)/i.test(text)) return '会员/福利';
+    if (/(背景|底板|底图|底色|bg|background|skin|wallpaper|pagebg)/i.test(text)) return '背景底板';
+    if (/(主图|hero|banner|kv|海报|横幅|大图|封面|头图|视觉)/i.test(text) || ratio >= 2.4 || ratio <= 0.42) return '主视觉/横幅';
+    if (/(icon|logo|图标|button|btn|箭头|arrow|按钮|badge|标识|search|控件)/i.test(text)) return '图标/按钮';
+    if (/(装饰|decor|element|元素|spark|star|moon|cloud|leaf|flower|gift|宝石|气泡|光效|粒子|小图|pencil|camera|box|moon|sun)/i.test(text) || Math.max(w, h) <= 260) return '装饰元素';
+    return '其他';
+}
+function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.onerror = () => reject(new Error('读取文件失败'));
+        reader.readAsDataURL(file);
+    });
+}
+async function importMaterialFiles(fileList) {
+    const files = Array.from(fileList || []).filter(file => file && file.type && file.type.startsWith('image/'));
+    if (!files.length) return;
+    const existingKeys = new Set(materialLibraryItems.map(item => item.key));
+    for (const file of files) {
+        const key = `${file.webkitRelativePath || file.name}|${file.size}|${file.lastModified}`;
+        if (existingKeys.has(key)) continue;
+        try {
+            const src = await readFileAsDataUrl(file);
+            const loaded = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 });
+            const previewSrc = loaded && typeof loaded.toDataURL === 'function' ? loaded.toDataURL('image/png') : src;
+            const item = {
+                key,
+                name: file.name || '未命名素材',
+                path: file.webkitRelativePath || file.name || '',
+                src: previewSrc,
+                image: loaded,
+                width: loaded?.width || 0,
+                height: loaded?.height || 0,
+                category: inferMaterialCategory(file, loaded)
+            };
+            materialLibraryItems.unshift(item);
+            existingKeys.add(key);
+        } catch (e) {
+            console.warn('素材导入失败:', file?.name, e);
+        }
+    }
+    renderMaterialLibrary();
+}
+async function applyMaterialItem(item) {
+    if (!item) return;
+    const activeBU = getActiveBusinessLineKey();
+    const selectedResource = document.querySelector('.resource-item.active')?.dataset.value;
+    const materialImage = item.image || await loadImage(item.src);
+    if (materialImage && !item.image) item.image = materialImage;
+    userImgObj = materialImage || null;
+    businessUploadState[activeBU] = { src: item.src, img: materialImage || null };
+    syncCurrentBusinessUploadState();
+    if (materialImage && shouldAutoColorForResource(selectedResource)) {
+        const hintedThemeId = getMaterialThemeHint(item);
+        const detectedThemeId = hintedThemeId || detectBrandThemeFromImage(materialImage);
+        if (detectedThemeId) triggerThemeSwitch(detectedThemeId, activeBU);
+    }
+    await renderActiveBusinessCanvases();
+}
+function renderMaterialLibrary() {
+    if (!materialLibGrid) return;
+    const totalCount = materialLibraryItems.length;
+    if (materialLibCount) materialLibCount.innerText = totalCount ? `${totalCount} 个` : '0 个';
+    if (!totalCount) {
+        materialLibGrid.innerHTML = '<div class="material-empty">把素材文件夹拖进来，或点击上方导入。命名不标准也会先按图片特征分组。</div>';
+        return;
+    }
+    const groups = new Map(MATERIAL_CATEGORY_ORDER.map(meta => [meta.key, []]));
+    materialLibraryItems.forEach(item => {
+        const bucket = groups.get(item.category) || groups.get('其他');
+        bucket.push(item);
+    });
+    materialLibGrid.innerHTML = '';
+    MATERIAL_CATEGORY_ORDER.forEach(meta => {
+        const items = groups.get(meta.key) || [];
+        if (!items.length) return;
+        const group = document.createElement('section');
+        group.className = 'material-category';
+        const title = document.createElement('div');
+        title.className = 'material-category-title';
+        const name = document.createElement('span');
+        name.textContent = meta.label;
+        const count = document.createElement('span');
+        count.className = 'material-category-count';
+        count.textContent = `${items.length} 张`;
+        title.appendChild(name);
+        title.appendChild(count);
+        const grid = document.createElement('div');
+        grid.className = 'material-category-grid';
+        items.forEach(item => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'material-item';
+            const displayName = getMaterialDisplayName(item);
+            card.title = `${displayName}，点击放入当前画板主图`;
+            const thumb = document.createElement('img');
+            thumb.className = 'material-thumb';
+            thumb.src = item.src;
+            thumb.alt = getMaterialDisplayName(item);
+            const label = document.createElement('div');
+            label.className = 'material-name';
+            label.textContent = getMaterialDisplayName(item);
+            card.appendChild(thumb);
+            card.appendChild(label);
+            card.addEventListener('click', () => applyMaterialItem(item));
+            grid.appendChild(card);
+        });
+        group.appendChild(title);
+        group.appendChild(grid);
+        materialLibGrid.appendChild(group);
+    });
+}
+if (materialLibPanel) {
+    materialLibPanel.addEventListener('dragover', e => { e.preventDefault(); materialLibPanel.classList.add('drag-over'); });
+    materialLibPanel.addEventListener('dragleave', e => { e.preventDefault(); materialLibPanel.classList.remove('drag-over'); });
+    materialLibPanel.addEventListener('drop', e => {
+        e.preventDefault();
+        materialLibPanel.classList.remove('drag-over');
+        if (e.dataTransfer?.files?.length > 0) importMaterialFiles(e.dataTransfer.files);
+    });
+}
+if (materialFileInput) materialFileInput.addEventListener('change', e => { importMaterialFiles(e.target.files); e.target.value = ''; });
+if (materialFolderInput) materialFolderInput.addEventListener('change', e => { importMaterialFiles(e.target.files); e.target.value = ''; });
+renderMaterialLibrary();
 // ==================== 文件上传与取色 ====================
 function handleFileUpload(file, callback) {
     if (!file || !file.type.startsWith('image/')) return;
@@ -3846,15 +4695,37 @@ function bindUploadEvents(dropZoneId, inputId, previewId, processFn) {
     }
 }
 function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max == min) { h = s = 0; } else { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; }h /= 6; } return [h * 360, s, l]; }
+function clamp01(value) { return Math.max(0, Math.min(1, value)); }
+function hueDistance(a, b) { const diff = Math.abs(a - b) % 360; return diff > 180 ? 360 - diff : diff; }
+function bandScore(hue, start, peak, end) {
+    if (hue < start || hue > end) return 0;
+    const span = Math.max(peak - start, end - peak) || 1;
+    return clamp01(1 - Math.abs(hue - peak) / span);
+}
+function greenHueScore(hue, sat, light) {
+    const base = bandScore(hue, 66, 124, 176);
+    if (!base) return 0;
+    const satBoost = sat < 0.12 ? 0.7 : sat < 0.28 ? 0.92 : 1;
+    const lightBoost = light > 0.9 ? 0.82 : light < 0.22 ? 0.78 : 1;
+    return clamp01(base * satBoost * lightBoost);
+}
+function yellowHueScore(hue, sat, light) {
+    const base = bandScore(hue, 18, 50, 86);
+    if (!base) return 0;
+    const satBoost = sat < 0.18 ? 0.74 : 1;
+    const lightBoost = light > 0.9 ? 0.82 : 1;
+    return clamp01(base * satBoost * lightBoost);
+}
 function detectBrandThemeFromImage(img) {
     if (!img || !img.width || !img.height) return 'blue';
-    const sampleSize = Math.max(24, Math.min(72, Math.round(Math.sqrt(img.width * img.height) / 8)));
+    const sampleSize = Math.max(48, Math.min(128, Math.round(Math.sqrt(img.width * img.height) / 4)));
     const canvas = document.createElement('canvas');
     canvas.width = sampleSize;
     canvas.height = sampleSize;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return 'blue';
     setupHighQualityContext(ctx);
+    ctx.clearRect(0, 0, sampleSize, sampleSize);
     ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
     let data;
     try {
@@ -3862,52 +4733,66 @@ function detectBrandThemeFromImage(img) {
     } catch (e) {
         return 'blue';
     }
-    let weightedX = 0;
-    let weightedY = 0;
-    let weightSum = 0;
-    let fallbackX = 0;
-    let fallbackY = 0;
-    let satSum = 0;
-    let satCount = 0;
-    for (let i = 0; i < data.length; i += 4) {
-        const alpha = data[i + 3] / 255;
-        if (alpha < 0.12) continue;
-        const [hue, sat, light] = rgbToHsl(data[i], data[i + 1], data[i + 2]);
-        satSum += sat;
-        satCount++;
-        const hueRad = hue * Math.PI / 180;
-        const warmBoost = 1 - Math.min(1, Math.abs(light - 0.55) * 1.6);
-        const dominantWeight = alpha * Math.max(0, sat - 0.08) * Math.max(0.25, warmBoost);
-        const fallback = alpha * Math.max(0.15, sat);
-        fallbackX += Math.cos(hueRad) * fallback;
-        fallbackY += Math.sin(hueRad) * fallback;
-        if (dominantWeight > 0) {
-            weightedX += Math.cos(hueRad) * dominantWeight;
-            weightedY += Math.sin(hueRad) * dominantWeight;
-            weightSum += dominantWeight;
+    const edgePad = Math.max(1, Math.round(sampleSize * 0.08));
+    const themeScores = new Map(BRAND_THEMES.map(theme => [theme.id, 0]));
+    let colorPixelCount = 0;
+    let dominantTheme = 'blue';
+    let dominantScore = 0;
+    let greenSignal = 0;
+    let yellowSignal = 0;
+    const centerWeight = (x, y) => {
+        const dx = Math.abs((x + 0.5) - sampleSize / 2) / (sampleSize / 2);
+        const dy = Math.abs((y + 0.5) - sampleSize / 2) / (sampleSize / 2);
+        const dist = Math.max(dx, dy);
+        return clamp01(1 - dist * 0.9);
+    };
+    for (let y = edgePad; y < sampleSize - edgePad; y++) {
+        for (let x = edgePad; x < sampleSize - edgePad; x++) {
+            const idx = (y * sampleSize + x) * 4;
+            const alpha = data[idx + 3] / 255;
+            if (alpha < 0.18) continue;
+            const [hue, sat, light] = rgbToHsl(data[idx], data[idx + 1], data[idx + 2]);
+            const chroma = sat * (1 - Math.abs(light - 0.52) * 1.5);
+            const greenScore = greenHueScore(hue, sat, light);
+            const yellowScore = yellowHueScore(hue, sat, light);
+            if (chroma < 0.055 && !greenScore && !yellowScore) continue;
+            colorPixelCount++;
+            const weight = alpha * Math.max(chroma, greenScore > 0 || yellowScore > 0 ? 0.06 : 0.05) * (0.6 + centerWeight(x, y));
+            greenSignal += weight * greenScore;
+            yellowSignal += weight * yellowScore;
+            for (const theme of BRAND_THEMES) {
+                let bucketWeight = Math.max(0, 1 - hueDistance(hue, theme.hue) / 96);
+                if (theme.id === 'green') bucketWeight = Math.max(bucketWeight, greenScore * 1.15);
+                if (theme.id === 'yellow') bucketWeight = Math.max(bucketWeight, yellowScore * 1.1);
+                if (bucketWeight <= 0) continue;
+                const score = weight * bucketWeight;
+                const nextScore = (themeScores.get(theme.id) || 0) + score;
+                themeScores.set(theme.id, nextScore);
+                if (nextScore > dominantScore) {
+                    dominantScore = nextScore;
+                    dominantTheme = theme.id;
+                }
+            }
         }
     }
-    const avgSat = satCount ? satSum / satCount : 0;
-    if (avgSat < 0.08) return 'blue';
-    const useFallback = weightSum < 0.001;
-    const angle = Math.atan2(useFallback ? fallbackY : weightedY, useFallback ? fallbackX : weightedX) * 180 / Math.PI;
-    const hue = (angle + 360) % 360;
-    let matchedTheme = BRAND_THEMES[0];
-    let minDiff = Infinity;
-    for (const theme of BRAND_THEMES) {
-        let diff = Math.abs(hue - theme.hue);
-        diff = diff > 180 ? 360 - diff : diff;
-        if (diff < minDiff) {
-            minDiff = diff;
-            matchedTheme = theme;
-        }
-    }
-    return matchedTheme.id === 'yellow' ? 'orange' : matchedTheme.id;
+    if (colorPixelCount < 20) return 'blue';
+    const sortedScores = [...themeScores.entries()].sort((a, b) => b[1] - a[1]);
+    const topScore = sortedScores[0]?.[1] || 0;
+    const secondScore = sortedScores[1]?.[1] || 0;
+    const greenThemeScore = themeScores.get('green') || 0;
+    const yellowThemeScore = themeScores.get('yellow') || 0;
+    const greenConfidence = greenThemeScore + greenSignal * 0.75;
+    const yellowConfidence = yellowThemeScore + yellowSignal * 0.75;
+    if (greenConfidence >= 0.16 && greenConfidence >= yellowConfidence * 1.08) return 'green';
+    if (topScore < 0.12) return 'blue';
+    if (topScore < secondScore * 1.08) return dominantTheme || 'blue';
+    const matchedThemeId = sortedScores[0]?.[0] || dominantTheme || 'blue';
+    return matchedThemeId === 'yellow' ? 'orange' : matchedThemeId;
 }
 bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src => {
     const activeBU = getActiveBusinessLineKey();
     const selectedResource = document.querySelector('.resource-item.active')?.dataset.value;
-    const loadedImg = await loadImage(src);
+    const loadedImg = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 });
     businessUploadState[activeBU] = { src, img: loadedImg };
     userImgObj = loadedImg;
     syncCurrentBusinessUploadState();
@@ -3919,9 +4804,9 @@ bindUploadEvents('uploadDropZone', 'imageUpload', 'uploadPreviewImg', async src 
     }
     await renderActiveBusinessCanvases();
 });
-bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImage(src); if (topBgBannerObj) topBgBannerObj._src = src; await renderHomeCanvas(); });
-bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImage(src); if (feedBgBannerObj) feedBgBannerObj._src = src; await renderFeedCanvas(); });
-bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImage(src); if (userTopBannerTitleObj) userTopBannerTitleObj._src = src; await renderHomeCanvas(); });
+bindUploadEvents('topBgUploadDropZone', 'topBgImageUpload', 'topBgUploadPreviewImg', async src => { topBgBannerObj = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 }); if (topBgBannerObj) topBgBannerObj._src = src; await renderHomeCanvas(); });
+bindUploadEvents('feedBgUploadDropZone', 'feedBgImageUpload', 'feedBgUploadPreviewImg', async src => { feedBgBannerObj = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 }); if (feedBgBannerObj) feedBgBannerObj._src = src; await renderFeedCanvas(); });
+bindUploadEvents('topBannerTitleDropZone', 'topBannerTitleUpload', 'topBannerTitlePreviewImg', async src => { userTopBannerTitleObj = await loadImageWithAutoTrim(src, { padding: 4, threshold: 8 }); if (userTopBannerTitleObj) userTopBannerTitleObj._src = src; await renderHomeCanvas(); });
 function syncExportModalByBusinessLine() {
     const activeBU = getActiveBusinessLineKey() === 'yike' ? 'yike' : 'wangpan';
     const visibleChecks = [];
@@ -4089,35 +4974,59 @@ async function ensureJSZipLoaded() {
 
 async function exportMultiCanvas(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force = false) {
     const chkEl = document.getElementById(chkId);
-    // ✨ 修复关键：如果不强制导出，且没打勾或者压根没有复选框，才跳过
     if (!force) {
-        if (!chkEl || !chkEl.checked) return;
+        if (!chkEl || !chkEl.checked) return false;
     }
-    if (!canvas) return;
+    if (!canvas || !folder) return false;
 
-    let chunks = window.abTestCopies ? window.abTestCopies[testKey] : null;
+    const logSkip = (reason, err) => {
+        console.warn(`跳过无法导出的资源: ${baseName}${reason ? ` (${reason})` : ''}`, err);
+    };
+
+    let exported = false;
+    const chunks = window.abTestCopies ? window.abTestCopies[testKey] : null;
     inputRefs = inputRefs || [];
     if (chunks && chunks.length > 1) {
-        let backups = inputRefs.map(ref => document.getElementById(ref.id).value);
+        const backups = inputRefs.map(ref => document.getElementById(ref.id).value);
         for (let i = 0; i < chunks.length; i++) {
-            let chunk = chunks[i];
-            inputRefs.forEach(ref => {
-                let val = chunk[ref.key];
-                if (val !== undefined) {
-                    if (ref.id === 'textCapsule') document.getElementById(ref.id).value = formatAndLimitText(val || '去查看', 4);
-                    else document.getElementById(ref.id).value = formatAndLimitText(val, ref.limit || 99);
+            const chunk = chunks[i];
+            try {
+                inputRefs.forEach(ref => {
+                    const val = chunk[ref.key];
+                    if (val !== undefined) {
+                        if (ref.id === 'textCapsule') document.getElementById(ref.id).value = formatAndLimitText(val || '去查看', 4);
+                        else document.getElementById(ref.id).value = formatAndLimitText(val, ref.limit || 99);
+                    }
+                });
+                if (typeof renderFn === 'function') await renderFn();
+                const blob = await canvasToBlob(canvas);
+                if (blob) {
+                    folder.file(`${baseName}-方案${i + 1}.png`, blob);
+                    exported = true;
+                } else {
+                    logSkip(`方案${i + 1}`, new Error('未生成 blob'));
                 }
-            });
-            await renderFn();
-            folder.file(`${baseName}-方案${i + 1}.png`, await canvasToBlob(canvas));
+            } catch (e) {
+                logSkip(`方案${i + 1}`, e);
+            }
         }
         inputRefs.forEach((ref, idx) => { document.getElementById(ref.id).value = backups[idx]; });
-        await renderFn();
-    } else {
-        // ✨ 修复：单方案导出前也先渲染一次，避免未浏览过的页面导出空白/缺图
         if (typeof renderFn === 'function') await renderFn();
-        folder.file(`${baseName}.png`, await canvasToBlob(canvas));
+    } else {
+        try {
+            if (typeof renderFn === 'function') await renderFn();
+            const blob = await canvasToBlob(canvas);
+            if (blob) {
+                folder.file(`${baseName}.png`, blob);
+                exported = true;
+            } else {
+                logSkip('', new Error('未生成 blob'));
+            }
+        } catch (e) {
+            logSkip('', e);
+        }
     }
+    return exported;
 }
 
 async function exportCanvasOrMulti(chkId, canvas, baseName, testKey, folder, inputRefs, renderFn, force = false) {
@@ -4169,12 +5078,12 @@ function initExportModal() {
                 
                 let homeRefs = MODULE_INPUT_MAP['home'];
                 // 导出完整的日夜间气泡Banner
-                await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas, true);
-                await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas, true);
+                await exportCanvasOrMulti('chkHomeBannerLight', lightBannerCanvas, `首页-小图状态Banner(日间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
+                await exportCanvasOrMulti('chkHomeBannerDark', darkBannerCanvas, `首页-小图状态Banner(夜间)-${homeColor}`, 'home', bannerFolder, homeRefs, renderHomeCanvas);
                 await exportCanvasOrMulti('chkHomePhone', lightCanvas, `首页-小图状态预览-${homeColor}`, 'home', previewFolder, homeRefs, renderHomeCanvas);
 
                 // ✨✨✨ 单独导出纯透明底的配图切图 (只保留 420x282) ✨✨✨
-                const kvImg = userImgObj || await loadImage(config.heroImage);
+                const kvImg = await getSafeHeroImageForExport();
                 if (kvImg && kvImg.width) {
                     const standaloneCanvas = document.createElement('canvas');
                     standaloneCanvas.width = 420; standaloneCanvas.height = 282;
@@ -4262,9 +5171,10 @@ function initExportModal() {
                 if (searchPageChecked && searchPageCanvas) previewFolder.file(`搜索icon-页面预览.png`, await canvasToBlob(searchPageCanvas));
             }
             // == 网盘商城feed流宽banner：独立切图(JPG) ==
-            if (document.getElementById('chkMallFeedWideBannerExport')?.checked && mallFeedWideBannerExportCanvas) {
+            if (document.getElementById('chkMallFeedWideBannerExport')?.checked && mallFeedWideBannerPage1ExportCanvas && mallFeedWideBannerPage2ExportCanvas) {
                 await renderMallFeedWideBannerCanvas();
-                bannerFolder.file(`网盘商城feed流宽banner-独立切图(522x336).jpg`, await canvasToJpegBlob(mallFeedWideBannerExportCanvas));
+                bannerFolder.file(`网盘商城feed流宽banner-页面1-独立切图(522x336).jpg`, await canvasToJpegBlob(mallFeedWideBannerPage1ExportCanvas));
+                bannerFolder.file(`网盘商城feed流宽banner-页面2-独立切图(522x336).jpg`, await canvasToJpegBlob(mallFeedWideBannerPage2ExportCanvas));
             }
             let mySpaceRefs = MODULE_INPUT_MAP['mySpace'];
             if (document.getElementById('chkMySpaceExport')?.checked && mySpaceExportCanvas && mySpacePageCanvas.closest('.preview-card').style.display !== 'none') await exportCanvasOrMulti('chkMySpaceExport', mySpaceExportCanvas, `我的空间-独立切图(1182x252)`, 'mySpace', bannerFolder, mySpaceRefs, renderMySpaceCanvas);
@@ -4300,7 +5210,10 @@ function initExportModal() {
             const content = await zip.generateAsync({ type: 'blob' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(content); a.download = `设计资源打包_${new Date().getTime()}.zip`; a.click();
             exportModal.style.display = 'none';
-        } catch (e) { alert('导出出错，可能是图片跨域污染或内存不足：\n' + e); } finally { confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; }
+        } catch (e) {
+            console.error('导出失败:', e);
+            alert('导出失败：页面里有图片来源不安全，浏览器禁止导出。请刷新页面后重试；如果仍失败，请重新上传本地图片，不要直接拖入网页上的外链图片。\n' + e);
+        } finally { confirmExportBtn.innerText = originalText; confirmExportBtn.disabled = false; }
     });
 }
 function upgradeToFigmaColorPickers() {
@@ -4323,6 +5236,8 @@ window.onload = async () => {
         MODULE_INPUT_MAP[moduleKey].forEach(ref => { bindFormatter(ref.id, ref.limit, moduleKey, ref.key); });
     });
     upgradeToFigmaColorPickers();
+    relocateActionPanels();
+    bindSmartActionPanel();
     updateResourceDropdown('NA');
     initExportModal();
     bindCanvasClickToControl();

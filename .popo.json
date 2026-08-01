@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "deployments": [
+    {
+      "slug": "ziyuanwei-tool",
+      "title": "资源位一键适配平台",
+      "base": ".",
+      "entry": "index.html",
+      "glob": [
+        "**/*"
+      ],
+      "exclude": [
+        "_headers"
+      ],
+      "lastDeployedAt": "2026-07-31T12:23:25.382624+00:00"
+    }
+  ]
+}
